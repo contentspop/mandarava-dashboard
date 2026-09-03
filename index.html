@@ -201,8 +201,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
       <h1 id="pageTitle">Executive Summary</h1>
       <div class="controls">
         <select class="ctrl" id="dateSelect">
-          <option>Last 30 Days</option>
           <option>Last 7 Days</option>
+          <option>Last 30 Days</option>
           <option>Last 14 Days</option>
           <option>Month to Date</option>
           <option>Previous Month</option>
@@ -211,7 +211,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <option>Custom Range</option>
         </select>
         <span id="customPrimaryWrap" style="display:none;gap:6px;align-items:center;">
-          <input type="date" class="ctrl" id="primaryFrom" min="2026-06-05" max="2026-09-03" value="2026-08-05" style="padding:6px 8px;">
+          <input type="date" class="ctrl" id="primaryFrom" min="2026-06-05" max="2026-09-03" value="2026-08-28" style="padding:6px 8px;">
           <span style="font-size:12px;color:var(--ink-faint);">to</span>
           <input type="date" class="ctrl" id="primaryTo" min="2026-06-05" max="2026-09-03" value="2026-09-03" style="padding:6px 8px;">
           <button class="reset-link" id="customPrimaryApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
@@ -224,9 +224,9 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <option>No Comparison</option>
         </select>
         <span id="customCompareWrap" style="display:none;gap:6px;align-items:center;">
-          <input type="date" class="ctrl" id="customFrom" min="2026-06-05" max="2026-09-03" value="2026-07-06" style="padding:6px 8px;">
+          <input type="date" class="ctrl" id="customFrom" min="2026-06-05" max="2026-09-03" value="2026-08-21" style="padding:6px 8px;">
           <span style="font-size:12px;color:var(--ink-faint);">to</span>
-          <input type="date" class="ctrl" id="customTo" min="2026-06-05" max="2026-09-03" value="2026-08-04" style="padding:6px 8px;">
+          <input type="date" class="ctrl" id="customTo" min="2026-06-05" max="2026-09-03" value="2026-08-27" style="padding:6px 8px;">
           <button class="reset-link" id="customCompareApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
         </span>
         <span class="asof" id="asOfLabel"></span>
@@ -244,13 +244,13 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
 <script>
 /* ============================================================
    DATA — pulled live via Insightful Pipe on 2026-09-03.
-   Current period: Aug 5 – Sep 3, 2026 (30d)
-   Previous period: Jul 6 – Aug 4, 2026 (30d)
+   Current period: Aug 28 – Sep 3, 2026 (7d)
+   Previous period: Aug 21 – Aug 27, 2026 (7d)
    Currency: THB unless noted. "Data unavailable" = not connected /
    not returned by source — never a fabricated zero.
    ============================================================ */
 const DATA = {
-  periods:{ current:{label:"Aug 5 – Sep 3, 2026", days:30}, previous:{label:"Jul 6 – Aug 4, 2026", days:30} },
+  periods:{ current:{label:"Aug 28 – Sep 3, 2026", days:7}, previous:{label:"Aug 21 – Aug 27, 2026", days:7} },
   sources:{
     ga4:{connected:true, updated:"Sep 3, 2026, 09:40"},
     meta:{connected:true, updated:"Sep 3, 2026, 09:40"},
@@ -262,232 +262,203 @@ const DATA = {
   },
   ga4:{
     overview:{
-      current:{users:6791,newUsers:2718,sessions:9685,engagedSessions:3543,engagementRate:0.366,bookingEngineClicks:7936,bookingEngineUsers:2478,roomSelected:1357,roomSelectedUsers:734,bookings:85,bookingUsers:78,revenue:3648702,leads:126},
-      previous:{users:7256,newUsers:3413,sessions:9912,engagedSessions:3644,engagementRate:0.368,bookings:94,revenue:3517070}
+      current:{users:1216,newUsers:546,sessions:1940,engagedSessions:717,engagementRate:0.37,bookingEngineClicks:1636,bookingEngineUsers:545,roomSelected:266,roomSelectedUsers:159,bookings:17,bookingUsers:15,revenue:767528.2},
+      previous:{users:1422,newUsers:590,sessions:2357,engagedSessions:880,engagementRate:0.37,bookings:23,revenue:910596.6}
     },
     trend:[
       {d:"2026-06-05",sessions:214,users:171,bookings:null,rev:48223},{d:"2026-06-06",sessions:249,users:218,rev:98766},{d:"2026-06-07",sessions:295,users:250,rev:108134},{d:"2026-06-08",sessions:297,users:248,rev:0},{d:"2026-06-09",sessions:269,users:226,rev:20135},{d:"2026-06-10",sessions:327,users:276,rev:0},{d:"2026-06-11",sessions:302,users:267,rev:0},{d:"2026-06-12",sessions:291,users:260,rev:206379},{d:"2026-06-13",sessions:244,users:222,rev:49060},{d:"2026-06-14",sessions:345,users:297,rev:0},{d:"2026-06-15",sessions:322,users:276,rev:90824},{d:"2026-06-16",sessions:356,users:297,rev:302284},{d:"2026-06-17",sessions:332,users:277,rev:94235},{d:"2026-06-18",sessions:345,users:300,rev:37800},{d:"2026-06-19",sessions:393,users:325,rev:205733},{d:"2026-06-20",sessions:324,users:282,rev:13311},{d:"2026-06-21",sessions:402,users:361,rev:149700},{d:"2026-06-22",sessions:386,users:333,rev:24012},{d:"2026-06-23",sessions:344,users:298,rev:58716},{d:"2026-06-24",sessions:323,users:281,rev:212097},{d:"2026-06-25",sessions:324,users:286,rev:207756},{d:"2026-06-26",sessions:317,users:264,rev:175966},{d:"2026-06-27",sessions:324,users:274,rev:471997},{d:"2026-06-28",sessions:300,users:249,rev:405816},{d:"2026-06-29",sessions:278,users:216,rev:66438},{d:"2026-06-30",sessions:316,users:259,rev:461972},
       {d:"2026-07-01",sessions:393,users:319,rev:380167},{d:"2026-07-02",sessions:316,users:266,rev:59257},{d:"2026-07-03",sessions:348,users:294,rev:284419},{d:"2026-07-04",sessions:270,users:227,rev:339378},{d:"2026-07-05",sessions:307,users:250,rev:142069},{d:"2026-07-06",sessions:299,users:238,rev:114207},{d:"2026-07-07",sessions:324,users:254,rev:161840},{d:"2026-07-08",sessions:291,users:232,rev:10247},{d:"2026-07-09",sessions:315,users:264,rev:23590},{d:"2026-07-10",sessions:343,users:273,rev:270755},{d:"2026-07-11",sessions:317,users:255,rev:0},{d:"2026-07-12",sessions:338,users:265,rev:169143},{d:"2026-07-13",sessions:376,users:278,rev:58881},{d:"2026-07-14",sessions:307,users:244,rev:223176},{d:"2026-07-15",sessions:319,users:255,rev:146487},{d:"2026-07-16",sessions:330,users:253,rev:0},{d:"2026-07-17",sessions:298,users:247,rev:246027},{d:"2026-07-18",sessions:301,users:239,rev:9761},{d:"2026-07-19",sessions:342,users:263,rev:14494},{d:"2026-07-20",sessions:331,users:266,rev:36408},{d:"2026-07-21",sessions:369,users:272,rev:164389},{d:"2026-07-22",sessions:335,users:235,rev:0},{d:"2026-07-23",sessions:323,users:250,rev:37845},{d:"2026-07-24",sessions:324,users:243,rev:158662},{d:"2026-07-25",sessions:299,users:235,rev:49120},{d:"2026-07-26",sessions:322,users:262,rev:71870},{d:"2026-07-27",sessions:401,users:289,rev:107993},{d:"2026-07-28",sessions:342,users:267,rev:177874},{d:"2026-07-29",sessions:342,users:266,rev:258738},{d:"2026-07-30",sessions:365,users:278,rev:379611},{d:"2026-07-31",sessions:324,users:259,rev:280558},
       {d:"2026-08-01",sessions:306,users:242,rev:104642},{d:"2026-08-02",sessions:343,users:259,rev:70644},{d:"2026-08-03",sessions:319,users:255,rev:0},{d:"2026-08-04",sessions:377,users:284,rev:170108},{d:"2026-08-05",sessions:413,users:313,rev:68232},{d:"2026-08-06",sessions:381,users:291,rev:134969},{d:"2026-08-07",sessions:367,users:268,rev:469856},{d:"2026-08-08",sessions:329,users:262,rev:0},{d:"2026-08-09",sessions:353,users:270,rev:189982},{d:"2026-08-10",sessions:374,users:265,rev:109772},{d:"2026-08-11",sessions:380,users:285,rev:220511},{d:"2026-08-12",sessions:405,users:283,rev:75861},{d:"2026-08-13",sessions:334,users:255,rev:20433},{d:"2026-08-14",sessions:292,users:223,rev:62041},{d:"2026-08-15",sessions:317,users:241,rev:102403},{d:"2026-08-16",sessions:312,users:253,rev:0},{d:"2026-08-17",sessions:372,users:284,rev:108798},{d:"2026-08-18",sessions:392,users:263,rev:249236},{d:"2026-08-19",sessions:337,users:247,rev:222175},{d:"2026-08-20",sessions:307,users:232,rev:81503},{d:"2026-08-21",sessions:334,users:248,rev:127712},{d:"2026-08-22",sessions:303,users:225,rev:30139},{d:"2026-08-23",sessions:307,users:216,rev:234247},{d:"2026-08-24",sessions:380,users:277,rev:206462},{d:"2026-08-25",sessions:360,users:256,rev:60370},{d:"2026-08-26",sessions:391,users:294,rev:110106},{d:"2026-08-27",sessions:285,users:226,rev:141560},{d:"2026-08-28",sessions:296,users:235,rev:37674},{d:"2026-08-29",sessions:313,users:243,rev:170392},{d:"2026-08-30",sessions:364,users:268,rev:149815},{d:"2026-08-31",sessions:365,users:266,rev:155019},
-      {d:"2026-09-01",sessions:327,users:244,rev:109434},{d:"2026-09-02",sessions:1,users:1,rev:0}
+      {d:"2026-09-01",sessions:327,users:244,rev:109434},{d:"2026-09-02",sessions:1,users:1,rev:0},{d:"2026-09-03",sessions:322,users:238,rev:194861}
     ],
     channels:{
       current:[
-        {ch:"Unassigned",sessions:3612,users:3221,newUsers:423,engaged:562,engRate:.16,bookings:44,revenue:1977815},
-        {ch:"Direct",sessions:2089,users:1018,newUsers:533,engaged:1176,engRate:.56,bookings:20,revenue:645954},
-        {ch:"Organic Search",sessions:2007,users:838,newUsers:192,engaged:1149,engRate:.57,bookings:17,revenue:940643},
-        {ch:"Paid Social",sessions:1525,users:1464,newUsers:1438,engaged:435,engRate:.29,bookings:0,revenue:0},
-        {ch:"Paid Search",sessions:245,users:100,newUsers:25,engaged:133,engRate:.54,bookings:2,revenue:23920},
-        {ch:"Organic Social",sessions:100,users:75,newUsers:68,engaged:43,engRate:.43,bookings:0,revenue:0},
-        {ch:"AI Assistant",sessions:50,users:31,newUsers:16,engaged:24,engRate:.48,bookings:2,revenue:60370},
-        {ch:"Referral",sessions:50,users:38,newUsers:20,engaged:20,engRate:.4,bookings:0,revenue:0},
-        {ch:"Cross-network",sessions:4,users:3,newUsers:1,engaged:1,engRate:.25,bookings:0,revenue:0},
-        {ch:"Organic Shopping",sessions:2,users:2,newUsers:2,engaged:0,engRate:0,bookings:0,revenue:0},
-        {ch:"Paid Other",sessions:1,users:1,newUsers:0,engaged:0,engRate:0,bookings:0,revenue:0}
+        {ch:"Unassigned",sessions:771,users:690,newUsers:108,engaged:166,engRate:.22,bookings:9,revenue:496049.4},
+        {ch:"Organic Search",sessions:443,users:207,newUsers:43,engaged:243,engRate:.55,bookings:3,revenue:76617.6},
+        {ch:"Direct",sessions:370,users:209,newUsers:99,engaged:196,engRate:.53,bookings:3,revenue:194861.2},
+        {ch:"Paid Social",sessions:286,users:281,newUsers:267,engaged:87,engRate:.3,bookings:0,revenue:0},
+        {ch:"AI Assistant",sessions:22,users:15,newUsers:5,engaged:9,engRate:.41,bookings:0,revenue:0},
+        {ch:"Paid Search",sessions:17,users:11,newUsers:6,engaged:6,engRate:.35,bookings:0,revenue:0},
+        {ch:"Organic Social",sessions:15,users:13,newUsers:11,engaged:5,engRate:.33,bookings:0,revenue:0},
+        {ch:"Referral",sessions:12,users:10,newUsers:3,engaged:7,engRate:.58,bookings:0,revenue:0},
+        {ch:"Organic Shopping",sessions:4,users:4,newUsers:4,engaged:0,engRate:0,bookings:0,revenue:0}
       ],
       previous:[
-        {ch:"Unassigned",sessions:3450,users:3055,newUsers:440,engaged:610,engRate:.18,bookings:45,revenue:1239437},
-        {ch:"Paid Social",sessions:2259,users:2179,newUsers:2157,engaged:592,engRate:.26,bookings:0,revenue:0},
-        {ch:"Organic Search",sessions:1902,users:795,newUsers:228,engaged:1117,engRate:.59,bookings:14,revenue:688850},
-        {ch:"Direct",sessions:1880,users:987,newUsers:503,engaged:1109,engRate:.59,bookings:28,revenue:1207923},
-        {ch:"Paid Search",sessions:255,users:119,newUsers:23,engaged:137,engRate:.54,bookings:6,revenue:351281},
-        {ch:"Cross-network",sessions:62,users:31,newUsers:3,engaged:39,engRate:.63,bookings:1,revenue:29580},
-        {ch:"Referral",sessions:35,users:30,newUsers:15,engaged:14,engRate:.4,bookings:0,revenue:0},
-        {ch:"Organic Social",sessions:26,users:21,newUsers:14,engaged:11,engRate:.42,bookings:0,revenue:0},
-        {ch:"AI Assistant",sessions:23,users:19,newUsers:10,engaged:15,engRate:.65,bookings:0,revenue:0},
-        {ch:"Organic Shopping",sessions:20,users:20,newUsers:20,engaged:0,engRate:0,bookings:0,revenue:0}
+        {ch:"Unassigned",sessions:926,users:849,newUsers:115,engaged:151,engRate:.16,bookings:11,revenue:448972.4},
+        {ch:"Organic Search",sessions:532,users:241,newUsers:45,engaged:313,engRate:.59,bookings:4,revenue:190075.4},
+        {ch:"Direct",sessions:517,users:283,newUsers:128,engaged:290,engRate:.56,bookings:4,revenue:211178.4},
+        {ch:"Paid Social",sessions:259,users:254,newUsers:245,engaged:72,engRate:.28,bookings:0,revenue:0},
+        {ch:"Paid Search",sessions:50,users:17,newUsers:9,engaged:27,engRate:.54,bookings:0,revenue:0},
+        {ch:"Organic Social",sessions:41,users:39,newUsers:35,engaged:14,engRate:.34,bookings:0,revenue:0},
+        {ch:"AI Assistant",sessions:20,users:12,newUsers:6,engaged:9,engRate:.45,bookings:2,revenue:60370.4},
+        {ch:"Referral",sessions:12,users:11,newUsers:7,engaged:4,engRate:.33,bookings:0,revenue:0}
       ]
     },
     sourceMedium:{
       current:[
-        {sm:"(not set)",sessions:2998,users:2842,keyEvents:38,engRate:0,bookings:34,revenue:1755875.6},
-        {sm:"(direct) / (none)",sessions:2144,users:1042,keyEvents:22,engRate:.57,bookings:18,revenue:674177.4},
-        {sm:"facebook / paid_social",sessions:1540,users:1479,keyEvents:0,engRate:.27,bookings:0,revenue:0},
-        {sm:"google / organic",sessions:1371,users:648,keyEvents:13,engRate:.53,bookings:10,revenue:720970},
-        {sm:"triptease_attract / meta",sessions:586,users:428,keyEvents:7,engRate:.87,bookings:7,revenue:314262},
-        {sm:"ntp.msn.com / referral",sessions:374,users:4,keyEvents:0,engRate:.57,bookings:0,revenue:0},
-        {sm:"google / cpc",sessions:251,users:105,keyEvents:2,engRate:.54,bookings:2,revenue:23920},
-        {sm:"ghotelads / organic",sessions:169,users:135,keyEvents:2,engRate:.89,bookings:2,revenue:19550},
-        {sm:"ghotelads / (not set)",sessions:93,users:67,keyEvents:1,engRate:.82,bookings:1,revenue:24648},
-        {sm:"bing / organic",sessions:63,users:28,keyEvents:1,engRate:.62,bookings:1,revenue:170016},
-        {sm:"chatgpt.com / ai-assistant",sessions:57,users:33,keyEvents:2,engRate:.47,bookings:2,revenue:60370.4},
-        {sm:"yandex.ru / referral",sessions:42,users:24,keyEvents:0,engRate:.64,bookings:0,revenue:0},
-        {sm:"m.facebook.com / referral",sessions:36,users:36,keyEvents:0,engRate:.06,bookings:0,revenue:0}
+        {sm:"(not set)",sessions:588,users:564,bookings:7,revenue:353417.4},
+        {sm:"(direct) / (none)",sessions:370,users:209,bookings:3,revenue:194861.2},
+        {sm:"google / organic",sessions:314,users:159,bookings:3,revenue:76617.6},
+        {sm:"facebook / paid_social",sessions:284,users:279,bookings:0,revenue:0},
+        {sm:"triptease_attract / meta",sessions:178,users:126,bookings:2,revenue:142632},
+        {sm:"ntp.msn.com / referral",sessions:76,users:4,bookings:0,revenue:0},
+        {sm:"ghotelads / organic",sessions:29,users:26,bookings:0,revenue:0},
+        {sm:"chatgpt.com / ai-assistant",sessions:22,users:15,bookings:0,revenue:0},
+        {sm:"google / cpc",sessions:17,users:11,bookings:0,revenue:0},
+        {sm:"bing / organic",sessions:7,users:5,bookings:0,revenue:0},
+        {sm:"m.facebook.com / referral",sessions:7,users:7,bookings:0,revenue:0},
+        {sm:"yandex.ru / referral",sessions:7,users:7,bookings:0,revenue:0},
+        {sm:"ghotelads / (not set)",sessions:5,users:5,bookings:0,revenue:0}
       ],
       previous:[
-        {sm:"(not set)",sessions:2750,users:2603,keyEvents:30,engRate:0,bookings:25,revenue:815180.88},
-        {sm:"facebook / paid_social",sessions:2206,users:2131,keyEvents:0,engRate:.25,bookings:0,revenue:0},
-        {sm:"(direct) / (none)",sessions:1880,users:987,keyEvents:28,engRate:.59,bookings:27,revenue:1207923.16},
-        {sm:"google / organic",sessions:1187,users:541,keyEvents:7,engRate:.52,bookings:6,revenue:366921.3},
-        {sm:"triptease_attract / meta",sessions:511,users:379,keyEvents:12,engRate:.92,bookings:10,revenue:393349.84},
-        {sm:"ntp.msn.com / referral",sessions:336,users:6,keyEvents:0,engRate:.66,bookings:0,revenue:0},
-        {sm:"google / cpc",sessions:317,users:150,keyEvents:7,engRate:.56,bookings:6,revenue:380860.5},
-        {sm:"ghotelads / organic",sessions:205,users:157,keyEvents:4,engRate:.91,bookings:4,revenue:126532.8},
-        {sm:"ghotelads / (not set)",sessions:156,users:108,keyEvents:3,engRate:.88,bookings:3,revenue:30906.12},
-        {sm:"yandex.ru / referral",sessions:71,users:40,keyEvents:0,engRate:.46,bookings:0,revenue:0},
-        {sm:"bing / organic",sessions:55,users:31,keyEvents:2,engRate:.53,bookings:2,revenue:141133.5},
-        {sm:"tripadvisor / cpc",sessions:48,users:44,keyEvents:0,engRate:1,bookings:0,revenue:0},
-        {sm:"chatgpt.com / ai-assistant",sessions:23,users:19,keyEvents:0,engRate:.65,bookings:0,revenue:0}
+        {sm:"(not set)",sessions:758,users:724,bookings:8,revenue:387262.2},
+        {sm:"(direct) / (none)",sessions:517,users:283,bookings:4,revenue:211178.4},
+        {sm:"google / organic",sessions:340,users:181,bookings:3,revenue:159968.4},
+        {sm:"facebook / paid_social",sessions:255,users:250,bookings:0,revenue:0},
+        {sm:"triptease_attract / meta",sessions:139,users:109,bookings:2,revenue:37062.2},
+        {sm:"ntp.msn.com / referral",sessions:101,users:4,bookings:0,revenue:0},
+        {sm:"google / cpc",sessions:50,users:17,bookings:0,revenue:0},
+        {sm:"ghotelads / organic",sessions:41,users:30,bookings:0,revenue:0},
+        {sm:"ghotelads / (not set)",sessions:28,users:22,bookings:1,revenue:24648},
+        {sm:"bing / organic",sessions:24,users:10,bookings:0,revenue:0},
+        {sm:"m.facebook.com / referral",sessions:22,users:22,bookings:0,revenue:0},
+        {sm:"chatgpt.com / ai-assistant",sessions:20,users:12,bookings:2,revenue:60370.4},
+        {sm:"facebook.com / referral",sessions:12,users:12,bookings:0,revenue:0}
       ]
     },
     countries:{
       current:[
-        {c:"United Kingdom",sessions:1235,users:745,engRate:.35,bookings:5,revenue:119530},
-        {c:"Thailand",sessions:1658,users:661,engRate:.44,bookings:3,revenue:59802},
-        {c:"United States",sessions:1042,users:591,engRate:.34,bookings:10,revenue:468010},
-        {c:"Australia",sessions:689,users:471,engRate:.29,bookings:5,revenue:224236},
-        {c:"South Korea",sessions:450,users:339,engRate:.53,bookings:7,revenue:189802},
-        {c:"Germany",sessions:511,users:314,engRate:.33,bookings:5,revenue:144499},
-        {c:"New Zealand",sessions:297,users:263,engRate:.27,bookings:1,revenue:58144},
-        {c:"Israel",sessions:323,users:262,engRate:.33,bookings:5,revenue:232006},
-        {c:"India",sessions:269,users:226,engRate:.36,bookings:3,revenue:91619},
-        {c:"Russia",sessions:307,users:169,engRate:.42,bookings:5,revenue:253748},
-        {c:"Netherlands",sessions:215,users:107,engRate:.42,bookings:5,revenue:162078},
-        {c:"Switzerland",sessions:79,users:48,engRate:.34,bookings:4,revenue:202036},
-        {c:"Canada",sessions:149,users:104,engRate:.29,bookings:1,revenue:45908},
-        {c:"Japan",sessions:155,users:72,engRate:.52,bookings:2,revenue:41666},
-        {c:"South Africa",sessions:68,users:41,engRate:.31,bookings:3,revenue:215004},
-        {c:"Spain",sessions:65,users:40,engRate:.29,bookings:2,revenue:82680},
-        {c:"Denmark",sessions:49,users:38,engRate:.35,bookings:3,revenue:155887}
+        {c:"Thailand",sessions:340,users:141,engRate:.41,bookings:0,revenue:0},
+        {c:"United Kingdom",sessions:222,users:150,engRate:.37,bookings:0,revenue:0},
+        {c:"United States",sessions:208,users:151,engRate:.31,bookings:4,revenue:311210},
+        {c:"Australia",sessions:191,users:125,engRate:.34,bookings:0,revenue:0},
+        {c:"Germany",sessions:91,users:77,engRate:.31,bookings:2,revenue:64404},
+        {c:"Japan",sessions:80,users:28,engRate:.61,bookings:1,revenue:31578.2},
+        {c:"South Korea",sessions:78,users:60,engRate:.6,bookings:2,revenue:73116.8},
+        {c:"Israel",sessions:61,users:55,engRate:.34,bookings:1,revenue:74520},
+        {c:"Russia",sessions:61,users:41,engRate:.26,bookings:1,revenue:64540},
+        {c:"India",sessions:59,users:40,engRate:.36,bookings:0,revenue:0},
+        {c:"New Zealand",sessions:53,users:51,engRate:.3,bookings:0,revenue:0},
+        {c:"France",sessions:46,users:36,engRate:.54,bookings:0,revenue:0},
+        {c:"Netherlands",sessions:43,users:29,engRate:.35,bookings:0,revenue:0},
+        {c:"Canada",sessions:23,users:17,engRate:.35,bookings:0,revenue:0},
+        {c:"Taiwan",sessions:21,users:6,engRate:.38,bookings:0,revenue:0}
       ],
       previous:[
-        {c:"India",sessions:871,users:801,engRate:.29,bookings:2,revenue:27657},
-        {c:"Thailand",sessions:1715,users:726,engRate:.46,bookings:2,revenue:36696},
-        {c:"United Kingdom",sessions:1066,users:659,engRate:.33,bookings:10,revenue:524536},
-        {c:"Australia",sessions:902,users:594,engRate:.33,bookings:15,revenue:730832},
-        {c:"United States",sessions:768,users:472,engRate:.36,bookings:8,revenue:237804},
-        {c:"South Korea",sessions:537,users:389,engRate:.55,bookings:10,revenue:193903},
-        {c:"Germany",sessions:393,users:256,engRate:.31,bookings:5,revenue:197002},
-        {c:"New Zealand",sessions:329,users:296,engRate:.28,bookings:1,revenue:104400},
-        {c:"Israel",sessions:252,users:199,engRate:.33,bookings:6,revenue:257772},
-        {c:"Russia",sessions:317,users:180,engRate:.39,bookings:3,revenue:120800},
-        {c:"Netherlands",sessions:239,users:120,engRate:.38,bookings:4,revenue:165311},
-        {c:"Switzerland",sessions:93,users:57,engRate:.30,bookings:3,revenue:94304},
-        {c:"Canada",sessions:161,users:123,engRate:.29,bookings:1,revenue:21305},
-        {c:"France",sessions:183,users:94,engRate:.48,bookings:3,revenue:183048},
-        {c:"South Africa",sessions:84,users:50,engRate:.31,bookings:2,revenue:70209},
-        {c:"Spain",sessions:62,users:42,engRate:.35,bookings:1,revenue:82676}
+        {c:"Thailand",sessions:371,users:134,engRate:.47,bookings:1,revenue:9462.2},
+        {c:"United States",sessions:291,users:177,engRate:.4,bookings:1,revenue:84456},
+        {c:"United Kingdom",sessions:286,users:191,engRate:.34,bookings:1,revenue:72739.2},
+        {c:"Australia",sessions:146,users:116,engRate:.29,bookings:0,revenue:0},
+        {c:"Germany",sessions:139,users:85,engRate:.34,bookings:1,revenue:48396},
+        {c:"South Korea",sessions:115,users:85,engRate:.6,bookings:3,revenue:85018.4},
+        {c:"Israel",sessions:71,users:55,engRate:.3,bookings:3,revenue:137779.2},
+        {c:"Netherlands",sessions:63,users:38,engRate:.41,bookings:3,revenue:79357.8},
+        {c:"New Zealand",sessions:59,users:54,engRate:.27,bookings:0,revenue:0},
+        {c:"Russia",sessions:51,users:33,engRate:.45,bookings:1,revenue:30107},
+        {c:"France",sessions:45,users:27,engRate:.31,bookings:0,revenue:0},
+        {c:"Singapore",sessions:44,users:20,engRate:.48,bookings:0,revenue:0},
+        {c:"Canada",sessions:39,users:29,engRate:.26,bookings:0,revenue:0},
+        {c:"India",sessions:35,users:30,engRate:.29,bookings:0,revenue:0},
+        {c:"Taiwan",sessions:35,users:23,engRate:.46,bookings:1,revenue:64880}
       ]
     },
     landingPages:{
       current:[
-        {p:"/ (Homepage)",sessions:1873,users:963,engRate:.52,bounce:.48,bookings:15},
-        {p:"/hotelpage/rates (Booking Engine — desktop rates)",sessions:1747,users:1648,engRate:.33,bounce:.67,bookings:6},
-        {p:"/propertyibe2 (Booking Engine v2 landing)",sessions:948,users:296,engRate:.5,bounce:.5,bookings:10},
-        {p:"/propertyibe2/rates (Booking Engine v2 — rate step)",sessions:430,users:280,engRate:.55,bounce:.45,bookings:15},
-        {p:"/propertyibemobile (Booking Engine — mobile)",sessions:357,users:215,engRate:.34,bounce:.66,bookings:8},
-        {p:"/propertyibemobile/rates (Booking Engine mobile — rate step)",sessions:248,users:226,engRate:.81,bounce:.19,bookings:7},
-        {p:"/special-offer (Promotions hub)",sessions:154,users:115,engRate:.42,bounce:.58,bookings:2},
-        {p:"/rooms/tropicana-superior-room",sessions:133,users:121,engRate:.09,bounce:.91,bookings:0},
-        {p:"/gallery",sessions:119,users:75,engRate:.17,bounce:.83,bookings:0},
-        {p:"/cheeva-spa",sessions:114,users:89,engRate:.17,bounce:.83,bookings:0},
-        {p:"/rooms/seafan-deluxe-room",sessions:108,users:81,engRate:.22,bounce:.78,bookings:0},
-        {p:"/facilities",sessions:106,users:88,engRate:.15,bounce:.85,bookings:0},
-        {p:"/rooms/aqua-deluxe-pool-access-room",sessions:98,users:79,engRate:.17,bounce:.83,bookings:0},
-        {p:"/rooms/andaman-private-pool-villa",sessions:85,users:73,engRate:.12,bounce:.88,bookings:0},
-        {p:"/rooms/sea-pearl-private-pool-access",sessions:76,users:66,engRate:.18,bounce:.82,bookings:0},
-        {p:"/rooms/panoramic-deluxe-room",sessions:73,users:58,engRate:.11,bounce:.89,bookings:1},
-        {p:"/dining-bar/chomtalay-restaurant",sessions:71,users:61,engRate:.21,bounce:.79,bookings:0},
-        {p:"/rooms/horizon-grand-deluxe-room",sessions:61,users:47,engRate:.26,bounce:.74,bookings:0},
-        {p:"/contact",sessions:54,users:42,engRate:.44,bounce:.56,bookings:0},
-        {p:"/special-offer/luxury-package-7-nights",sessions:22,users:22,engRate:.23,bounce:.77,bookings:0},
-        {p:"/rooms/coral-grand-deluxe-room",sessions:16,users:12,engRate:.06,bounce:.94,bookings:0},
-        {p:"/wedding",sessions:12,users:12,engRate:.17,bounce:.83,bookings:0},
-        {p:"/special-offer/stay-5-pay-4",sessions:10,users:8,engRate:.5,bounce:.5,bookings:0}
+        {p:"/ (Homepage)",sessions:500,users:319,engRate:.52,bounce:.48,bookings:4},
+        {p:"/hotelpage/rates (Booking Engine — desktop rates)",sessions:308,users:303,engRate:.34,bounce:.66,bookings:3},
+        {p:"/propertyibe2 (Booking Engine v2 landing)",sessions:263,users:88,engRate:.56,bounce:.44,bookings:0},
+        {p:"(not set)",sessions:246,users:209,engRate:.01,bounce:.99,bookings:0},
+        {p:"/propertyibe2/rates (Booking Engine v2 — rate step)",sessions:100,users:75,engRate:.54,bounce:.46,bookings:2},
+        {p:"/propertyibemobile (Booking Engine — mobile)",sessions:84,users:65,engRate:.27,bounce:.73,bookings:3},
+        {p:"/propertyibemobile/rates (Booking Engine mobile — rate step)",sessions:62,users:57,engRate:.82,bounce:.18,bookings:4},
+        {p:"/rooms/tropicana-superior-room",sessions:35,users:33,engRate:.11,bounce:.89,bookings:0},
+        {p:"/special-offer (Promotions hub)",sessions:34,users:31,engRate:.24,bounce:.76,bookings:1},
+        {p:"/cheeva-spa",sessions:33,users:32,engRate:.12,bounce:.88,bookings:0},
+        {p:"/facilities",sessions:30,users:27,engRate:.2,bounce:.8,bookings:0},
+        {p:"/rooms",sessions:24,users:23,engRate:.21,bounce:.79,bookings:0},
+        {p:"/dining-bar/chomtalay-restaurant",sessions:23,users:18,engRate:.3,bounce:.7,bookings:0},
+        {p:"/gallery",sessions:23,users:19,engRate:.22,bounce:.78,bookings:0},
+        {p:"/rooms/andaman-private-pool-villa",sessions:22,users:21,engRate:.14,bounce:.86,bookings:0},
+        {p:"/rooms/aqua-deluxe-pool-access-room",sessions:22,users:21,engRate:.23,bounce:.77,bookings:0},
+        {p:"/rooms/seafan-deluxe-room",sessions:22,users:21,engRate:.14,bounce:.86,bookings:0},
+        {p:"/rooms/panoramic-deluxe-room",sessions:19,users:17,engRate:.16,bounce:.84,bookings:0},
+        {p:"/experiences",sessions:16,users:15,engRate:.25,bounce:.75,bookings:0},
+        {p:"/rooms/sea-pearl-private-pool-access",sessions:16,users:16,engRate:.06,bounce:.94,bookings:0},
+        {p:"/dining-bar",sessions:15,users:13,engRate:.53,bounce:.47,bookings:0},
+        {p:"/dining-bar/pool-bars",sessions:13,users:12,engRate:.31,bounce:.69,bookings:0},
+        {p:"/rooms/horizon-grand-deluxe-room",sessions:13,users:13,engRate:.08,bounce:.92,bookings:0},
+        {p:"/dining-bar/charm-thai-restaurant",sessions:12,users:9,engRate:.25,bounce:.75,bookings:0},
+        {p:"/contact",sessions:11,users:10,engRate:.55,bounce:.45,bookings:0}
       ]
     },
     rooms:{
       current:[
-        {room:"Tropicana Superior Room",views:133,users:121,engRate:.09,bounce:.91,intentEvents:82},
-        {room:"Seafan Deluxe Room",views:108,users:81,engRate:.22,bounce:.78,intentEvents:36},
-        {room:"Aqua Deluxe Pool Access Room",views:98,users:79,engRate:.17,bounce:.83,intentEvents:77},
-        {room:"Andaman Private Pool Villa",views:85,users:73,engRate:.12,bounce:.88,intentEvents:57},
-        {room:"Sea Pearl Private Pool Access",views:76,users:66,engRate:.18,bounce:.82,intentEvents:58},
-        {room:"Panoramic Deluxe Room",views:73,users:58,engRate:.11,bounce:.89,intentEvents:60,bookings:1},
-        {room:"Horizon Grand Deluxe Room",views:61,users:47,engRate:.26,bounce:.74,intentEvents:31},
-        {room:"Coral Grand Deluxe Room",views:16,users:12,engRate:.06,bounce:.94,intentEvents:8}
+        {room:"Tropicana Superior Room",views:139,users:29,engRate:.06,bounce:.94,intentEvents:13},
+        {room:"Panoramic Deluxe Room",views:65,users:16,engRate:.06,bounce:.94,intentEvents:16},
+        {room:"Andaman Private Pool Villa",views:65,users:17,engRate:.1,bounce:.9,intentEvents:14},
+        {room:"Aqua Deluxe Pool Access Room",views:70,users:19,engRate:.05,bounce:.95,intentEvents:12},
+        {room:"Sea Pearl Private Pool Access",views:51,users:16,engRate:.12,bounce:.88,intentEvents:17},
+        {room:"Seafan Deluxe Room",views:45,users:14,engRate:.06,bounce:.94,intentEvents:4}
       ],
       previous:[
-        {room:"Seafan Deluxe Room",views:117,intentEvents:18},
-        {room:"Tropicana Superior Room",views:100,intentEvents:64},
-        {room:"Andaman Private Pool Villa",views:88,intentEvents:77},
-        {room:"Panoramic Deluxe Room",views:77,intentEvents:39},
-        {room:"Aqua Deluxe Pool Access Room",views:66,intentEvents:46},
-        {room:"Sea Pearl Private Pool Access",views:57,intentEvents:88},
-        {room:"Horizon Grand Deluxe Room",views:37,intentEvents:25},
-        {room:"Coral Grand Deluxe Room",views:22,intentEvents:29}
+        {room:"Tropicana Superior Room",views:163,intentEvents:28},
+        {room:"Panoramic Deluxe Room",views:86,intentEvents:24},
+        {room:"Seafan Deluxe Room",views:77,intentEvents:3},
+        {room:"Aqua Deluxe Pool Access Room",views:75,intentEvents:11},
+        {room:"Andaman Private Pool Villa",views:73,intentEvents:13},
+        {room:"Sea Pearl Private Pool Access",views:46,intentEvents:15}
       ]
     },
     items:{
       current:[
-        {item:"Panoramic Deluxe Room",addToCart:371,purchased:30,revenue:1174689.4},
-        {item:"Sea Fan Deluxe Room",addToCart:389,purchased:25,revenue:1135033},
-        {item:"Sea Pearl Private Pool Access",addToCart:130,purchased:17,revenue:988817.6},
-        {item:"Aqua Deluxe Pool Access Room",addToCart:139,purchased:8,revenue:618523},
-        {item:"Horizon Grand Deluxe Room",addToCart:141,purchased:7,revenue:414628},
-        {item:"Tropicana Superior Room",addToCart:241,purchased:10,revenue:232543.8},
-        {item:"Airport Transfer (Car one way)",addToCart:29,purchased:13,revenue:15600},
-        {item:"Spa for Honeymooner (Package 1)",addToCart:10,purchased:3,revenue:13500},
-        {item:"Andaman Private Pool Villa",addToCart:49,purchased:1,revenue:10948},
-        {item:"Floating Breakfast",addToCart:19,purchased:4,revenue:3196},
-        {item:"Airport Transfer(Van one way)",addToCart:12,purchased:2,revenue:3000},
-        {item:"Thai cooking class",addToCart:2,purchased:1,revenue:3000},
-        {item:"Private Romantic Dinner",addToCart:7,purchased:0,revenue:0},
-        {item:"NEW YEAR GALA DINNER",addToCart:2,purchased:0,revenue:0},
-        {item:"CHRISTMAS DINNER",addToCart:1,purchased:0,revenue:0},
-        {item:"CHRISTMAS EVE DINNER",addToCart:1,purchased:0,revenue:0}
+        {item:"Sea Fan Deluxe Room",addToCart:104,purchased:10,revenue:470745},
+        {item:"Panoramic Deluxe Room",addToCart:73,purchased:7,revenue:278751},
+        {item:"Tropicana Superior Room",addToCart:58,purchased:0,revenue:0},
+        {item:"Horizon Grand Deluxe Room",addToCart:37,purchased:1,revenue:25079.2},
+        {item:"Aqua Deluxe Pool Access Room",addToCart:23,purchased:0,revenue:0},
+        {item:"Sea Pearl Private Pool Access",addToCart:14,purchased:2,revenue:87760},
+        {item:"Andaman Private Pool Villa",addToCart:6,purchased:0,revenue:0},
+        {item:"Floating Breakfast",addToCart:6,purchased:3,revenue:2397},
+        {item:"Spa for Honeymooner (Package 1)",addToCart:5,purchased:2,revenue:9000},
+        {item:"Airport Transfer (Car one way)",addToCart:4,purchased:3,revenue:3600},
+        {item:"Thai cooking class",addToCart:1,purchased:1,revenue:3000}
       ],
       previous:[
-        {item:"Panoramic Deluxe Room",addToCart:503,purchased:40,revenue:1247149.11},
-        {item:"Sea Fan Deluxe Room",addToCart:336,purchased:22,revenue:456339.01},
-        {item:"Horizon Grand Deluxe Room",addToCart:143,purchased:13,revenue:617903.46},
-        {item:"Sea Pearl Private Pool Access",addToCart:166,purchased:11,revenue:550703.25},
-        {item:"Aqua Deluxe Pool Access Room",addToCart:226,purchased:9,revenue:372137.1},
-        {item:"Andaman Private Pool Villa",addToCart:71,purchased:8,revenue:521557.5},
-        {item:"Airport Transfer (Car one way)",addToCart:28,purchased:10,revenue:14400},
-        {item:"Tropicana Superior Room",addToCart:286,purchased:4,revenue:101386.32},
-        {item:"Thai cooking class",addToCart:1,purchased:1,revenue:4500},
-        {item:"Spa for Honeymooner (Package 1)",addToCart:9,purchased:2,revenue:9000},
-        {item:"Floating Breakfast",addToCart:13,purchased:1,revenue:799},
-        {item:"Airport Transfer(Van one way)",addToCart:6,purchased:0,revenue:0},
+        {item:"Panoramic Deluxe Room",addToCart:95,purchased:6,revenue:239632.4},
+        {item:"Sea Fan Deluxe Room",addToCart:72,purchased:3,revenue:95408.6},
+        {item:"Tropicana Superior Room",addToCart:59,purchased:6,revenue:170296.6},
+        {item:"Aqua Deluxe Pool Access Room",addToCart:30,purchased:2,revenue:90252},
+        {item:"Horizon Grand Deluxe Room",addToCart:28,purchased:2,revenue:81448.8},
+        {item:"Sea Pearl Private Pool Access",addToCart:27,purchased:5,revenue:268586.4},
+        {item:"Andaman Private Pool Villa",addToCart:15,purchased:0,revenue:0},
+        {item:"Airport Transfer (Car one way)",addToCart:8,purchased:4,revenue:4800},
+        {item:"Floating Breakfast",addToCart:3,purchased:1,revenue:799},
         {item:"Private Romantic Dinner",addToCart:2,purchased:0,revenue:0},
-        {item:"New Year Gala Dinner",addToCart:1,purchased:0,revenue:0}
+        {item:"Spa for Honeymooner (Package 1)",addToCart:1,purchased:0,revenue:0}
       ]
     },
     promotions:{
       current:[
-        {promo:"Promotions hub (/special-offer)",views:154,users:115,engRate:.42,bounce:.58,intentEvents:183,bookings:2},
-        {promo:"Luxury Package – 7 Nights",views:22,users:22,engRate:.23,bounce:.77,intentEvents:9,bookings:0},
-        {promo:"Renovation Notice",views:20,users:20,engRate:0,bounce:1,intentEvents:14,bookings:0},
-        {promo:"3 Nights Getaway",views:10,users:10,engRate:.2,bounce:.8,intentEvents:0,bookings:0},
-        {promo:"New Year's Gala 2026",views:10,users:10,engRate:.3,bounce:.7,intentEvents:2,bookings:0},
-        {promo:"Stay 5 Pay 4",views:10,users:8,engRate:.5,bounce:.5,intentEvents:45,bookings:0},
-        {promo:"Book Direct, More Benefits",views:9,users:8,engRate:.11,bounce:.89,intentEvents:0,bookings:0},
-        {promo:"Island Tours & More",views:5,users:5,engRate:0,bounce:1,intentEvents:7,bookings:0}
+        {promo:"Promotions hub (/special-offer)",views:97,users:18,engRate:.36,bounce:.64,intentEvents:48,bookings:1}
       ],
       previous:[
-        {promo:"Promotions hub (/special-offer)",views:161,intentEvents:221},
-        {promo:"Renovation Notice",views:35,intentEvents:19},
-        {promo:"Stay 5 Pay 4",views:26,intentEvents:42},
-        {promo:"Island Tours & More",views:23,intentEvents:16},
-        {promo:"Luxury Package – 7 Nights",views:17,intentEvents:6},
-        {promo:"3 Nights Getaway",views:16,intentEvents:5},
-        {promo:"Book Direct, More Benefits",views:7,intentEvents:1}
+        {promo:"Promotions hub (/special-offer)",views:99,intentEvents:42},
+        {promo:"Luxury Package – 7 Nights",views:45,intentEvents:4}
       ]
     },
     device:{
       current:[
-        {d:"Mobile",sessions:5445,users:3921,engRate:.34,bookings:31},
-        {d:"Desktop",sessions:4044,users:1853,engRate:.41,bookings:52},
-        {d:"Tablet",sessions:114,users:84,engRate:.32,bookings:2}
+        {d:"Mobile",sessions:1107,users:859,engRate:.34,bookings:2},
+        {d:"Desktop",sessions:804,users:404,engRate:.41,bookings:13},
+        {d:"Tablet",sessions:26,users:23,engRate:.46,bookings:0}
       ],
       previous:[
-        {d:"Mobile",sessions:6042,users:4462,engRate:.34},
-        {d:"Desktop",sessions:3672,users:1722,engRate:.42},
-        {d:"Tablet",sessions:154,users:122,engRate:.34}
+        {d:"Mobile",sessions:1260,users:944,engRate:.35},
+        {d:"Desktop",sessions:1063,users:518,engRate:.41},
+        {d:"Tablet",sessions:29,users:19,engRate:.31}
       ]
     },
-    events:{page_view:25013,user_engagement:16305,scroll:13575,begin_checkout:7936,session_start:6768,first_visit:2718,add_to_cart:1357,contact_us:126,click:117,ibe_booking_confirmation:85,purchase:85,email_click:58,phone_click:11}
+    events:{page_view:4847,user_engagement:3385,scroll:2477,begin_checkout:1636,session_start:1360,first_visit:546,add_to_cart:266,contact_us:19,click:27,ibe_booking_confirmation:17,purchase:17,email_click:10,phone_click:3}
   },
   ig:{
     profile:{followers:14328, following:11, mediaCount:797, username:"@mandaravaresort"},
@@ -495,59 +466,45 @@ const DATA = {
       country:[["DE",1429],["GB",1713],["IR",772],["US",773],["MA",975],["RU",1238],["AU",735],["KR",559],["IN",470],["FR",371],["OM",379],["IL",300],["KZ",154],["PL",155],["ES",168],["RO",151],["IT",145],["TH",362],["NL",122],["CA",126]],
       city:[["Tangier",258],["Tétouan",258],["Volzhskiy",273],["Seoul",205],["Melbourne",180],["Moscow",151],["Sydney",143],["London",128],["Tehran",174],["Al-Sib",137],["Bangkok",116],["Dubai",82]]
     },
-    locNote:"Follower-location data is a lifetime snapshot (all-time followers), not a 30-day window — Instagram does not expose a dated version of this metric.",
-    current:{reach:229638,accountsEngaged:426,views:396074,likes:596,comments:10,shares:96,interactions:840,profileTaps:16},
-    previous:{reach:1303703,accountsEngaged:721,views:1531972,likes:780,comments:10,shares:112,interactions:1086,profileTaps:14},
+    locNote:"Follower-location data is a lifetime snapshot (all-time followers), not a 7-day window — Instagram does not expose a dated version of this metric.",
+    current:{reach:37728,accountsEngaged:70,views:68149,likes:60,comments:1,shares:12,interactions:98,profileTaps:4},
+    previous:{reach:30517,accountsEngaged:193,views:53527,likes:203,comments:2,shares:18,interactions:252,profileTaps:4},
     posts:[
-      {caption:"Somewhere in Phuket, kind of holiday waiting for you",type:"Image",date:"Aug 10",reach:4251,likes:149,comments:5,shares:30,saved:5,interactions:189,url:"https://www.instagram.com/p/Db29tYnjVAN/"},
-      {caption:"A little world of its own, tucked into the hillside",type:"Carousel",date:"Aug 22",reach:2325,likes:143,comments:1,shares:7,saved:4,interactions:155,url:"https://www.instagram.com/p/DcV3NVTDtPY/"},
-      {caption:"A little higher above Karon, sea still feels close",type:"Image",date:"Jul 19",reach:2454,likes:99,comments:2,shares:10,saved:2,interactions:113,url:"https://www.instagram.com/p/Da-bGLIDrk3/"},
-      {caption:"Floating breakfast — best seat is in the water",type:"Reel",date:"Jul 16",reach:2060,views:2925,likes:94,comments:3,shares:25,saved:5,interactions:127,url:"https://www.instagram.com/reel/Da2l6sdgaaA/"},
-      {caption:"Tropical sun, pool at your doorstep",type:"Image",date:"Jul 13",reach:2298,likes:56,comments:1,shares:11,saved:1,interactions:69,url:"https://www.instagram.com/p/Dau3dBZDBau/"},
-      {caption:"Hidden from the world, palms beyond",type:"Image",date:"Aug 7",reach:1366,likes:54,comments:0,shares:3,saved:0,interactions:57,url:"https://www.instagram.com/p/DbvPVvjjP-L/"},
-      {caption:"Check in, settle in, let Phuket unfold",type:"Carousel",date:"Jul 28",reach:1526,likes:56,comments:2,shares:4,saved:1,interactions:63,url:"https://www.instagram.com/p/DbVfaxFj9Ds/"},
-      {caption:"Charm Thai — chicken satay & Thai favourites",type:"Reel",date:"Aug 26",reach:893,views:1230,likes:51,comments:2,shares:7,saved:0,interactions:60,url:"https://www.instagram.com/reel/DcgKko8gVUg/"}
+      {caption:"This is looking very much like a Mandarava kind of day.",type:"Image",date:"Aug 30",reach:0,likes:38,comments:1,shares:0,saved:0,interactions:39,url:"https://www.instagram.com/p/DcqdjsIjWd2/"}
     ],
-    contentTypeMix:{Image:10,Carousel:5,Reel:3}
+    contentTypeMix:{Image:1}
   },
   fbPage:{
     followers:20946, fanCount:20946, category:"Hotel & Resort",
     overview:{
-      current:{views:3858,engagements:8015,videoViews:77105,newFollows:38,unfollows:21},
-      previous:{views:4803,engagements:11482,videoViews:106053,newFollows:85,unfollows:32}
+      current:{views:784,engagements:1589,videoViews:14622,newFollows:4,unfollows:1},
+      previous:{views:698,engagements:1762,videoViews:17610,newFollows:10,unfollows:10}
     },
     locations:{
       country:[["TH",11472],["GB",1810],["AU",1804],["US",431],["ZA",310],["DE",700],["SG",131],["IN",220],["KR",163],["FR",378],["MY",197],["IT",149],["NL",77],["JP",48],["LK",106]],
       city:[["Bangkok",2340],["เทศบาลนครภูเก็ต (Phuket City)",768],["Hat Yai",426],["Thalang, Phuket",410],["Surat Thani",303],["Melbourne",359],["Sydney",229],["Nonthaburi",222],["Nakhon Si Thammarat",207],["Rawai, Phuket",197],["Perth",145],["Singapore",129],["Kathu, Phuket",208]]
     },
-    note:"Follows-by-location is a lifetime snapshot (all-time followers), not a 30-day window — Meta does not expose a dated version of this metric.",
+    note:"Follows-by-location is a lifetime snapshot (all-time followers), not a 7-day window — Meta does not expose a dated version of this metric.",
     posts:[
-      {caption:"This is looking very much like a Mandarava kind of day.",date:"Aug 30",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1376650611344744",likes:23,clicks:15,videoViews:0},
-      {caption:"Chicken satay & Thai favourites at Charm Thai.",date:"Aug 26",type:"Reel",url:"https://www.facebook.com/reel/2484999681991930/",likes:30,clicks:17,videoViews:349},
-      {caption:"A little world of its own, tucked into the hillside.",date:"Aug 22",type:"Image/Carousel",url:"https://www.facebook.com/1379828297693642/posts/1369879538688518",likes:38,clicks:176,videoViews:0},
-      {caption:"New Year's Eve Gala — Thai temple fair.",date:"Aug 16",type:"Carousel",url:"https://www.facebook.com/1379828297693642/posts/1364738172535988",likes:10,clicks:30,videoViews:0},
-      {caption:"Christmas Eve Dinner at Chom Talay Restaurant.",date:"Aug 13",type:"Carousel",url:"https://www.facebook.com/1379828297693642/posts/1362137432796062",likes:13,clicks:41,videoViews:0},
-      {caption:"Somewhere in Phuket, a Mandarava kind of holiday.",date:"Aug 10",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1359612769715195",likes:40,clicks:127,videoViews:0},
-      {caption:"A little hidden from the world, with Phuket beyond the palms.",date:"Aug 7",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1357140269962445",likes:31,clicks:58,videoViews:0},
-      {caption:"Hidden among the greenery — Mandarava at its most beautiful.",date:"Aug 19",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1367301885612950",likes:11,clicks:18,videoViews:0}
+      {caption:"This is looking very much like a Mandarava kind of day.",date:"Aug 30",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1376650611344744",likes:23,clicks:15,videoViews:0}
     ]
   },
   meta:{
     account:{spendCurrency:"THB"},
     overview:{
-      current:{spend:23470.85,reach:906927,impressions:1635153,clicks:7146,linkClicks:4653,lpv:3594,activeCampaigns:3},
-      previous:{spend:25968.57,reach:2342663,impressions:3488462,clicks:11541,linkClicks:6349,lpv:4477,activeCampaigns:3}
+      current:{spend:5371.35,reach:198051,impressions:311510,clicks:1564,linkClicks:979,lpv:769,activeCampaigns:3},
+      previous:{spend:5512.77,reach:213499,impressions:321930,clicks:1709,linkClicks:1113,lpv:923,activeCampaigns:3}
     },
     campaigns:{
       current:[
-        {name:"Outreach Lookalike | Engagement | Impression",objective:"Awareness / Engagement",status:"Active",spend:11255.13,reach:797483,impressions:1492260,freq:1.87,cpm:7.54,clicks:2314,ctr:.155,lpv:198,costPerLpv:56.84,saves:11,customConv:240},
-        {name:"Engaged Audience 30D | Traffic | Landing Page",objective:"Traffic",status:"Active",spend:10447.58,reach:103401,impressions:135893,freq:1.31,cpm:76.88,clicks:4590,ctr:3.38,lpv:3273,costPerLpv:3.19,saves:9,customConv:2302},
-        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",objective:"Traffic",status:"Active",spend:1768.14,reach:6043,impressions:7000,freq:1.16,cpm:252.59,clicks:242,ctr:3.46,lpv:123,costPerLpv:14.38,saves:1,customConv:10}
+        {name:"Outreach Lookalike | Engagement | Impression",objective:"Awareness / Engagement",status:"Active",spend:2604.32,reach:173768,impressions:281009,freq:1.62,cpm:9.27,clicks:513,ctr:.1826,lpv:50,costPerLpv:52.09,saves:4,customConv:59},
+        {name:"Engaged Audience 30D | Traffic | Landing Page",objective:"Traffic",status:"Active",spend:2360.09,reach:27163,impressions:29286,freq:1.08,cpm:80.59,clicks:985,ctr:3.363,lpv:689,costPerLpv:3.43,saves:4,customConv:515},
+        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",objective:"Traffic",status:"Active",spend:406.94,reach:1169,impressions:1215,freq:1.04,cpm:334.93,clicks:66,ctr:5.432,lpv:30,costPerLpv:13.56,saves:0,customConv:1}
       ],
       previous:[
-        {name:"Outreach Lookalike | Engagement | Impression",spend:12616.15,reach:2182433,impressions:3262543,clicks:4310,lpv:369,costPerLpv:34.19,customConv:417},
-        {name:"Engaged Audience 30D | Traffic | Landing Page",spend:11550.16,reach:154653,impressions:189057,clicks:6946,lpv:3942,costPerLpv:2.93,customConv:2595},
-        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",spend:1802.26,reach:5577,impressions:6862,clicks:285,lpv:166,costPerLpv:10.86,customConv:8}
+        {name:"Outreach Lookalike | Engagement | Impression",spend:2611.11,reach:182471,impressions:286874,clicks:507,lpv:38,costPerLpv:68.71,customConv:52},
+        {name:"Engaged Audience 30D | Traffic | Landing Page",spend:2491,reach:29489,impressions:33445,clicks:1155,lpv:861,costPerLpv:2.89,customConv:699},
+        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",spend:410.66,reach:1539,impressions:1611,clicks:47,lpv:24,costPerLpv:17.11,customConv:3}
       ],
       paused:[
         {name:"MDRV | Sales Message",objective:"Sales",status:"Paused"},
@@ -557,43 +514,43 @@ const DATA = {
       ]
     },
     countries:[
-      {c:"New Zealand",spend:4273.62,reach:36713,impressions:85973,clicks:461,lpv:230},
-      {c:"Thailand",spend:2547.27,reach:48673,impressions:89583,clicks:761,lpv:560},
-      {c:"South Korea",spend:2422.25,reach:24601,impressions:40764,clicks:512,lpv:403},
-      {c:"United Kingdom",spend:2198.27,reach:29310,impressions:45478,clicks:155,lpv:86},
-      {c:"United States",spend:782.19,reach:3222,impressions:3433,clicks:73,lpv:50},
-      {c:"Jordan",spend:703.59,reach:45435,impressions:98667,clicks:667,lpv:502},
-      {c:"Oman",spend:660.53,reach:62281,impressions:177473,clicks:260,lpv:90},
-      {c:"Ukraine",spend:507.71,reach:20763,impressions:36336,clicks:256,lpv:131},
-      {c:"Saudi Arabia",spend:470.36,reach:24601,impressions:40764,clicks:512,lpv:403},
-      {c:"Malaysia",spend:1172.47,reach:62460,impressions:118450,clicks:526,lpv:34}
+      {c:"New Zealand",spend:950.32,reach:10944,impressions:17619,clicks:103,lpv:46},
+      {c:"Thailand",spend:573.59,reach:32491,impressions:40676,clicks:248,lpv:101},
+      {c:"South Korea",spend:537.44,reach:12628,impressions:17586,clicks:175,lpv:129},
+      {c:"Israel",spend:528.55,reach:6876,impressions:11678,clicks:65,lpv:31},
+      {c:"United Kingdom",spend:515.93,reach:7297,impressions:9730,clicks:30,lpv:16},
+      {c:"Canada",spend:406.92,reach:5619,impressions:8550,clicks:19,lpv:9},
+      {c:"Malaysia",spend:268.86,reach:19221,impressions:24984,clicks:163,lpv:12},
+      {c:"United States",spend:180.35,reach:760,impressions:764,clicks:13,lpv:8},
+      {c:"Jordan",spend:168.78,reach:15736,impressions:29153,clicks:136,lpv:94},
+      {c:"Oman",spend:153.58,reach:19628,impressions:38685,clicks:57,lpv:27}
     ],
     device:[
-      {d:"Mobile App",spend:22302.57,reach:841456,impressions:1537202,clicks:7066,lpv:3591},
-      {d:"Desktop",spend:1075.94,reach:56328,impressions:88389,clicks:78,lpv:2},
-      {d:"Mobile Web",spend:90.37,reach:4404,impressions:9483,clicks:2,lpv:0}
+      {d:"Mobile App",spend:5105.82,reach:184979,impressions:294260,clicks:1553,lpv:769},
+      {d:"Desktop",spend:238.64,reach:11726,impressions:14774,clicks:10,lpv:0},
+      {d:"Mobile Web",spend:26.89,reach:1480,impressions:2476,clicks:1,lpv:0}
     ]
   },
   funnel:{
     stages:[
-      {name:"Website Users",value:6791,note:"Unique users, 30 days"},
-      {name:"Booking Engine Click (begin_checkout)",value:2478,note:"Users who clicked into the booking engine"},
-      {name:"Room Selected (add_to_cart)",value:734,note:"Users who selected a room/rate in the engine"},
-      {name:"Booking Confirmed (purchase)",value:78,note:"Users who completed a booking"}
+      {name:"Website Users",value:1216,note:"Unique users, 7 days"},
+      {name:"Booking Engine Click (begin_checkout)",value:545,note:"Users who clicked into the booking engine"},
+      {name:"Room Selected (add_to_cart)",value:159,note:"Users who selected a room/rate in the engine"},
+      {name:"Booking Confirmed (purchase)",value:15,note:"Users who completed a booking"}
     ]
   },
   promoChannel:{
-    "Stay 5 Pay 4":{gaSessions:10,gaSessionsPrev:26,intentEvents:45,intentEventsPrev:42,metaSpend:1768.14,metaSpendPrev:1802.26,metaLpv:123,metaLpvPrev:166,metaClicks:242}
+    "Stay 5 Pay 4":{gaSessions:0,gaSessionsPrev:0,intentEvents:0,intentEventsPrev:0,metaSpend:406.94,metaSpendPrev:410.66,metaLpv:30,metaLpvPrev:24,metaClicks:66}
   },
   gads:{
     account:{id:"402-760-0436",name:"Mandarava Resort and Spa",currency:"THB"},
     overview:{
-      current:{clicks:11,impressions:52,cost:529.24,conversions:21,revenue:20},
-      previous:{clicks:273,impressions:4054,cost:10349.05,conversions:302.27,revenue:166532.91}
+      current:{clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+      previous:{clicks:0,impressions:0,cost:0,conversions:0,revenue:0}
     },
     campaigns:{
       current:[
-        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:11,impressions:52,cost:529.24,conversions:21,revenue:20},
+        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
         {name:"Karon Hotels",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
         {name:"RA_Mandarava_01.-Brand-en-ROW-se-go",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
         {name:"RA_Mandarava_02.-DT-en-ROW-se-go",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
@@ -603,58 +560,61 @@ const DATA = {
         {name:"RA_Mandarava_03.-Deamand Gen-en-ROW-DG-go",type:"Demand Gen",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0}
       ],
       previous:[
-        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:273,impressions:4054,cost:10349.05,conversions:302.27,revenue:166532.91}
+        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0}
       ]
     },
-    geo:{current:[{country:"Australia",clicks:11,impressions:52,cost:529.24,conversions:21}]},
-    note:"All 8 campaigns in this account are currently PAUSED (statuses read directly from Google Ads, not inferred). The only campaign with any spend this period or last is the Performance Max campaign targeting Australia exclusively — its own delivery collapsed period over period (see Google Ads page). The 7 Search/Demand Gen campaigns have zero delivery in both periods and no keyword- or search-term-level data to report (Performance Max campaigns do not populate keyword_view or search_term_view — this is a genuine platform limitation, not a data gap)."
+    geo:{current:[]},
+    note:"All 8 campaigns in this account are currently PAUSED (statuses read directly from Google Ads, not inferred). Unlike the prior 30-day pull — which still showed some residual Performance Max delivery to Australia — this 7-day window (both current and previous) shows zero clicks, impressions and cost across every campaign. Google Ads is not contributing any traffic or bookings to either week shown here."
   },
   gsc:{
     site:"https://www.mandaravaresort.com/",
     queries:{
       current:[
-        {q:"mandarava resort and spa",clicks:806,impressions:4639,ctr:17.37,pos:3.03},
-        {q:"mandarava resort and spa karon beach",clicks:357,impressions:2235,ctr:15.97,pos:5.29},
-        {q:"mandarava resort & spa",clicks:240,impressions:1494,ctr:16.06,pos:4.56},
-        {q:"mandarava resort and spa, karon beach",clicks:107,impressions:606,ctr:17.66,pos:1.76},
-        {q:"mandarava",clicks:97,impressions:893,ctr:10.86,pos:3.77},
-        {q:"mandarava resort",clicks:87,impressions:715,ctr:12.17,pos:5.29},
-        {q:"mandarava phuket",clicks:66,impressions:495,ctr:13.33,pos:3.3},
-        {q:"mandarava resort and spa phuket",clicks:43,impressions:409,ctr:10.51,pos:3.41},
-        {q:"mandarava resort phuket",clicks:38,impressions:314,ctr:12.1,pos:5.6},
-        {q:"mandarava resort & spa phuket",clicks:37,impressions:322,ctr:11.49,pos:5.66},
-        {q:"mandarava phuket resort",clicks:12,impressions:61,ctr:19.67,pos:1.67},
-        {q:"mandarava resort & spa photos",clicks:12,impressions:92,ctr:13.04,pos:1.34},
-        {q:"hotel mandarava phuket",clicks:10,impressions:72,ctr:13.89,pos:17.4},
-        {q:"mandarava beach resort phuket",clicks:10,impressions:40,ctr:25,pos:15.93},
-        {q:"andaman private pool villa",clicks:9,impressions:45,ctr:20,pos:1.8},
-        {q:"mandarava hotel phuket",clicks:9,impressions:119,ctr:7.56,pos:7.62},
-        {q:"mandarava resort spa",clicks:9,impressions:112,ctr:8.04,pos:4.49},
-        {q:"mandarava resort thailand",clicks:8,impressions:47,ctr:17.02,pos:18.77},
-        {q:"cheeva spa",clicks:5,impressions:185,ctr:2.7,pos:6.51}
+        {q:"mandarava resort and spa",clicks:111,impressions:669,ctr:16.59,pos:3.23},
+        {q:"mandarava resort and spa karon beach",clicks:58,impressions:335,ctr:17.31,pos:4.61},
+        {q:"mandarava resort & spa",clicks:26,impressions:183,ctr:14.21,pos:3.3},
+        {q:"mandarava resort and spa, karon beach",clicks:20,impressions:73,ctr:27.4,pos:1.96},
+        {q:"mandarava",clicks:17,impressions:168,ctr:10.12,pos:4.65},
+        {q:"mandarava resort",clicks:14,impressions:121,ctr:11.57,pos:10.93},
+        {q:"mandarava phuket",clicks:13,impressions:72,ctr:18.06,pos:2.4},
+        {q:"mandarava resort & spa phuket",clicks:7,impressions:48,ctr:14.58,pos:2.46},
+        {q:"mandarava resort phuket",clicks:5,impressions:52,ctr:9.62,pos:13.12},
+        {q:"hotel mandarava phuket",clicks:4,impressions:15,ctr:26.67,pos:18.2},
+        {q:"mandarava phuket resort",clicks:3,impressions:12,ctr:25,pos:1.58},
+        {q:"mandarava resort and spa phuket",clicks:3,impressions:45,ctr:6.67,pos:15.82},
+        {q:"mandarava resort in karon/phuket",clicks:3,impressions:13,ctr:23.08,pos:1},
+        {q:"mandarava resort thailand",clicks:3,impressions:6,ctr:50,pos:4},
+        {q:"andaman private pool villa",clicks:2,impressions:6,ctr:33.33,pos:1.83},
+        {q:"mandarava hotel",clicks:2,impressions:31,ctr:6.45,pos:12.35},
+        {q:"mandarava hotel phuket",clicks:2,impressions:17,ctr:11.76,pos:1.18},
+        {q:"mandarava resort and spa photos",clicks:2,impressions:14,ctr:14.29,pos:1.21},
+        {q:"mandarava resort and spa, karon beach fotos",clicks:2,impressions:16,ctr:12.5,pos:2.44}
       ],
       previous:[
-        {q:"mandarava resort and spa",clicks:773,impressions:4793,ctr:16.13,pos:3.57},
-        {q:"mandarava resort and spa karon beach",clicks:304,impressions:2225,ctr:13.66,pos:5.13},
-        {q:"mandarava resort & spa",clicks:164,impressions:1388,ctr:11.82,pos:4.85},
-        {q:"mandarava resort and spa, karon beach",clicks:115,impressions:607,ctr:18.95,pos:1.78},
-        {q:"mandarava resort",clicks:98,impressions:892,ctr:10.99,pos:6.36},
-        {q:"mandarava phuket",clicks:80,impressions:586,ctr:13.65,pos:4.22},
-        {q:"mandarava",clicks:74,impressions:971,ctr:7.62,pos:5.65},
-        {q:"mandarava resort and spa phuket",clicks:50,impressions:453,ctr:11.04,pos:6.59},
-        {q:"mandarava resort & spa phuket",clicks:35,impressions:298,ctr:11.74,pos:3.63},
-        {q:"mandarava resort phuket",clicks:26,impressions:334,ctr:7.78,pos:5.99},
-        {q:"andaman private pool villa",clicks:4,impressions:42,ctr:9.52,pos:1.52}
+        {q:"mandarava resort and spa",clicks:215,impressions:1260,ctr:17.06,pos:3.33},
+        {q:"mandarava resort and spa karon beach",clicks:124,impressions:628,ctr:19.75,pos:5.76},
+        {q:"mandarava resort & spa",clicks:94,impressions:469,ctr:20.04,pos:5.18},
+        {q:"mandarava resort and spa, karon beach",clicks:34,impressions:185,ctr:18.38,pos:1.88},
+        {q:"mandarava resort",clicks:26,impressions:166,ctr:15.66,pos:2.42},
+        {q:"mandarava",clicks:22,impressions:223,ctr:9.87,pos:2.51},
+        {q:"mandarava phuket",clicks:17,impressions:122,ctr:13.93,pos:1.47},
+        {q:"mandarava resort and spa phuket",clicks:14,impressions:128,ctr:10.94,pos:1.88},
+        {q:"mandarava resort & spa phuket",clicks:13,impressions:79,ctr:16.46,pos:1.67},
+        {q:"mandarava resort phuket",clicks:8,impressions:65,ctr:12.31,pos:3.85},
+        {q:"mandarava beach resort phuket",clicks:7,impressions:16,ctr:43.75,pos:17},
+        {q:"cheeva spa",clicks:3,impressions:42,ctr:7.14,pos:6.4},
+        {q:"andaman private pool villa",clicks:3,impressions:12,ctr:25,pos:2.25},
+        {q:"swim up rooms phuket",clicks:3,impressions:12,ctr:25,pos:6.42}
       ]
     },
-    note:"Branded queries (\"mandarava…\") dominate — as expected for a hotel name search profile. Two non-branded/facility queries stand out: \"andaman private pool villa\" (a room-type name, position ~1.5-1.8, growing 4→9 clicks) and \"cheeva spa\" (the spa brand, position ~6.5, 185 impressions but only 5 clicks — a CTR opportunity). This is Search Console data (what people typed into Google before clicking through) — a different measurement from Google Ads keyword data and GA4 session source/medium, and should not be summed with either."
+    note:"Branded queries (\"mandarava…\") dominate — as expected for a hotel name search profile. \"Andaman private pool villa\" keeps showing up at position ~1.8-2.3, and \"cheeva spa\" (the spa brand) appears in the prior week at position ~6.4 with a low click-through rate — a small CTR opportunity worth a meta-description check. This is Search Console data (what people typed into Google before clicking through) — a different measurement from Google Ads keyword data and GA4 session source/medium, and should not be summed with either."
   },
   gbp:{
     overview:{
-      current:{reachSearch:6542,reachMaps:30071,websiteClicks:1426,callClicks:142,directionsClicks:3085,reviewsCount:71,avgRating:4.73},
-      previous:{reachSearch:7165,reachMaps:46351,websiteClicks:1413,callClicks:202,directionsClicks:3255,reviewsCount:71,avgRating:4.89}
+      current:{reachSearch:287,reachMaps:2559,websiteClicks:61,callClicks:7,directionsClicks:336,reviewsCount:9,avgRating:5.0},
+      previous:{reachSearch:2058,reachMaps:9326,websiteClicks:492,callClicks:37,directionsClicks:806,reviewsCount:17,avgRating:4.77}
     },
-    note:"Google Business Profile is not yet linked in Insightful Pipe for Mandarava, but the location is connected in Metricool (a different tool this agency already uses), so real GBP data is shown here via that route instead. Figures are daily sums/averages across the same two 30-day windows as the rest of this dashboard. \"Reach Maps\" fell sharply (−35%) — worth flagging alongside the Google Ads Australia-only pattern and checking Google Business Profile's own insights panel directly for any recent listing or category change."
+    note:"Google Business Profile is not yet linked in Insightful Pipe for Mandarava, but the location is connected in Metricool (a different tool this agency already uses), so real GBP data is shown here via that route instead. Figures are daily sums/averages across the same two 7-day windows as the rest of this dashboard; \"Reviews\" is new reviews received in the period, not a lifetime count. Search/Maps reach fell sharply week over week — worth a quick check of Google Business Profile's own insights panel for any recent listing or category change, alongside the Google Ads shutdown seen on that page."
   }
 };
 window.__MDRV_DATA__ = DATA;
@@ -813,7 +773,7 @@ document.getElementById('resetFilters').onclick = ()=>{ FILTER.country=null; ren
 /* Custom PRIMARY and COMPARISON ranges — both REAL, computed live from DATA.ga4.trend
    (daily sessions/users/revenue, available 2026-06-05 through 2026-09-03). The two named-preset
    dropdowns (Last 7/14/30 Days, MTD, Previous Month, QTD, YTD / Previous Period, Previous Month,
-   Same Period Last Year) stay tied to the two structurally-pulled 30-day windows, since re-pulling
+   Same Period Last Year) stay tied to the two structurally-pulled 7-day windows, since re-pulling
    every breakdown table (channels, countries, rooms, promos, device, etc.) live per-preset is out
    of scope for a static snapshot — picking "Custom Range" / "Custom Comparison" instead reveals a
    real date picker and recomputes GA4 sessions/users/revenue for that exact window on Apply. */
@@ -824,8 +784,8 @@ function trendAgg(fromISO, toISO){
   const revenue = rows.reduce((a,r)=>a+(r.rev||0),0);
   return {sessions, users, revenue, days:rows.length, from:fromISO, to:toISO};
 }
-const PRIMARY = {mode:'Last 30 Days', customFrom:'2026-08-05', customTo:'2026-09-03'};
-const COMPARE = {mode:'Previous Period', customFrom:'2026-07-06', customTo:'2026-08-04'};
+const PRIMARY = {mode:'Last 7 Days', customFrom:'2026-08-28', customTo:'2026-09-03'};
+const COMPARE = {mode:'Previous Period', customFrom:'2026-08-21', customTo:'2026-08-27'};
 
 document.getElementById('dateSelect').addEventListener('change', e=>{
   const wrap = document.getElementById('customPrimaryWrap');
@@ -834,11 +794,11 @@ document.getElementById('dateSelect').addEventListener('change', e=>{
     PRIMARY.mode='Custom Range';
   } else {
     wrap.style.display='none';
-    if(e.target.value!=='Last 30 Days'){
-      document.getElementById('asOfLabel').textContent = `Breakdown tables (channels, countries, rooms, promotions, device, etc.) are fixed to the Last 30 Days pull — ${e.target.value} would need a fresh pull to break those down too. Showing Last 30 Days; use Custom Range for a real alternate primary window (GA4 sessions/users/revenue).`;
-      e.target.value='Last 30 Days';
+    if(e.target.value!=='Last 7 Days'){
+      document.getElementById('asOfLabel').textContent = `Breakdown tables (channels, countries, rooms, promotions, device, etc.) are fixed to the Last 7 Days pull — ${e.target.value} would need a fresh pull to break those down too. Showing Last 7 Days; use Custom Range for a real alternate primary window (GA4 sessions/users/revenue).`;
+      e.target.value='Last 7 Days';
     }
-    PRIMARY.mode='Last 30 Days';
+    PRIMARY.mode='Last 7 Days';
   }
   updateAsOfLabel();
   renderPage(STATE.page);
@@ -947,7 +907,7 @@ function render_exec(){
       ${kpi('Users','',fmtInt(curW.users),curW.users,cmpW.users)}
       ${kpi('Revenue (THB)','',fmtTHB(curW.revenue),curW.revenue,cmpW.revenue)}
     </div>
-    <div class="kpi-note" style="margin-bottom:8px;">Recomputed live from GA4's daily trend data — only sessions, users and revenue support an arbitrary custom range; breakdown tables below (channels, countries, rooms, etc.) still reflect the fixed Aug 5–Sep 3 vs Jul 6–Aug 4 structural pull.</div>`;
+    <div class="kpi-note" style="margin-bottom:8px;">Recomputed live from GA4's daily trend data — only sessions, users and revenue support an arbitrary custom range; breakdown tables below (channels, countries, rooms, etc.) still reflect the fixed Aug 28–Sep 3 vs Aug 21–27 structural pull.</div>`;
   }
   html += sectionTitle('Website (GA4)');
   html += `<div class="grid kpi-row">
@@ -956,7 +916,7 @@ function render_exec(){
     ${kpi('Engaged Sessions','', fmtInt(gc.engagedSessions), gc.engagedSessions, gp.engagedSessions)}
     ${kpi('Bookings (purchase)','', fmtInt(gc.bookings), gc.bookings, gp.bookings, {info:'GA4 "purchase" key event — a confirmed booking-engine reservation.'})}
     ${kpi('Booking Conversion Rate','', fmtPct(convRateC), convRateC, convRateP, {isPct:true,digits:2})}
-    ${kpi('Booking Engine Clicks','', fmtInt(gc.bookingEngineClicks), null, null, {noDelta:true, note:'begin_checkout, this 30-day period — no prior-period figure captured in this pull.'})}
+    ${kpi('Booking Engine Clicks','', fmtInt(gc.bookingEngineClicks), null, null, {noDelta:true, note:'begin_checkout, this 7-day period — no prior-period figure captured in this pull.'})}
     ${kpi('Booking Revenue (THB)','', fmtTHB(gc.revenue), gc.revenue, gp.revenue, {info:'GA4 purchase revenue, booking-engine currency as reported (THB).'})}
   </div>`;
 
@@ -1140,12 +1100,12 @@ function initGa4AcqToggle(){
 }
 
 const EXEC_INSIGHTS = [
-  {cat:'attention', title:'Meta Ads is spending less and getting proportionally less for it', body:'Spend fell 9.6% (฿25,969 → ฿23,471) but Landing Page Views fell faster, down 19.7% (4,477 → 3,594) — cost per LPV rose 12.6% to ฿6.53.', why:'<b>Investigate:</b> which of the two Traffic-objective campaigns lost efficiency, and whether audience fatigue (frequency) or creative is the driver.'},
-  {cat:'opportunity', title:'New Zealand is the top Meta Ads market by spend but barely shows up in bookings', body:'NZ received ฿4,274 in Meta spend this period — more than any other country — yet GA4 recorded only 1 completed booking from New Zealand.', why:'<b>Investigate:</b> NZ audience targeting, landing page relevance, and whether NZ demand is genuinely lower-intent or a tracking gap.'},
-  {cat:'positive', title:'United States is the standout growth market', body:'US sessions +35.7% (768 → 1,042), bookings +25% (8 → 10), and booking revenue +96.8% (฿237,804 → ฿468,010) — the strongest combined growth of any market this period.', why:'<b>Recommend:</b> test a dedicated US-facing Meta or Google Ads push while momentum is building.'},
-  {cat:'attention', title:'Instagram reach fell 82% month over month', body:'Reach dropped from 1.30M to 230K and views from 1.53M to 396K. Engagement rate on reach actually improved (0.37% vs 0.08%), so content quality held — but raw distribution collapsed.', why:'<b>Investigate:</b> posting cadence, Reels share of output, and whether a single viral post inflated the prior period.'},
-  {cat:'attention', title:'Mobile carries the traffic, desktop carries the bookings', body:'Mobile is 56% of sessions (5,445) but only 36% of bookings (31 of 85) — converting at 0.57%. Desktop is 42% of sessions but 61% of bookings, converting at 1.29%, more than double the mobile rate.', why:'<b>Investigate:</b> mobile booking-engine friction — rate-step load time, form length, payment step on small screens.'},
-  {cat:'opportunity', title:'"Stay 5 Pay 4" is a small promotion converting attention into intent', body:'Landing sessions fell 62% (26 → 10) but booking-engine intent events held near flat (42 → 45) — intent per visit nearly tripled. The page is fed directly by a small, still-active Meta campaign of the same name.', why:'<b>Recommend:</b> test a modest budget increase on the Stay Pay Meta campaign and confirm the offer is still commercially live.'},
+  {cat:'attention', title:'Meta Ads: spend held flat, efficiency slipped', body:'Spend was roughly flat (฿5,513 → ฿5,371, −2.6%) but Landing Page Views fell 16.7% (923 → 769) — cost per LPV rose from ฿5.97 to ฿6.98 (+16.9%).', why:'<b>Investigate:</b> whether the Traffic-objective campaigns are showing early fatigue (frequency) or a creative refresh is due.'},
+  {cat:'opportunity', title:'New Zealand is the top Meta Ads market by spend but shows zero bookings', body:'NZ received ฿950 in Meta spend this week — more than any other country — yet GA4 recorded no completed bookings from New Zealand in the same window.', why:'<b>Investigate:</b> NZ audience targeting, landing page relevance, and whether NZ demand is genuinely lower-intent or a tracking gap.'},
+  {cat:'positive', title:'United States: fewer sessions, much better conversion', body:'US sessions fell 28.5% (291 → 208) but bookings held at 4 (vs 1 the week before) — conversion rate jumped from 0.34% to 1.92%, and booking revenue nearly quadrupled (฿84,456 → ฿311,210).', why:'<b>Recommend:</b> look at what changed in the US audience or offer mix this week and see if it can be repeated deliberately.'},
+  {cat:'attention', title:'Instagram: reach up, engagement rate down', body:'Reach grew 23.6% week over week (30.5K → 37.7K) but engagement rate on that reach fell from 0.83% to 0.26% — more people saw the content, proportionally fewer engaged with it.', why:'<b>Investigate:</b> posting mix (Reels vs static) and whether reach growth came from a lower-intent audience.'},
+  {cat:'attention', title:'Mobile carries the traffic, desktop carries the bookings', body:'Mobile is 57% of sessions (1,107) but only 12% of bookings (2 of 17) — converting at 0.18%. Desktop is 41% of sessions but 76% of bookings, converting at 1.62%, roughly 9x the mobile rate.', why:'<b>Investigate:</b> mobile booking-engine friction — rate-step load time, form length, payment step on small screens.'},
+  {cat:'attention', title:'Google Ads has gone fully dark', body:'All 8 campaigns are paused with zero clicks, impressions and cost in both this week and last — unlike the 30-day view, there is no residual Performance Max delivery to report at all this fortnight.', why:'<b>Decide:</b> confirm with the client whether Google Ads should stay paused, or whether reactivating the Performance Max campaign is worth testing.'},
 ];
 </script>
 <script>
@@ -1163,7 +1123,7 @@ function render_ga4(){
     ${kpi('Sessions','',fmtInt(gc.sessions),gc.sessions,gp.sessions)}
     ${kpi('Engaged Sessions','',fmtInt(gc.engagedSessions),gc.engagedSessions,gp.engagedSessions)}
     ${kpi('Engagement Rate','',fmtPct(gc.engagedSessions/gc.sessions,1),gc.engagedSessions/gc.sessions,gp.engagedSessions/gp.sessions,{isPct:true})}
-    ${kpi('Booking Engine Clicks','',fmtInt(gc.bookingEngineClicks),null,null,{noDelta:true,note:'begin_checkout, current 30 days.'})}
+    ${kpi('Booking Engine Clicks','',fmtInt(gc.bookingEngineClicks),null,null,{noDelta:true,note:'begin_checkout, current 7 days.'})}
     ${kpi('Room Selected (add_to_cart)','',fmtInt(gc.roomSelected),null,null,{noDelta:true})}
     ${kpi('Bookings (purchase)','',fmtInt(gc.bookings),gc.bookings,gp.bookings)}
     ${kpi('Booking Conversion Rate','',fmtPct(convC,2),convC,convP,{isPct:true,digits:2})}
@@ -1205,7 +1165,7 @@ function render_ga4(){
 
   html += sectionTitle('Promotion Performance');
   html += renderPromoTable(DATA.ga4.promotions.current, DATA.ga4.promotions.previous);
-  html += `<div class="kpi-note" style="margin-top:8px;">Highest intent-per-visit: <b>Stay 5 Pay 4</b> (4.5 intent events per session). Highest traffic: the promotions hub page itself. "Renovation Notice" carries high bounce because it's informational, not a sellable offer.</div>`;
+  html += `<div class="kpi-note" style="margin-top:8px;">Only the promotions hub page had enough traffic to report on this week — individual offer sub-pages need a longer window (see the 30-day view) to read reliably.</div>`;
 
   html += sectionTitle('Website Content Performance', 'top landing pages');
   html += renderContentTable(DATA.ga4.landingPages.current);
@@ -1324,7 +1284,7 @@ function render_gbp(){
   const totalActions = gc.websiteClicks+gc.callClicks+gc.directionsClicks, totalActionsP = gp.websiteClicks+gp.callClicks+gp.directionsClicks;
   const actionRate = totalActions/totalReach, actionRateP = totalActionsP/totalReachP;
   html += `<div class="three-col">
-    <div class="card"><div style="font-weight:600;">Total Reach</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(totalReach)}</div><div class="kpi-note">Search + Maps, this period vs ${fmtInt(totalReachP)} prior — Maps reach specifically fell 35% (${fmtInt(gp.reachMaps)} → ${fmtInt(gc.reachMaps)}).</div></div>
+    <div class="card"><div style="font-weight:600;">Total Reach</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(totalReach)}</div><div class="kpi-note">Search + Maps, this period vs ${fmtInt(totalReachP)} prior — Maps reach specifically fell ${fmtPct(1-gc.reachMaps/gp.reachMaps,0)} (${fmtInt(gp.reachMaps)} → ${fmtInt(gc.reachMaps)}).</div></div>
     <div class="card"><div style="font-weight:600;">Total Actions</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(totalActions)}</div><div class="kpi-note">Website clicks + calls + directions, vs ${fmtInt(totalActionsP)} prior.</div></div>
     <div class="card"><div style="font-weight:600;">Action Rate</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtPct(actionRate,2)}</div><div class="kpi-note">Actions ÷ reach, vs ${fmtPct(actionRateP,2)} prior — roughly flat despite the reach decline, meaning quality-of-visibility held even as raw reach shrank.</div></div>
   </div>`;
@@ -1347,7 +1307,7 @@ function render_gads(){
   const roasP = gp.cost>0 ? gp.revenue/gp.cost : null;
 
   let html = sourceBar([['Google Ads — live',true],['Search Impression Share',false]]);
-  html += `<div class="mgmt-note">All 8 campaigns in this account are currently <strong>PAUSED</strong> (read directly from Google Ads campaign status — not inferred). Only one, a Performance Max campaign targeting Australia exclusively, carried any spend in either period, and its delivery collapsed sharply between periods — the headline finding below. Search Impression Share metrics and keyword/search-term detail are not populated because Performance Max campaigns don't report at that level; the 7 Search/Demand Gen campaigns had zero delivery in both periods so there is nothing genuine to show for them beyond status.</div>`;
+  html += `<div class="mgmt-note">All 8 campaigns in this account are currently <strong>PAUSED</strong> (read directly from Google Ads campaign status — not inferred). Zero clicks, impressions and cost across every campaign in both the current and previous 7-day windows — unlike the 30-day pull, there is no residual Performance Max delivery to report here at all. Search Impression Share metrics and keyword/search-term detail are not populated because Performance Max campaigns don't report at that level.</div>`;
 
   html += sectionTitle('Main KPIs', `account: ${g.account.name} · ${g.account.currency}`);
   html += `<div class="grid kpi-row">
@@ -1366,17 +1326,15 @@ function render_gads(){
   });
   html += dataTable([{label:'Campaign'},{label:'Type'},{label:'Status'},{label:'Clicks',num:1},{label:'Impressions',num:1},{label:'Cost (THB)',num:1},{label:'Conversions',num:1},{label:'Prev. Cost (THB)',num:1}], camRows);
 
-  html += sectionTitle('The Performance Max Collapse', 'Performance max_Lux_Aus — the only campaign with delivery');
+  html += sectionTitle('Delivery Status', 'both 7-day windows shown');
   html += `<div class="three-col">
-    <div class="card"><div style="font-weight:600;">Clicks</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${gc.clicks} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${gp.clicks} prev.</span></div><div class="kpi-note">−96% period over period.</div></div>
-    <div class="card"><div style="font-weight:600;">Cost</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtTHB(gc.cost)} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${fmtTHB(gp.cost)} prev.</span></div><div class="kpi-note">Spend fell in step with delivery — not overspending into a dead campaign.</div></div>
-    <div class="card"><div style="font-weight:600;">Revenue</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtTHB(gc.revenue)} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${fmtTHB(gp.revenue)} prev.</span></div><div class="kpi-note">Tracked conversion value collapsed from ฿166,533 to ฿20 — from ROAS ${fmtDec(roasP,1)}x to effectively 0x.</div></div>
+    <div class="card"><div style="font-weight:600;">Clicks</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">0 <span style="font-size:13px;color:var(--muted);font-weight:400;">vs 0 prev.</span></div><div class="kpi-note">No delivery in either window.</div></div>
+    <div class="card"><div style="font-weight:600;">Cost</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">฿0 <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ฿0 prev.</span></div><div class="kpi-note">No spend — all 8 campaigns paused throughout.</div></div>
+    <div class="card"><div style="font-weight:600;">Revenue</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">฿0 <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ฿0 prev.</span></div><div class="kpi-note">Nothing to attribute — channel is fully dark this fortnight.</div></div>
   </div>`;
 
-  html += sectionTitle('Geography', 'geographic_view, current period');
-  html += dataTable([{label:'Country'},{label:'Clicks',num:1},{label:'Impressions',num:1},{label:'Cost (THB)',num:1},{label:'Conversions',num:1}],
-    g.geo.current.map(r=>[r.country, fmtInt(r.clicks), fmtInt(r.impressions), fmtTHB(r.cost), fmtDec(r.conversions,0)]));
-  html += `<div class="mgmt-note" style="margin-top:8px;">100% of Google Ads delivery is targeted at Australia — there is currently no Google Ads coverage of any other source market.</div>`;
+  html += sectionTitle('Geography');
+  html += `<div class="unavailable" style="font-size:12.5px;">No geographic delivery to report — every campaign is paused with zero impressions in both 7-day windows.</div>`;
 
   html += sectionTitle('Keyword & Search Term Detail');
   html += placeholderCard('Not available for this account structure',
@@ -1475,7 +1433,7 @@ function render_meta(){
     ${kpi('Landing Page Views','',fmtInt(mc.lpv),mc.lpv,mp.lpv)}
     ${kpi('Cost per LPV (THB)','',fmtTHB(mc.spend/mc.lpv),mc.spend/mc.lpv,mp.spend/mp.lpv,{invert:true})}
   </div>`;
-  html += `<div class="mgmt-note">A "Conversions" KPI is deliberately omitted here. All three campaigns fire one custom pixel event (2,552 fires this period) that Meta's API does not label as Purchase or Lead — see the tracking-hygiene flag on Insights &amp; Recommendations before this is reported as bookings.</div>`;
+  html += `<div class="mgmt-note">A "Conversions" KPI is deliberately omitted here. All three campaigns fire one custom pixel event (575 fires this period) that Meta's API does not label as Purchase or Lead — see the tracking-hygiene flag on Insights &amp; Recommendations before this is reported as bookings.</div>`;
 
   html += sectionTitle('Active Meta Campaigns');
   html += `<div class="section-sub">Different objectives are judged on different metrics — see below.</div>`;
@@ -1484,9 +1442,9 @@ function render_meta(){
   html += sectionTitle('Campaign Objective Logic');
   html += `<div class="three-col">
     <div class="card"><div style="font-weight:600;margin-bottom:8px;">Awareness / Engagement</div><div class="section-sub" style="margin:0 0 8px;">Judge on Reach, CPM, Frequency</div>
-      <div class="kpi-note">Outreach Lookalike: 797K reach at ฿7.54 CPM, frequency 1.87 — efficient distribution, low incremental fatigue.</div></div>
+      <div class="kpi-note">Outreach Lookalike: 174K reach at ฿9.27 CPM, frequency 1.62 — efficient distribution, low incremental fatigue.</div></div>
     <div class="card"><div style="font-weight:600;margin-bottom:8px;">Traffic</div><div class="section-sub" style="margin:0 0 8px;">Judge on LPV, Cost per LPV, CTR</div>
-      <div class="kpi-note">Engaged Audience 30D: 3,273 LPV at ฿3.19 each, 3.38% CTR — this campaign is doing almost all the site-traffic work.</div></div>
+      <div class="kpi-note">Engaged Audience 30D: 689 LPV at ฿3.43 each, 3.36% CTR — this campaign is doing almost all the site-traffic work.</div></div>
     <div class="card"><div style="font-weight:600;margin-bottom:8px;">Conversion</div><div class="section-sub" style="margin:0 0 8px;">Judge on Conversions, CPA, ROAS</div>
       <div class="unavailable" style="font-size:12.5px;">No campaign is running a true Conversion objective this period — none can be scored against CPA/ROAS.</div></div>
   </div>`;
@@ -1630,13 +1588,13 @@ function render_promos(){
     ${kpi('Meta Landing Page Views','',fmtInt(pc.metaLpv),pc.metaLpv,pc.metaLpvPrev)}
     ${kpi('Meta Ad Clicks','',fmtInt(pc.metaClicks),null,null,{noDelta:true})}
   </div>`;
-  html += `<div class="mgmt-note">Meta reports 123 landing page views to this offer, but GA4 recorded only 10 sessions landing on the promotion page — most Meta-driven traffic to this offer is not showing up 1:1 in GA4 landings. Worth a UTM/redirect check on this specific ad.</div>`;
+  html += `<div class="mgmt-note">Meta reports 30 landing page views to this offer this week, but GA4's own landing-page breakdown shows no sessions cleanly attributed to the Stay 5 Pay 4 page in the same window — consistent with the UTM/attribution gap flagged in the 30-day pull. Worth a redirect check on this specific ad.</div>`;
 
   html += sectionTitle('Reading the set');
   html += `<div class="three-col">
-    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Gets the most attention</div><div>${DATA.ga4.promotions.current[0].promo}</div><div class="kpi-note">154 sessions — the promotions hub itself, before any single offer.</div></div>
-    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Generates the most booking intent</div><div>Stay 5 Pay 4</div><div class="kpi-note">4.5 intent events per session — by far the highest of any single offer page.</div></div>
-    <div class="card"><div style="font-weight:600;margin-bottom:6px;">High traffic, weak intent</div><div>Book Direct, More Benefits</div><div class="kpi-note">9 sessions, 0 intent events, 89% bounce — the messaging or placement isn't landing.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Gets the most attention</div><div>${DATA.ga4.promotions.current[0].promo}</div><div class="kpi-note">97 views this week — the promotions hub itself; individual offer pages are too low-volume in a 7-day window to break out separately.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Generates booking intent</div><div>Promotions hub</div><div class="kpi-note">48 intent events off 97 views — roughly one intent signal every two views, a healthy ratio for a hub page.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Sample size caveat</div><div>7-day window</div><div class="kpi-note">Individual offer pages (Stay 5 Pay 4, Luxury Package, etc.) get too little traffic in any single week to read reliably — check the 30-day view for offer-level comparisons.</div></div>
   </div>`;
   return html;
 }
@@ -1665,15 +1623,15 @@ function render_funnel(){
 /* ============================ PAGE: Insights & Recommendations ============================ */
 const ALL_INSIGHTS = [
   ...EXEC_INSIGHTS,
-  {cat:'attention', title:'Meta is firing an unlabeled custom conversion event', body:'All three active Meta campaigns fire the same custom pixel event 2,552 times this period — the API returns it only as "offsite_conversion.custom.…", not as Purchase, Lead or any named standard event.', why:'<b>Investigate:</b> open Events Manager and confirm what this custom conversion actually represents before it is ever reported as bookings or leads to management.'},
-  {cat:'attention', title:'Meta-reported traffic and GA4 sessions from Meta don\'t reconcile', body:'Meta reports 4,653 link clicks this period; GA4 records 1,499 sessions from facebook / paid_social — roughly a third show up.', why:'<b>Investigate:</b> UTM passthrough on the Traffic-objective campaigns, and whether click quality (bot/accidental clicks) is inflating Meta\'s reported clicks.'},
-  {cat:'attention', title:'Facebook Page Insights is not returning data', body:'Reach, impressions, engagement, page visits and video views are all unavailable for the Mandarava Facebook Page via the API — only the follower count and raw post list came through.', why:'<b>Action:</b> re-grant the read_insights permission scope for the Page token in Insightful Pipe.'},
-  {cat:'opportunity', title:'Panoramic Deluxe Room out-converts the most-viewed room', body:'Tropicana Superior Room gets the most views (133) but an 91% bounce rate and low intent. Panoramic Deluxe Room gets fewer views (73) but an 82% intent-event rate and the only completed room-page booking this period.', why:'<b>Recommend:</b> feature Panoramic Deluxe more prominently in navigation and paid creative; audit why Tropicana\'s page underperforms on engagement despite the traffic.'},
-  {cat:'opportunity', title:'Triptease-referred visitors convert exceptionally well', body:'"triptease_attract / meta" sessions run an 87% engagement rate and 1,149 booking-intent events from just 558 sessions — the highest-quality traffic segment on the site.', why:'<b>Recommend:</b> confirm the Triptease integration and its Meta-sourced audience targeting stay prioritized; this is a disproportionately high-intent segment.'},
-  {cat:'information', title:'New-user decline is concentrated in Paid Social', body:'Total new users fell 20.4% (3,413 → 2,718), but Paid Social alone accounts for most of it — new users from that channel fell from 2,157 to 1,438, tracking the pullback in Meta spend.', why:null},
-  {cat:'positive', title:'Netherlands is the best-improving small market', body:'Booking conversion rate rose from 1.67% to 2.33% on essentially flat sessions (239 → 215) — a genuine quality improvement, not a volume swing.', why:null},
-  {cat:'information', title:'Average booking value is up even as booking count dipped', body:'Bookings fell from 94 to 85 (−9.6%) but revenue rose 3.7% — average booking value climbed from ฿37,415 to ฿42,926 (+14.7%), a mix shift toward higher-value stays.', why:null},
-  {cat:'attention', title:'UK traffic grew, but conversion did not follow', body:'UK sessions rose 15.9% (1,066 → 1,235) while bookings fell from 10 to 5 and conversion rate roughly halved, 0.94% → 0.40%.', why:'<b>Investigate:</b> UK-facing offer relevance and price positioning — this is the opposite pattern from Germany and Netherlands, both improving on the same traffic trend.'},
+  {cat:'attention', title:'Meta is firing an unlabeled custom conversion event', body:'All three active Meta campaigns fire the same custom pixel event 575 times this period — the API returns it only as "offsite_conversion.custom.…", not as Purchase, Lead or any named standard event.', why:'<b>Investigate:</b> open Events Manager and confirm what this custom conversion actually represents before it is ever reported as bookings or leads to management.'},
+  {cat:'attention', title:'Meta-reported traffic and GA4 sessions from Meta don\'t reconcile', body:'Meta reports 979 link clicks this week; GA4 records 284 sessions from facebook / paid_social — under a third show up.', why:'<b>Investigate:</b> UTM passthrough on the Traffic-objective campaigns, and whether click quality (bot/accidental clicks) is inflating Meta\'s reported clicks.'},
+  {cat:'information', title:'Facebook Page reach/impressions remain unavailable', body:'Views, engagement, video views and follow/unfollow counts are live for the Page, but reach and impressions ("unique" metrics) are unavailable — Meta deprecated these Page- and Post-level metrics platform-wide, not a permission gap on this account.', why:null},
+  {cat:'opportunity', title:'Sea Pearl Private Pool Access converts intent far better than the most-viewed room', body:'Tropicana Superior Room gets the most views (139) but only 13 intent events (9%). Sea Pearl Private Pool Access gets a third of the views (51) but 17 intent events — a 33% intent rate, the best of any room this week.', why:'<b>Recommend:</b> feature Sea Pearl more prominently in navigation and paid creative; audit why Tropicana\'s page underperforms on engagement despite the traffic.'},
+  {cat:'opportunity', title:'Triptease-referred visitors convert above the site average', body:'"triptease_attract / meta" produced 2 bookings from 178 sessions this week (1.12% conversion) against a site-wide average of 0.88% — a small but consistently above-average segment.', why:'<b>Recommend:</b> confirm the Triptease integration and its Meta-sourced audience targeting stay prioritized; this is a disproportionately high-intent segment.'},
+  {cat:'information', title:'"Unassigned" is the single largest traffic bucket', body:'Unassigned channel sessions (771 of 1,940, 40%) still produced 9 bookings and ฿496K in revenue this week, but at the lowest engagement rate of any channel (22%) — this GA4 default-channel-group bucket is not a real acquisition source and is worth breaking down by Source/Medium (see the toggle on the GA4 page).', why:null},
+  {cat:'attention', title:'Netherlands conversion evaporated week over week', body:'NL fell from 3 bookings (4.76% conversion, ฿79,358 revenue) on 63 sessions the prior week to 0 bookings on 43 sessions this week — worth watching for a second week before treating it as a real demand shift.', why:null},
+  {cat:'information', title:'Average booking value is up even as booking count dipped', body:'Bookings fell from 23 to 17 (−26%) but average booking value rose 14% (฿39,591 → ฿45,149) — revenue held up better than the booking count alone would suggest.', why:null},
+  {cat:'attention', title:'UK sessions fell and the one booking from last week did not repeat', body:'UK sessions fell 22.4% (286 → 222) and the single booking recorded the prior week did not recur this week — not yet a trend at this sample size, but worth a second week of watching.', why:'<b>Investigate:</b> UK-facing offer relevance and price positioning.'},
 ];
 function render_insights(){
   const cats = ['attention','opportunity','positive','information'];
