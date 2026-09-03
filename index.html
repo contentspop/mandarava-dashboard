@@ -202,12 +202,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
       <div class="controls">
         <select class="ctrl" id="dateSelect">
           <option>Last 7 Days</option>
-          <option>Last 30 Days</option>
-          <option>Last 14 Days</option>
-          <option>Month to Date</option>
-          <option>Previous Month</option>
-          <option>Quarter to Date</option>
-          <option>Year to Date</option>
           <option>Custom Range</option>
         </select>
         <span id="customPrimaryWrap" style="display:none;gap:6px;align-items:center;">
@@ -218,10 +212,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
         </span>
         <select class="ctrl" id="compareSelect">
           <option>Previous Period</option>
-          <option>Previous Month</option>
-          <option>Same Period Last Year</option>
           <option>Custom Comparison</option>
-          <option>No Comparison</option>
         </select>
         <span id="customCompareWrap" style="display:none;gap:6px;align-items:center;">
           <input type="date" class="ctrl" id="customFrom" min="2026-06-05" max="2026-09-03" value="2026-08-21" style="padding:6px 8px;">
@@ -794,10 +785,6 @@ document.getElementById('dateSelect').addEventListener('change', e=>{
     PRIMARY.mode='Custom Range';
   } else {
     wrap.style.display='none';
-    if(e.target.value!=='Last 7 Days'){
-      document.getElementById('asOfLabel').textContent = `Breakdown tables (channels, countries, rooms, promotions, device, etc.) are fixed to the Last 7 Days pull — ${e.target.value} would need a fresh pull to break those down too. Showing Last 7 Days; use Custom Range for a real alternate primary window (GA4 sessions/users/revenue).`;
-      e.target.value='Last 7 Days';
-    }
     PRIMARY.mode='Last 7 Days';
   }
   updateAsOfLabel();
@@ -817,10 +804,6 @@ document.getElementById('compareSelect').addEventListener('change', e=>{
     COMPARE.mode='Custom Comparison';
   } else {
     wrap.style.display='none';
-    if(e.target.value!=='Previous Period'){
-      document.getElementById('asOfLabel').textContent = `Structural breakdown pulls only distinguish "Previous Period" vs "Custom Comparison" — ${e.target.value} would need a fresh pull. Showing Previous Period; use Custom Comparison for a real alternate window.`;
-      e.target.value='Previous Period';
-    }
     COMPARE.mode='Previous Period';
   }
   updateAsOfLabel();
