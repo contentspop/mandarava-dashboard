@@ -1,0 +1,1783 @@
+<title>Mandarava Digital Intelligence</title>
+<meta name="description" content="Cross-channel digital marketing intelligence dashboard for Mandarava Resort and Spa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --paper:#FAF8F5; --surface:#FFFFFF; --surface-2:#F4EFE8;
+  --ink:#241D18; --ink-soft:#655A51; --ink-faint:#948779;
+  --border:#E7DFD3; --border-soft:#F0E9DE;
+  --moss:#C2542E; --moss-deep:#9E3F20; --moss-soft:#F8E3D8;
+  --sand:#4A6B57; --sand-soft:#E1EAE3;
+  --teal:#3E6F72; --teal-soft:#DCEBEA;
+  --good:#3E7A52; --good-soft:#DEEDE1;
+  --warn:#A6752D; --warn-soft:#F4E7CE;
+  --bad:#AA4B3B; --bad-soft:#F5DFDA;
+  --unavail:#9A9284;
+  --shadow: 0 1px 2px rgba(36,29,24,.06), 0 6px 20px -8px rgba(36,29,24,.12);
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1C1815; --surface:#242019; --surface-2:#2A251E;
+    --ink:#F0E9DE; --ink-soft:#C2B7A9; --ink-faint:#8C8074;
+    --border:#3D362C; --border-soft:#332C24;
+    --moss:#E67F52; --moss-deep:#F2A47C; --moss-soft:#3A2419;
+    --sand:#7FA98F; --sand-soft:#213329;
+    --teal:#7FB0AE; --teal-soft:#1E3130;
+    --good:#6FB683; --good-soft:#213326;
+    --warn:#D6A24E; --warn-soft:#382C14;
+    --bad:#E08874; --bad-soft:#3A241F;
+    --unavail:#6B7264;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#181C16; --surface:#20261F; --surface-2:#262D22;
+  --ink:#EFEBDD; --ink-soft:#B9C0B2; --ink-faint:#7C8578;
+  --border:#38402F; --border-soft:#2C3327;
+  --moss:#7BA48D; --moss-deep:#9CC2AB; --moss-soft:#2A362D;
+  --sand:#D9B274; --sand-soft:#332A18;
+  --teal:#7FB0AE; --teal-soft:#1E3130;
+  --good:#6FB683; --good-soft:#213326;
+  --warn:#D6A24E; --warn-soft:#382C14;
+  --bad:#E08874; --bad-soft:#3A241F;
+  --unavail:#6B7264;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -10px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;}
+h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;font-weight:500;text-wrap:balance;margin:0;color:var(--ink);}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
+a{color:inherit;}
+::-webkit-scrollbar{height:8px;width:8px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
+
+/* ---- App shell ---- */
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh;}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.brand{padding:4px 8px 12px;border-bottom:1px solid var(--border-soft);}
+.brand-name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:.2px;}
+.brand-sub{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--ink-faint);margin-top:3px;}
+nav.pages{display:flex;flex-direction:column;gap:2px;}
+.navgroup-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);padding:10px 10px 4px;}
+.navbtn{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;border:none;background:none;color:var(--ink-soft);font-size:13px;font-family:inherit;text-align:left;cursor:pointer;width:100%;}
+.navbtn:hover{background:var(--surface-2);color:var(--ink);}
+.navbtn.active{background:var(--moss-soft);color:var(--moss-deep);font-weight:600;}
+.navbtn .dot{width:6px;height:6px;border-radius:50%;background:var(--unavail);flex:none;}
+.navbtn.active .dot{background:var(--moss);}
+.sidebar-foot{margin-top:auto;padding:10px 8px;font-size:11px;color:var(--ink-faint);border-top:1px solid var(--border-soft);}
+
+.main{min-width:0;}
+.topbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.topbar h1{font-size:19px;}
+.controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+select.ctrl{appearance:none;background:var(--surface);border:1px solid var(--border);color:var(--ink);font:inherit;font-size:12.5px;padding:7px 28px 7px 11px;border-radius:8px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238C9488'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.asof{font-size:11px;color:var(--ink-faint);white-space:nowrap;}
+.filterbar{padding:0 28px;margin-top:10px;display:none;gap:8px;align-items:center;flex-wrap:wrap;}
+.filterbar.show{display:flex;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--moss-soft);color:var(--moss-deep);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;}
+.chip button{border:none;background:none;color:inherit;cursor:pointer;font-size:13px;line-height:1;padding:0;}
+.reset-link{font-size:12px;color:var(--ink-faint);text-decoration:underline;cursor:pointer;background:none;border:none;font-family:inherit;}
+.content{padding:22px 28px 60px;max-width:1360px;}
+.page{display:none;}
+.page.active{display:block;}
+.page-head{margin-bottom:18px;}
+.page-head h2{font-size:23px;margin-bottom:4px;}
+.page-desc{color:var(--ink-soft);font-size:13px;max-width:70ch;}
+
+/* view toggle */
+.viewtoggle{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px;margin-left:10px;}
+.viewtoggle button{border:none;background:none;font:inherit;font-size:12px;padding:5px 11px;border-radius:6px;cursor:pointer;color:var(--ink-soft);}
+.viewtoggle button.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600;}
+
+/* ---- Cards / KPIs ---- */
+.grid{display:grid;gap:12px;}
+.kpi-row{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+.kpi{display:flex;flex-direction:column;gap:6px;}
+.kpi-label{font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:5px;}
+.kpi-label .info{width:13px;height:13px;border-radius:50%;border:1px solid var(--ink-faint);color:var(--ink-faint);font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex:none;}
+.kpi-val{font-family:'Fraunces',serif;font-size:26px;font-weight:500;}
+.kpi-delta{font-size:12px;display:inline-flex;align-items:center;gap:4px;width:fit-content;padding:2px 7px;border-radius:6px;font-weight:600;}
+.kpi-delta.pos{color:var(--good);background:var(--good-soft);}
+.kpi-delta.neg{color:var(--bad);background:var(--bad-soft);}
+.kpi-delta.flat{color:var(--ink-faint);background:var(--surface-2);}
+.kpi-note{font-size:11px;color:var(--ink-faint);}
+.unavailable{color:var(--unavail);font-style:italic;font-size:12.5px;}
+.section-title{font-size:15px;font-weight:600;margin:30px 0 10px;display:flex;align-items:center;gap:8px;font-family:'Fraunces',serif;}
+.section-title .tag{font-family:'Inter';font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-faint);font-weight:600;background:var(--surface-2);padding:2px 7px;border-radius:5px;}
+.section-sub{font-size:12.5px;color:var(--ink-soft);margin:-4px 0 12px;max-width:75ch;}
+
+/* charts */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.chart-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+.chart-head h3{font-size:14px;font-weight:600;font-family:'Inter';}
+canvas{max-width:100%;}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:640px;}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface);}
+td{padding:9px 12px;border-bottom:1px solid var(--border-soft);white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--surface-2);cursor:pointer;}
+th.sortable{cursor:pointer;user-select:none;}
+th.sortable:hover{color:var(--ink);}
+.dt-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 16px;font-size:11.5px;color:var(--ink-faint);flex-wrap:wrap;}
+.dt-footer select.ctrl{height:auto;}
+.dt-nav{border:1px solid var(--border);border-radius:6px;padding:3px 9px;background:var(--surface);}
+.dt-nav:disabled{opacity:.4;cursor:default;}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
+.rank{color:var(--ink-faint);width:22px;display:inline-block;}
+.barcell{display:flex;align-items:center;gap:8px;}
+.minibar{height:6px;border-radius:3px;background:var(--moss-soft);flex:none;width:70px;overflow:hidden;}
+.minibar i{display:block;height:100%;background:var(--moss);border-radius:3px;}
+.locbars{display:flex;flex-direction:column;gap:7px;}
+.locbar-row{display:grid;grid-template-columns:150px 1fr 56px;align-items:center;gap:10px;font-size:12px;}
+.locbar-row span:first-child{color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.locbar-track{height:9px;border-radius:5px;background:var(--surface-2);overflow:hidden;}
+.locbar-fill{height:100%;background:var(--moss);border-radius:5px;}
+.tag-pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:5px;}
+.pill-good{background:var(--good-soft);color:var(--good);}
+.pill-warn{background:var(--warn-soft);color:var(--warn);}
+.pill-bad{background:var(--bad-soft);color:var(--bad);}
+.pill-flat{background:var(--surface-2);color:var(--ink-faint);}
+
+/* insight cards */
+.insight{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:14px 16px;display:flex;gap:12px;}
+.insight .stripe{width:4px;border-radius:3px;flex:none;background:var(--ink-faint);}
+.insight.attention .stripe{background:var(--bad);}
+.insight.opportunity .stripe{background:var(--sand);}
+.insight.positive .stripe{background:var(--good);}
+.insight.information .stripe{background:var(--teal);}
+.insight-body{flex:1;}
+.insight-cat{font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:4px;}
+.insight.attention .insight-cat{color:var(--bad);}
+.insight.opportunity .insight-cat{color:var(--sand);}
+.insight.positive .insight-cat{color:var(--good);}
+.insight.information .insight-cat{color:var(--teal);}
+.insight h4{font-size:13.5px;font-weight:600;font-family:'Inter';margin-bottom:4px;}
+.insight p{margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.55;}
+.insight .why{margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);}
+.insight .why b{color:var(--ink);}
+
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:980px){.two-col,.three-col{grid-template-columns:1fr;}}
+
+.tooltip-wrap{position:relative;display:inline-flex;}
+.badge-src{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-faint);}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--good);}
+.dot-off{width:6px;height:6px;border-radius:50%;background:var(--unavail);}
+.sourcebar{display:flex;flex-wrap:wrap;gap:14px;padding:10px 14px;background:var(--surface-2);border-radius:8px;margin-bottom:20px;font-size:11.5px;}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft);}
+.legend span{display:inline-flex;align-items:center;gap:5px;}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block;}
+
+.placeholder-card{border:1.5px dashed var(--border);border-radius:var(--radius);padding:32px 20px;text-align:center;color:var(--ink-faint);background:var(--surface-2);}
+.placeholder-card h3{color:var(--ink-soft);font-size:15px;margin-bottom:6px;}
+.placeholder-card p{max-width:60ch;margin:0 auto;font-size:12.5px;line-height:1.6;}
+
+.mgmt-note{display:flex;align-items:flex-start;gap:8px;background:var(--sand-soft);border:1px solid var(--sand);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--ink);margin-bottom:16px;}
+
+@media(max-width:900px){.app{grid-template-columns:1fr;}.sidebar{position:relative;height:auto;}}
+</style>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-name">Mandarava</div>
+      <div class="brand-sub">Digital Intelligence</div>
+    </div>
+    <nav class="pages" id="navpages"></nav>
+    <div class="sidebar-foot">Contents Pop · built for Mandarava management<br>Snapshot pulled Sep 3, 2026</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h1 id="pageTitle">Executive Summary</h1>
+      <div class="controls">
+        <select class="ctrl" id="dateSelect">
+          <option>Last 30 Days</option>
+          <option>Last 7 Days</option>
+          <option>Last 14 Days</option>
+          <option>Month to Date</option>
+          <option>Previous Month</option>
+          <option>Quarter to Date</option>
+          <option>Year to Date</option>
+          <option>Custom Range</option>
+        </select>
+        <span id="customPrimaryWrap" style="display:none;gap:6px;align-items:center;">
+          <input type="date" class="ctrl" id="primaryFrom" min="2026-06-05" max="2026-09-03" value="2026-08-05" style="padding:6px 8px;">
+          <span style="font-size:12px;color:var(--ink-faint);">to</span>
+          <input type="date" class="ctrl" id="primaryTo" min="2026-06-05" max="2026-09-03" value="2026-09-03" style="padding:6px 8px;">
+          <button class="reset-link" id="customPrimaryApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
+        </span>
+        <select class="ctrl" id="compareSelect">
+          <option>Previous Period</option>
+          <option>Previous Month</option>
+          <option>Same Period Last Year</option>
+          <option>Custom Comparison</option>
+          <option>No Comparison</option>
+        </select>
+        <span id="customCompareWrap" style="display:none;gap:6px;align-items:center;">
+          <input type="date" class="ctrl" id="customFrom" min="2026-06-05" max="2026-09-03" value="2026-07-06" style="padding:6px 8px;">
+          <span style="font-size:12px;color:var(--ink-faint);">to</span>
+          <input type="date" class="ctrl" id="customTo" min="2026-06-05" max="2026-09-03" value="2026-08-04" style="padding:6px 8px;">
+          <button class="reset-link" id="customCompareApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
+        </span>
+        <span class="asof" id="asOfLabel"></span>
+      </div>
+    </div>
+    <div class="filterbar" id="filterbar">
+      <span style="font-size:11.5px;color:var(--ink-faint);">Active filters:</span>
+      <span id="chipHolder" style="display:flex;gap:8px;flex-wrap:wrap;"></span>
+      <button class="reset-link" id="resetFilters">Reset filters</button>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   DATA — pulled live via Insightful Pipe on 2026-09-03.
+   Current period: Aug 5 – Sep 3, 2026 (30d)
+   Previous period: Jul 6 – Aug 4, 2026 (30d)
+   Currency: THB unless noted. "Data unavailable" = not connected /
+   not returned by source — never a fabricated zero.
+   ============================================================ */
+const DATA = {
+  periods:{ current:{label:"Aug 5 – Sep 3, 2026", days:30}, previous:{label:"Jul 6 – Aug 4, 2026", days:30} },
+  sources:{
+    ga4:{connected:true, updated:"Sep 3, 2026, 09:40"},
+    meta:{connected:true, updated:"Sep 3, 2026, 09:40"},
+    ig:{connected:true, updated:"Sep 3, 2026, 09:40"},
+    fbPage:{connected:true, limited:true, updated:"Sep 3, 2026, 10:20", note:"Views, engagement, video views, follows/unfollows, reactions and location data are live. Reach/impressions (\"unique\") metrics specifically are unavailable — Meta deprecated these Page- and Post-level metrics platform-wide, not a permission gap on this account."},
+    gbp:{connected:false, note:"Google Business Profile is not yet linked for Mandarava in Insightful Pipe. (A Metricool connection exists for this location — see note on the Google Business Profile page.)"},
+    gads:{connected:true, updated:"Sep 3, 2026, 10:05"},
+    gsc:{connected:true, updated:"Sep 3, 2026, 10:05"}
+  },
+  ga4:{
+    overview:{
+      current:{users:6791,newUsers:2718,sessions:9685,engagedSessions:3543,engagementRate:0.366,bookingEngineClicks:7936,bookingEngineUsers:2478,roomSelected:1357,roomSelectedUsers:734,bookings:85,bookingUsers:78,revenue:3648702,leads:126},
+      previous:{users:7256,newUsers:3413,sessions:9912,engagedSessions:3644,engagementRate:0.368,bookings:94,revenue:3517070}
+    },
+    trend:[
+      {d:"2026-06-05",sessions:214,users:171,bookings:null,rev:48223},{d:"2026-06-06",sessions:249,users:218,rev:98766},{d:"2026-06-07",sessions:295,users:250,rev:108134},{d:"2026-06-08",sessions:297,users:248,rev:0},{d:"2026-06-09",sessions:269,users:226,rev:20135},{d:"2026-06-10",sessions:327,users:276,rev:0},{d:"2026-06-11",sessions:302,users:267,rev:0},{d:"2026-06-12",sessions:291,users:260,rev:206379},{d:"2026-06-13",sessions:244,users:222,rev:49060},{d:"2026-06-14",sessions:345,users:297,rev:0},{d:"2026-06-15",sessions:322,users:276,rev:90824},{d:"2026-06-16",sessions:356,users:297,rev:302284},{d:"2026-06-17",sessions:332,users:277,rev:94235},{d:"2026-06-18",sessions:345,users:300,rev:37800},{d:"2026-06-19",sessions:393,users:325,rev:205733},{d:"2026-06-20",sessions:324,users:282,rev:13311},{d:"2026-06-21",sessions:402,users:361,rev:149700},{d:"2026-06-22",sessions:386,users:333,rev:24012},{d:"2026-06-23",sessions:344,users:298,rev:58716},{d:"2026-06-24",sessions:323,users:281,rev:212097},{d:"2026-06-25",sessions:324,users:286,rev:207756},{d:"2026-06-26",sessions:317,users:264,rev:175966},{d:"2026-06-27",sessions:324,users:274,rev:471997},{d:"2026-06-28",sessions:300,users:249,rev:405816},{d:"2026-06-29",sessions:278,users:216,rev:66438},{d:"2026-06-30",sessions:316,users:259,rev:461972},
+      {d:"2026-07-01",sessions:393,users:319,rev:380167},{d:"2026-07-02",sessions:316,users:266,rev:59257},{d:"2026-07-03",sessions:348,users:294,rev:284419},{d:"2026-07-04",sessions:270,users:227,rev:339378},{d:"2026-07-05",sessions:307,users:250,rev:142069},{d:"2026-07-06",sessions:299,users:238,rev:114207},{d:"2026-07-07",sessions:324,users:254,rev:161840},{d:"2026-07-08",sessions:291,users:232,rev:10247},{d:"2026-07-09",sessions:315,users:264,rev:23590},{d:"2026-07-10",sessions:343,users:273,rev:270755},{d:"2026-07-11",sessions:317,users:255,rev:0},{d:"2026-07-12",sessions:338,users:265,rev:169143},{d:"2026-07-13",sessions:376,users:278,rev:58881},{d:"2026-07-14",sessions:307,users:244,rev:223176},{d:"2026-07-15",sessions:319,users:255,rev:146487},{d:"2026-07-16",sessions:330,users:253,rev:0},{d:"2026-07-17",sessions:298,users:247,rev:246027},{d:"2026-07-18",sessions:301,users:239,rev:9761},{d:"2026-07-19",sessions:342,users:263,rev:14494},{d:"2026-07-20",sessions:331,users:266,rev:36408},{d:"2026-07-21",sessions:369,users:272,rev:164389},{d:"2026-07-22",sessions:335,users:235,rev:0},{d:"2026-07-23",sessions:323,users:250,rev:37845},{d:"2026-07-24",sessions:324,users:243,rev:158662},{d:"2026-07-25",sessions:299,users:235,rev:49120},{d:"2026-07-26",sessions:322,users:262,rev:71870},{d:"2026-07-27",sessions:401,users:289,rev:107993},{d:"2026-07-28",sessions:342,users:267,rev:177874},{d:"2026-07-29",sessions:342,users:266,rev:258738},{d:"2026-07-30",sessions:365,users:278,rev:379611},{d:"2026-07-31",sessions:324,users:259,rev:280558},
+      {d:"2026-08-01",sessions:306,users:242,rev:104642},{d:"2026-08-02",sessions:343,users:259,rev:70644},{d:"2026-08-03",sessions:319,users:255,rev:0},{d:"2026-08-04",sessions:377,users:284,rev:170108},{d:"2026-08-05",sessions:413,users:313,rev:68232},{d:"2026-08-06",sessions:381,users:291,rev:134969},{d:"2026-08-07",sessions:367,users:268,rev:469856},{d:"2026-08-08",sessions:329,users:262,rev:0},{d:"2026-08-09",sessions:353,users:270,rev:189982},{d:"2026-08-10",sessions:374,users:265,rev:109772},{d:"2026-08-11",sessions:380,users:285,rev:220511},{d:"2026-08-12",sessions:405,users:283,rev:75861},{d:"2026-08-13",sessions:334,users:255,rev:20433},{d:"2026-08-14",sessions:292,users:223,rev:62041},{d:"2026-08-15",sessions:317,users:241,rev:102403},{d:"2026-08-16",sessions:312,users:253,rev:0},{d:"2026-08-17",sessions:372,users:284,rev:108798},{d:"2026-08-18",sessions:392,users:263,rev:249236},{d:"2026-08-19",sessions:337,users:247,rev:222175},{d:"2026-08-20",sessions:307,users:232,rev:81503},{d:"2026-08-21",sessions:334,users:248,rev:127712},{d:"2026-08-22",sessions:303,users:225,rev:30139},{d:"2026-08-23",sessions:307,users:216,rev:234247},{d:"2026-08-24",sessions:380,users:277,rev:206462},{d:"2026-08-25",sessions:360,users:256,rev:60370},{d:"2026-08-26",sessions:391,users:294,rev:110106},{d:"2026-08-27",sessions:285,users:226,rev:141560},{d:"2026-08-28",sessions:296,users:235,rev:37674},{d:"2026-08-29",sessions:313,users:243,rev:170392},{d:"2026-08-30",sessions:364,users:268,rev:149815},{d:"2026-08-31",sessions:365,users:266,rev:155019},
+      {d:"2026-09-01",sessions:327,users:244,rev:109434},{d:"2026-09-02",sessions:1,users:1,rev:0}
+    ],
+    channels:{
+      current:[
+        {ch:"Unassigned",sessions:3612,users:3221,newUsers:423,engaged:562,engRate:.16,bookings:44,revenue:1977815},
+        {ch:"Direct",sessions:2089,users:1018,newUsers:533,engaged:1176,engRate:.56,bookings:20,revenue:645954},
+        {ch:"Organic Search",sessions:2007,users:838,newUsers:192,engaged:1149,engRate:.57,bookings:17,revenue:940643},
+        {ch:"Paid Social",sessions:1525,users:1464,newUsers:1438,engaged:435,engRate:.29,bookings:0,revenue:0},
+        {ch:"Paid Search",sessions:245,users:100,newUsers:25,engaged:133,engRate:.54,bookings:2,revenue:23920},
+        {ch:"Organic Social",sessions:100,users:75,newUsers:68,engaged:43,engRate:.43,bookings:0,revenue:0},
+        {ch:"AI Assistant",sessions:50,users:31,newUsers:16,engaged:24,engRate:.48,bookings:2,revenue:60370},
+        {ch:"Referral",sessions:50,users:38,newUsers:20,engaged:20,engRate:.4,bookings:0,revenue:0},
+        {ch:"Cross-network",sessions:4,users:3,newUsers:1,engaged:1,engRate:.25,bookings:0,revenue:0},
+        {ch:"Organic Shopping",sessions:2,users:2,newUsers:2,engaged:0,engRate:0,bookings:0,revenue:0},
+        {ch:"Paid Other",sessions:1,users:1,newUsers:0,engaged:0,engRate:0,bookings:0,revenue:0}
+      ],
+      previous:[
+        {ch:"Unassigned",sessions:3450,users:3055,newUsers:440,engaged:610,engRate:.18,bookings:45,revenue:1239437},
+        {ch:"Paid Social",sessions:2259,users:2179,newUsers:2157,engaged:592,engRate:.26,bookings:0,revenue:0},
+        {ch:"Organic Search",sessions:1902,users:795,newUsers:228,engaged:1117,engRate:.59,bookings:14,revenue:688850},
+        {ch:"Direct",sessions:1880,users:987,newUsers:503,engaged:1109,engRate:.59,bookings:28,revenue:1207923},
+        {ch:"Paid Search",sessions:255,users:119,newUsers:23,engaged:137,engRate:.54,bookings:6,revenue:351281},
+        {ch:"Cross-network",sessions:62,users:31,newUsers:3,engaged:39,engRate:.63,bookings:1,revenue:29580},
+        {ch:"Referral",sessions:35,users:30,newUsers:15,engaged:14,engRate:.4,bookings:0,revenue:0},
+        {ch:"Organic Social",sessions:26,users:21,newUsers:14,engaged:11,engRate:.42,bookings:0,revenue:0},
+        {ch:"AI Assistant",sessions:23,users:19,newUsers:10,engaged:15,engRate:.65,bookings:0,revenue:0},
+        {ch:"Organic Shopping",sessions:20,users:20,newUsers:20,engaged:0,engRate:0,bookings:0,revenue:0}
+      ]
+    },
+    sourceMedium:{
+      current:[
+        {sm:"(not set)",sessions:2998,users:2842,keyEvents:38,engRate:0,bookings:34,revenue:1755875.6},
+        {sm:"(direct) / (none)",sessions:2144,users:1042,keyEvents:22,engRate:.57,bookings:18,revenue:674177.4},
+        {sm:"facebook / paid_social",sessions:1540,users:1479,keyEvents:0,engRate:.27,bookings:0,revenue:0},
+        {sm:"google / organic",sessions:1371,users:648,keyEvents:13,engRate:.53,bookings:10,revenue:720970},
+        {sm:"triptease_attract / meta",sessions:586,users:428,keyEvents:7,engRate:.87,bookings:7,revenue:314262},
+        {sm:"ntp.msn.com / referral",sessions:374,users:4,keyEvents:0,engRate:.57,bookings:0,revenue:0},
+        {sm:"google / cpc",sessions:251,users:105,keyEvents:2,engRate:.54,bookings:2,revenue:23920},
+        {sm:"ghotelads / organic",sessions:169,users:135,keyEvents:2,engRate:.89,bookings:2,revenue:19550},
+        {sm:"ghotelads / (not set)",sessions:93,users:67,keyEvents:1,engRate:.82,bookings:1,revenue:24648},
+        {sm:"bing / organic",sessions:63,users:28,keyEvents:1,engRate:.62,bookings:1,revenue:170016},
+        {sm:"chatgpt.com / ai-assistant",sessions:57,users:33,keyEvents:2,engRate:.47,bookings:2,revenue:60370.4},
+        {sm:"yandex.ru / referral",sessions:42,users:24,keyEvents:0,engRate:.64,bookings:0,revenue:0},
+        {sm:"m.facebook.com / referral",sessions:36,users:36,keyEvents:0,engRate:.06,bookings:0,revenue:0}
+      ],
+      previous:[
+        {sm:"(not set)",sessions:2750,users:2603,keyEvents:30,engRate:0,bookings:25,revenue:815180.88},
+        {sm:"facebook / paid_social",sessions:2206,users:2131,keyEvents:0,engRate:.25,bookings:0,revenue:0},
+        {sm:"(direct) / (none)",sessions:1880,users:987,keyEvents:28,engRate:.59,bookings:27,revenue:1207923.16},
+        {sm:"google / organic",sessions:1187,users:541,keyEvents:7,engRate:.52,bookings:6,revenue:366921.3},
+        {sm:"triptease_attract / meta",sessions:511,users:379,keyEvents:12,engRate:.92,bookings:10,revenue:393349.84},
+        {sm:"ntp.msn.com / referral",sessions:336,users:6,keyEvents:0,engRate:.66,bookings:0,revenue:0},
+        {sm:"google / cpc",sessions:317,users:150,keyEvents:7,engRate:.56,bookings:6,revenue:380860.5},
+        {sm:"ghotelads / organic",sessions:205,users:157,keyEvents:4,engRate:.91,bookings:4,revenue:126532.8},
+        {sm:"ghotelads / (not set)",sessions:156,users:108,keyEvents:3,engRate:.88,bookings:3,revenue:30906.12},
+        {sm:"yandex.ru / referral",sessions:71,users:40,keyEvents:0,engRate:.46,bookings:0,revenue:0},
+        {sm:"bing / organic",sessions:55,users:31,keyEvents:2,engRate:.53,bookings:2,revenue:141133.5},
+        {sm:"tripadvisor / cpc",sessions:48,users:44,keyEvents:0,engRate:1,bookings:0,revenue:0},
+        {sm:"chatgpt.com / ai-assistant",sessions:23,users:19,keyEvents:0,engRate:.65,bookings:0,revenue:0}
+      ]
+    },
+    countries:{
+      current:[
+        {c:"United Kingdom",sessions:1235,users:745,engRate:.35,bookings:5,revenue:119530},
+        {c:"Thailand",sessions:1658,users:661,engRate:.44,bookings:3,revenue:59802},
+        {c:"United States",sessions:1042,users:591,engRate:.34,bookings:10,revenue:468010},
+        {c:"Australia",sessions:689,users:471,engRate:.29,bookings:5,revenue:224236},
+        {c:"South Korea",sessions:450,users:339,engRate:.53,bookings:7,revenue:189802},
+        {c:"Germany",sessions:511,users:314,engRate:.33,bookings:5,revenue:144499},
+        {c:"New Zealand",sessions:297,users:263,engRate:.27,bookings:1,revenue:58144},
+        {c:"Israel",sessions:323,users:262,engRate:.33,bookings:5,revenue:232006},
+        {c:"India",sessions:269,users:226,engRate:.36,bookings:3,revenue:91619},
+        {c:"Russia",sessions:307,users:169,engRate:.42,bookings:5,revenue:253748},
+        {c:"Netherlands",sessions:215,users:107,engRate:.42,bookings:5,revenue:162078},
+        {c:"Switzerland",sessions:79,users:48,engRate:.34,bookings:4,revenue:202036},
+        {c:"Canada",sessions:149,users:104,engRate:.29,bookings:1,revenue:45908},
+        {c:"Japan",sessions:155,users:72,engRate:.52,bookings:2,revenue:41666},
+        {c:"South Africa",sessions:68,users:41,engRate:.31,bookings:3,revenue:215004},
+        {c:"Spain",sessions:65,users:40,engRate:.29,bookings:2,revenue:82680},
+        {c:"Denmark",sessions:49,users:38,engRate:.35,bookings:3,revenue:155887}
+      ],
+      previous:[
+        {c:"India",sessions:871,users:801,engRate:.29,bookings:2,revenue:27657},
+        {c:"Thailand",sessions:1715,users:726,engRate:.46,bookings:2,revenue:36696},
+        {c:"United Kingdom",sessions:1066,users:659,engRate:.33,bookings:10,revenue:524536},
+        {c:"Australia",sessions:902,users:594,engRate:.33,bookings:15,revenue:730832},
+        {c:"United States",sessions:768,users:472,engRate:.36,bookings:8,revenue:237804},
+        {c:"South Korea",sessions:537,users:389,engRate:.55,bookings:10,revenue:193903},
+        {c:"Germany",sessions:393,users:256,engRate:.31,bookings:5,revenue:197002},
+        {c:"New Zealand",sessions:329,users:296,engRate:.28,bookings:1,revenue:104400},
+        {c:"Israel",sessions:252,users:199,engRate:.33,bookings:6,revenue:257772},
+        {c:"Russia",sessions:317,users:180,engRate:.39,bookings:3,revenue:120800},
+        {c:"Netherlands",sessions:239,users:120,engRate:.38,bookings:4,revenue:165311},
+        {c:"Switzerland",sessions:93,users:57,engRate:.30,bookings:3,revenue:94304},
+        {c:"Canada",sessions:161,users:123,engRate:.29,bookings:1,revenue:21305},
+        {c:"France",sessions:183,users:94,engRate:.48,bookings:3,revenue:183048},
+        {c:"South Africa",sessions:84,users:50,engRate:.31,bookings:2,revenue:70209},
+        {c:"Spain",sessions:62,users:42,engRate:.35,bookings:1,revenue:82676}
+      ]
+    },
+    landingPages:{
+      current:[
+        {p:"/ (Homepage)",sessions:1873,users:963,engRate:.52,bounce:.48,bookings:15},
+        {p:"/hotelpage/rates (Booking Engine — desktop rates)",sessions:1747,users:1648,engRate:.33,bounce:.67,bookings:6},
+        {p:"/propertyibe2 (Booking Engine v2 landing)",sessions:948,users:296,engRate:.5,bounce:.5,bookings:10},
+        {p:"/propertyibe2/rates (Booking Engine v2 — rate step)",sessions:430,users:280,engRate:.55,bounce:.45,bookings:15},
+        {p:"/propertyibemobile (Booking Engine — mobile)",sessions:357,users:215,engRate:.34,bounce:.66,bookings:8},
+        {p:"/propertyibemobile/rates (Booking Engine mobile — rate step)",sessions:248,users:226,engRate:.81,bounce:.19,bookings:7},
+        {p:"/special-offer (Promotions hub)",sessions:154,users:115,engRate:.42,bounce:.58,bookings:2},
+        {p:"/rooms/tropicana-superior-room",sessions:133,users:121,engRate:.09,bounce:.91,bookings:0},
+        {p:"/gallery",sessions:119,users:75,engRate:.17,bounce:.83,bookings:0},
+        {p:"/cheeva-spa",sessions:114,users:89,engRate:.17,bounce:.83,bookings:0},
+        {p:"/rooms/seafan-deluxe-room",sessions:108,users:81,engRate:.22,bounce:.78,bookings:0},
+        {p:"/facilities",sessions:106,users:88,engRate:.15,bounce:.85,bookings:0},
+        {p:"/rooms/aqua-deluxe-pool-access-room",sessions:98,users:79,engRate:.17,bounce:.83,bookings:0},
+        {p:"/rooms/andaman-private-pool-villa",sessions:85,users:73,engRate:.12,bounce:.88,bookings:0},
+        {p:"/rooms/sea-pearl-private-pool-access",sessions:76,users:66,engRate:.18,bounce:.82,bookings:0},
+        {p:"/rooms/panoramic-deluxe-room",sessions:73,users:58,engRate:.11,bounce:.89,bookings:1},
+        {p:"/dining-bar/chomtalay-restaurant",sessions:71,users:61,engRate:.21,bounce:.79,bookings:0},
+        {p:"/rooms/horizon-grand-deluxe-room",sessions:61,users:47,engRate:.26,bounce:.74,bookings:0},
+        {p:"/contact",sessions:54,users:42,engRate:.44,bounce:.56,bookings:0},
+        {p:"/special-offer/luxury-package-7-nights",sessions:22,users:22,engRate:.23,bounce:.77,bookings:0},
+        {p:"/rooms/coral-grand-deluxe-room",sessions:16,users:12,engRate:.06,bounce:.94,bookings:0},
+        {p:"/wedding",sessions:12,users:12,engRate:.17,bounce:.83,bookings:0},
+        {p:"/special-offer/stay-5-pay-4",sessions:10,users:8,engRate:.5,bounce:.5,bookings:0}
+      ]
+    },
+    rooms:{
+      current:[
+        {room:"Tropicana Superior Room",views:133,users:121,engRate:.09,bounce:.91,intentEvents:82},
+        {room:"Seafan Deluxe Room",views:108,users:81,engRate:.22,bounce:.78,intentEvents:36},
+        {room:"Aqua Deluxe Pool Access Room",views:98,users:79,engRate:.17,bounce:.83,intentEvents:77},
+        {room:"Andaman Private Pool Villa",views:85,users:73,engRate:.12,bounce:.88,intentEvents:57},
+        {room:"Sea Pearl Private Pool Access",views:76,users:66,engRate:.18,bounce:.82,intentEvents:58},
+        {room:"Panoramic Deluxe Room",views:73,users:58,engRate:.11,bounce:.89,intentEvents:60,bookings:1},
+        {room:"Horizon Grand Deluxe Room",views:61,users:47,engRate:.26,bounce:.74,intentEvents:31},
+        {room:"Coral Grand Deluxe Room",views:16,users:12,engRate:.06,bounce:.94,intentEvents:8}
+      ],
+      previous:[
+        {room:"Seafan Deluxe Room",views:117,intentEvents:18},
+        {room:"Tropicana Superior Room",views:100,intentEvents:64},
+        {room:"Andaman Private Pool Villa",views:88,intentEvents:77},
+        {room:"Panoramic Deluxe Room",views:77,intentEvents:39},
+        {room:"Aqua Deluxe Pool Access Room",views:66,intentEvents:46},
+        {room:"Sea Pearl Private Pool Access",views:57,intentEvents:88},
+        {room:"Horizon Grand Deluxe Room",views:37,intentEvents:25},
+        {room:"Coral Grand Deluxe Room",views:22,intentEvents:29}
+      ]
+    },
+    items:{
+      current:[
+        {item:"Panoramic Deluxe Room",addToCart:371,purchased:30,revenue:1174689.4},
+        {item:"Sea Fan Deluxe Room",addToCart:389,purchased:25,revenue:1135033},
+        {item:"Sea Pearl Private Pool Access",addToCart:130,purchased:17,revenue:988817.6},
+        {item:"Aqua Deluxe Pool Access Room",addToCart:139,purchased:8,revenue:618523},
+        {item:"Horizon Grand Deluxe Room",addToCart:141,purchased:7,revenue:414628},
+        {item:"Tropicana Superior Room",addToCart:241,purchased:10,revenue:232543.8},
+        {item:"Airport Transfer (Car one way)",addToCart:29,purchased:13,revenue:15600},
+        {item:"Spa for Honeymooner (Package 1)",addToCart:10,purchased:3,revenue:13500},
+        {item:"Andaman Private Pool Villa",addToCart:49,purchased:1,revenue:10948},
+        {item:"Floating Breakfast",addToCart:19,purchased:4,revenue:3196},
+        {item:"Airport Transfer(Van one way)",addToCart:12,purchased:2,revenue:3000},
+        {item:"Thai cooking class",addToCart:2,purchased:1,revenue:3000},
+        {item:"Private Romantic Dinner",addToCart:7,purchased:0,revenue:0},
+        {item:"NEW YEAR GALA DINNER",addToCart:2,purchased:0,revenue:0},
+        {item:"CHRISTMAS DINNER",addToCart:1,purchased:0,revenue:0},
+        {item:"CHRISTMAS EVE DINNER",addToCart:1,purchased:0,revenue:0}
+      ],
+      previous:[
+        {item:"Panoramic Deluxe Room",addToCart:503,purchased:40,revenue:1247149.11},
+        {item:"Sea Fan Deluxe Room",addToCart:336,purchased:22,revenue:456339.01},
+        {item:"Horizon Grand Deluxe Room",addToCart:143,purchased:13,revenue:617903.46},
+        {item:"Sea Pearl Private Pool Access",addToCart:166,purchased:11,revenue:550703.25},
+        {item:"Aqua Deluxe Pool Access Room",addToCart:226,purchased:9,revenue:372137.1},
+        {item:"Andaman Private Pool Villa",addToCart:71,purchased:8,revenue:521557.5},
+        {item:"Airport Transfer (Car one way)",addToCart:28,purchased:10,revenue:14400},
+        {item:"Tropicana Superior Room",addToCart:286,purchased:4,revenue:101386.32},
+        {item:"Thai cooking class",addToCart:1,purchased:1,revenue:4500},
+        {item:"Spa for Honeymooner (Package 1)",addToCart:9,purchased:2,revenue:9000},
+        {item:"Floating Breakfast",addToCart:13,purchased:1,revenue:799},
+        {item:"Airport Transfer(Van one way)",addToCart:6,purchased:0,revenue:0},
+        {item:"Private Romantic Dinner",addToCart:2,purchased:0,revenue:0},
+        {item:"New Year Gala Dinner",addToCart:1,purchased:0,revenue:0}
+      ]
+    },
+    promotions:{
+      current:[
+        {promo:"Promotions hub (/special-offer)",views:154,users:115,engRate:.42,bounce:.58,intentEvents:183,bookings:2},
+        {promo:"Luxury Package – 7 Nights",views:22,users:22,engRate:.23,bounce:.77,intentEvents:9,bookings:0},
+        {promo:"Renovation Notice",views:20,users:20,engRate:0,bounce:1,intentEvents:14,bookings:0},
+        {promo:"3 Nights Getaway",views:10,users:10,engRate:.2,bounce:.8,intentEvents:0,bookings:0},
+        {promo:"New Year's Gala 2026",views:10,users:10,engRate:.3,bounce:.7,intentEvents:2,bookings:0},
+        {promo:"Stay 5 Pay 4",views:10,users:8,engRate:.5,bounce:.5,intentEvents:45,bookings:0},
+        {promo:"Book Direct, More Benefits",views:9,users:8,engRate:.11,bounce:.89,intentEvents:0,bookings:0},
+        {promo:"Island Tours & More",views:5,users:5,engRate:0,bounce:1,intentEvents:7,bookings:0}
+      ],
+      previous:[
+        {promo:"Promotions hub (/special-offer)",views:161,intentEvents:221},
+        {promo:"Renovation Notice",views:35,intentEvents:19},
+        {promo:"Stay 5 Pay 4",views:26,intentEvents:42},
+        {promo:"Island Tours & More",views:23,intentEvents:16},
+        {promo:"Luxury Package – 7 Nights",views:17,intentEvents:6},
+        {promo:"3 Nights Getaway",views:16,intentEvents:5},
+        {promo:"Book Direct, More Benefits",views:7,intentEvents:1}
+      ]
+    },
+    device:{
+      current:[
+        {d:"Mobile",sessions:5445,users:3921,engRate:.34,bookings:31},
+        {d:"Desktop",sessions:4044,users:1853,engRate:.41,bookings:52},
+        {d:"Tablet",sessions:114,users:84,engRate:.32,bookings:2}
+      ],
+      previous:[
+        {d:"Mobile",sessions:6042,users:4462,engRate:.34},
+        {d:"Desktop",sessions:3672,users:1722,engRate:.42},
+        {d:"Tablet",sessions:154,users:122,engRate:.34}
+      ]
+    },
+    events:{page_view:25013,user_engagement:16305,scroll:13575,begin_checkout:7936,session_start:6768,first_visit:2718,add_to_cart:1357,contact_us:126,click:117,ibe_booking_confirmation:85,purchase:85,email_click:58,phone_click:11}
+  },
+  ig:{
+    profile:{followers:14328, following:11, mediaCount:797, username:"@mandaravaresort"},
+    locations:{
+      country:[["DE",1429],["GB",1713],["IR",772],["US",773],["MA",975],["RU",1238],["AU",735],["KR",559],["IN",470],["FR",371],["OM",379],["IL",300],["KZ",154],["PL",155],["ES",168],["RO",151],["IT",145],["TH",362],["NL",122],["CA",126]],
+      city:[["Tangier",258],["Tétouan",258],["Volzhskiy",273],["Seoul",205],["Melbourne",180],["Moscow",151],["Sydney",143],["London",128],["Tehran",174],["Al-Sib",137],["Bangkok",116],["Dubai",82]]
+    },
+    locNote:"Follower-location data is a lifetime snapshot (all-time followers), not a 30-day window — Instagram does not expose a dated version of this metric.",
+    current:{reach:229638,accountsEngaged:426,views:396074,likes:596,comments:10,shares:96,interactions:840,profileTaps:16},
+    previous:{reach:1303703,accountsEngaged:721,views:1531972,likes:780,comments:10,shares:112,interactions:1086,profileTaps:14},
+    posts:[
+      {caption:"Somewhere in Phuket, kind of holiday waiting for you",type:"Image",date:"Aug 10",reach:4251,likes:149,comments:5,shares:30,saved:5,interactions:189,url:"https://www.instagram.com/p/Db29tYnjVAN/"},
+      {caption:"A little world of its own, tucked into the hillside",type:"Carousel",date:"Aug 22",reach:2325,likes:143,comments:1,shares:7,saved:4,interactions:155,url:"https://www.instagram.com/p/DcV3NVTDtPY/"},
+      {caption:"A little higher above Karon, sea still feels close",type:"Image",date:"Jul 19",reach:2454,likes:99,comments:2,shares:10,saved:2,interactions:113,url:"https://www.instagram.com/p/Da-bGLIDrk3/"},
+      {caption:"Floating breakfast — best seat is in the water",type:"Reel",date:"Jul 16",reach:2060,views:2925,likes:94,comments:3,shares:25,saved:5,interactions:127,url:"https://www.instagram.com/reel/Da2l6sdgaaA/"},
+      {caption:"Tropical sun, pool at your doorstep",type:"Image",date:"Jul 13",reach:2298,likes:56,comments:1,shares:11,saved:1,interactions:69,url:"https://www.instagram.com/p/Dau3dBZDBau/"},
+      {caption:"Hidden from the world, palms beyond",type:"Image",date:"Aug 7",reach:1366,likes:54,comments:0,shares:3,saved:0,interactions:57,url:"https://www.instagram.com/p/DbvPVvjjP-L/"},
+      {caption:"Check in, settle in, let Phuket unfold",type:"Carousel",date:"Jul 28",reach:1526,likes:56,comments:2,shares:4,saved:1,interactions:63,url:"https://www.instagram.com/p/DbVfaxFj9Ds/"},
+      {caption:"Charm Thai — chicken satay & Thai favourites",type:"Reel",date:"Aug 26",reach:893,views:1230,likes:51,comments:2,shares:7,saved:0,interactions:60,url:"https://www.instagram.com/reel/DcgKko8gVUg/"}
+    ],
+    contentTypeMix:{Image:10,Carousel:5,Reel:3}
+  },
+  fbPage:{
+    followers:20946, fanCount:20946, category:"Hotel & Resort",
+    overview:{
+      current:{views:3858,engagements:8015,videoViews:77105,newFollows:38,unfollows:21},
+      previous:{views:4803,engagements:11482,videoViews:106053,newFollows:85,unfollows:32}
+    },
+    locations:{
+      country:[["TH",11472],["GB",1810],["AU",1804],["US",431],["ZA",310],["DE",700],["SG",131],["IN",220],["KR",163],["FR",378],["MY",197],["IT",149],["NL",77],["JP",48],["LK",106]],
+      city:[["Bangkok",2340],["เทศบาลนครภูเก็ต (Phuket City)",768],["Hat Yai",426],["Thalang, Phuket",410],["Surat Thani",303],["Melbourne",359],["Sydney",229],["Nonthaburi",222],["Nakhon Si Thammarat",207],["Rawai, Phuket",197],["Perth",145],["Singapore",129],["Kathu, Phuket",208]]
+    },
+    note:"Follows-by-location is a lifetime snapshot (all-time followers), not a 30-day window — Meta does not expose a dated version of this metric.",
+    posts:[
+      {caption:"This is looking very much like a Mandarava kind of day.",date:"Aug 30",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1376650611344744",likes:23,clicks:15,videoViews:0},
+      {caption:"Chicken satay & Thai favourites at Charm Thai.",date:"Aug 26",type:"Reel",url:"https://www.facebook.com/reel/2484999681991930/",likes:30,clicks:17,videoViews:349},
+      {caption:"A little world of its own, tucked into the hillside.",date:"Aug 22",type:"Image/Carousel",url:"https://www.facebook.com/1379828297693642/posts/1369879538688518",likes:38,clicks:176,videoViews:0},
+      {caption:"New Year's Eve Gala — Thai temple fair.",date:"Aug 16",type:"Carousel",url:"https://www.facebook.com/1379828297693642/posts/1364738172535988",likes:10,clicks:30,videoViews:0},
+      {caption:"Christmas Eve Dinner at Chom Talay Restaurant.",date:"Aug 13",type:"Carousel",url:"https://www.facebook.com/1379828297693642/posts/1362137432796062",likes:13,clicks:41,videoViews:0},
+      {caption:"Somewhere in Phuket, a Mandarava kind of holiday.",date:"Aug 10",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1359612769715195",likes:40,clicks:127,videoViews:0},
+      {caption:"A little hidden from the world, with Phuket beyond the palms.",date:"Aug 7",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1357140269962445",likes:31,clicks:58,videoViews:0},
+      {caption:"Hidden among the greenery — Mandarava at its most beautiful.",date:"Aug 19",type:"Image",url:"https://www.facebook.com/1379828297693642/posts/1367301885612950",likes:11,clicks:18,videoViews:0}
+    ]
+  },
+  meta:{
+    account:{spendCurrency:"THB"},
+    overview:{
+      current:{spend:23470.85,reach:906927,impressions:1635153,clicks:7146,linkClicks:4653,lpv:3594,activeCampaigns:3},
+      previous:{spend:25968.57,reach:2342663,impressions:3488462,clicks:11541,linkClicks:6349,lpv:4477,activeCampaigns:3}
+    },
+    campaigns:{
+      current:[
+        {name:"Outreach Lookalike | Engagement | Impression",objective:"Awareness / Engagement",status:"Active",spend:11255.13,reach:797483,impressions:1492260,freq:1.87,cpm:7.54,clicks:2314,ctr:.155,lpv:198,costPerLpv:56.84,saves:11,customConv:240},
+        {name:"Engaged Audience 30D | Traffic | Landing Page",objective:"Traffic",status:"Active",spend:10447.58,reach:103401,impressions:135893,freq:1.31,cpm:76.88,clicks:4590,ctr:3.38,lpv:3273,costPerLpv:3.19,saves:9,customConv:2302},
+        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",objective:"Traffic",status:"Active",spend:1768.14,reach:6043,impressions:7000,freq:1.16,cpm:252.59,clicks:242,ctr:3.46,lpv:123,costPerLpv:14.38,saves:1,customConv:10}
+      ],
+      previous:[
+        {name:"Outreach Lookalike | Engagement | Impression",spend:12616.15,reach:2182433,impressions:3262543,clicks:4310,lpv:369,costPerLpv:34.19,customConv:417},
+        {name:"Engaged Audience 30D | Traffic | Landing Page",spend:11550.16,reach:154653,impressions:189057,clicks:6946,lpv:3942,costPerLpv:2.93,customConv:2595},
+        {name:"Engaged Audience 30D | Traffic | Landing Page – Stay Pay",spend:1802.26,reach:5577,impressions:6862,clicks:285,lpv:166,costPerLpv:10.86,customConv:8}
+      ],
+      paused:[
+        {name:"MDRV | Sales Message",objective:"Sales",status:"Paused"},
+        {name:"MDRV | Message",objective:"Engagement (Messaging)",status:"Paused"},
+        {name:"Engaged Audience 30D | Traffic | Landing Page (v1)",objective:"Traffic",status:"Paused"},
+        {name:"Outreach Lookalike | Traffic | Landing Page",objective:"Traffic",status:"Paused"}
+      ]
+    },
+    countries:[
+      {c:"New Zealand",spend:4273.62,reach:36713,impressions:85973,clicks:461,lpv:230},
+      {c:"Thailand",spend:2547.27,reach:48673,impressions:89583,clicks:761,lpv:560},
+      {c:"South Korea",spend:2422.25,reach:24601,impressions:40764,clicks:512,lpv:403},
+      {c:"United Kingdom",spend:2198.27,reach:29310,impressions:45478,clicks:155,lpv:86},
+      {c:"United States",spend:782.19,reach:3222,impressions:3433,clicks:73,lpv:50},
+      {c:"Jordan",spend:703.59,reach:45435,impressions:98667,clicks:667,lpv:502},
+      {c:"Oman",spend:660.53,reach:62281,impressions:177473,clicks:260,lpv:90},
+      {c:"Ukraine",spend:507.71,reach:20763,impressions:36336,clicks:256,lpv:131},
+      {c:"Saudi Arabia",spend:470.36,reach:24601,impressions:40764,clicks:512,lpv:403},
+      {c:"Malaysia",spend:1172.47,reach:62460,impressions:118450,clicks:526,lpv:34}
+    ],
+    device:[
+      {d:"Mobile App",spend:22302.57,reach:841456,impressions:1537202,clicks:7066,lpv:3591},
+      {d:"Desktop",spend:1075.94,reach:56328,impressions:88389,clicks:78,lpv:2},
+      {d:"Mobile Web",spend:90.37,reach:4404,impressions:9483,clicks:2,lpv:0}
+    ]
+  },
+  funnel:{
+    stages:[
+      {name:"Website Users",value:6791,note:"Unique users, 30 days"},
+      {name:"Booking Engine Click (begin_checkout)",value:2478,note:"Users who clicked into the booking engine"},
+      {name:"Room Selected (add_to_cart)",value:734,note:"Users who selected a room/rate in the engine"},
+      {name:"Booking Confirmed (purchase)",value:78,note:"Users who completed a booking"}
+    ]
+  },
+  promoChannel:{
+    "Stay 5 Pay 4":{gaSessions:10,gaSessionsPrev:26,intentEvents:45,intentEventsPrev:42,metaSpend:1768.14,metaSpendPrev:1802.26,metaLpv:123,metaLpvPrev:166,metaClicks:242}
+  },
+  gads:{
+    account:{id:"402-760-0436",name:"Mandarava Resort and Spa",currency:"THB"},
+    overview:{
+      current:{clicks:11,impressions:52,cost:529.24,conversions:21,revenue:20},
+      previous:{clicks:273,impressions:4054,cost:10349.05,conversions:302.27,revenue:166532.91}
+    },
+    campaigns:{
+      current:[
+        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:11,impressions:52,cost:529.24,conversions:21,revenue:20},
+        {name:"Karon Hotels",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Mandarava_01.-Brand-en-ROW-se-go",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Mandarava_02.-DT-en-ROW-se-go",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Mandarava_03.-Luxury-en-ROW-se-go",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Performance max Hotel-go",type:"Performance Max",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Mandarava_01.-Brand-en-ROW-se-go-Mobi",type:"Search",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0},
+        {name:"RA_Mandarava_03.-Deamand Gen-en-ROW-DG-go",type:"Demand Gen",status:"PAUSED",clicks:0,impressions:0,cost:0,conversions:0,revenue:0}
+      ],
+      previous:[
+        {name:"Performance max_Lux_Aus",type:"Performance Max",status:"PAUSED",clicks:273,impressions:4054,cost:10349.05,conversions:302.27,revenue:166532.91}
+      ]
+    },
+    geo:{current:[{country:"Australia",clicks:11,impressions:52,cost:529.24,conversions:21}]},
+    note:"All 8 campaigns in this account are currently PAUSED (statuses read directly from Google Ads, not inferred). The only campaign with any spend this period or last is the Performance Max campaign targeting Australia exclusively — its own delivery collapsed period over period (see Google Ads page). The 7 Search/Demand Gen campaigns have zero delivery in both periods and no keyword- or search-term-level data to report (Performance Max campaigns do not populate keyword_view or search_term_view — this is a genuine platform limitation, not a data gap)."
+  },
+  gsc:{
+    site:"https://www.mandaravaresort.com/",
+    queries:{
+      current:[
+        {q:"mandarava resort and spa",clicks:806,impressions:4639,ctr:17.37,pos:3.03},
+        {q:"mandarava resort and spa karon beach",clicks:357,impressions:2235,ctr:15.97,pos:5.29},
+        {q:"mandarava resort & spa",clicks:240,impressions:1494,ctr:16.06,pos:4.56},
+        {q:"mandarava resort and spa, karon beach",clicks:107,impressions:606,ctr:17.66,pos:1.76},
+        {q:"mandarava",clicks:97,impressions:893,ctr:10.86,pos:3.77},
+        {q:"mandarava resort",clicks:87,impressions:715,ctr:12.17,pos:5.29},
+        {q:"mandarava phuket",clicks:66,impressions:495,ctr:13.33,pos:3.3},
+        {q:"mandarava resort and spa phuket",clicks:43,impressions:409,ctr:10.51,pos:3.41},
+        {q:"mandarava resort phuket",clicks:38,impressions:314,ctr:12.1,pos:5.6},
+        {q:"mandarava resort & spa phuket",clicks:37,impressions:322,ctr:11.49,pos:5.66},
+        {q:"mandarava phuket resort",clicks:12,impressions:61,ctr:19.67,pos:1.67},
+        {q:"mandarava resort & spa photos",clicks:12,impressions:92,ctr:13.04,pos:1.34},
+        {q:"hotel mandarava phuket",clicks:10,impressions:72,ctr:13.89,pos:17.4},
+        {q:"mandarava beach resort phuket",clicks:10,impressions:40,ctr:25,pos:15.93},
+        {q:"andaman private pool villa",clicks:9,impressions:45,ctr:20,pos:1.8},
+        {q:"mandarava hotel phuket",clicks:9,impressions:119,ctr:7.56,pos:7.62},
+        {q:"mandarava resort spa",clicks:9,impressions:112,ctr:8.04,pos:4.49},
+        {q:"mandarava resort thailand",clicks:8,impressions:47,ctr:17.02,pos:18.77},
+        {q:"cheeva spa",clicks:5,impressions:185,ctr:2.7,pos:6.51}
+      ],
+      previous:[
+        {q:"mandarava resort and spa",clicks:773,impressions:4793,ctr:16.13,pos:3.57},
+        {q:"mandarava resort and spa karon beach",clicks:304,impressions:2225,ctr:13.66,pos:5.13},
+        {q:"mandarava resort & spa",clicks:164,impressions:1388,ctr:11.82,pos:4.85},
+        {q:"mandarava resort and spa, karon beach",clicks:115,impressions:607,ctr:18.95,pos:1.78},
+        {q:"mandarava resort",clicks:98,impressions:892,ctr:10.99,pos:6.36},
+        {q:"mandarava phuket",clicks:80,impressions:586,ctr:13.65,pos:4.22},
+        {q:"mandarava",clicks:74,impressions:971,ctr:7.62,pos:5.65},
+        {q:"mandarava resort and spa phuket",clicks:50,impressions:453,ctr:11.04,pos:6.59},
+        {q:"mandarava resort & spa phuket",clicks:35,impressions:298,ctr:11.74,pos:3.63},
+        {q:"mandarava resort phuket",clicks:26,impressions:334,ctr:7.78,pos:5.99},
+        {q:"andaman private pool villa",clicks:4,impressions:42,ctr:9.52,pos:1.52}
+      ]
+    },
+    note:"Branded queries (\"mandarava…\") dominate — as expected for a hotel name search profile. Two non-branded/facility queries stand out: \"andaman private pool villa\" (a room-type name, position ~1.5-1.8, growing 4→9 clicks) and \"cheeva spa\" (the spa brand, position ~6.5, 185 impressions but only 5 clicks — a CTR opportunity). This is Search Console data (what people typed into Google before clicking through) — a different measurement from Google Ads keyword data and GA4 session source/medium, and should not be summed with either."
+  },
+  gbp:{
+    overview:{
+      current:{reachSearch:6542,reachMaps:30071,websiteClicks:1426,callClicks:142,directionsClicks:3085,reviewsCount:71,avgRating:4.73},
+      previous:{reachSearch:7165,reachMaps:46351,websiteClicks:1413,callClicks:202,directionsClicks:3255,reviewsCount:71,avgRating:4.89}
+    },
+    note:"Google Business Profile is not yet linked in Insightful Pipe for Mandarava, but the location is connected in Metricool (a different tool this agency already uses), so real GBP data is shown here via that route instead. Figures are daily sums/averages across the same two 30-day windows as the rest of this dashboard. \"Reach Maps\" fell sharply (−35%) — worth flagging alongside the Google Ads Australia-only pattern and checking Google Business Profile's own insights panel directly for any recent listing or category change."
+  }
+};
+window.__MDRV_DATA__ = DATA;
+</script>
+<script>
+/* ============================ helpers ============================ */
+const fmtInt = n => n==null ? '—' : Math.round(n).toLocaleString('en-US');
+const fmtTHB = n => n==null ? '—' : '฿'+Math.round(n).toLocaleString('en-US');
+const fmtPct = (n,d=1) => n==null ? '—' : (n*100).toFixed(d)+'%';
+const fmtDec = (n,d=1) => n==null ? '—' : n.toFixed(d);
+function pctChange(cur,prev){ if(prev===0||prev==null||cur==null) return null; return (cur-prev)/prev; }
+function deltaPill(cur,prev,{invert=false,isPct=false,digits=1}={}){
+  const ch = isPct ? (cur-prev) : pctChange(cur,prev);
+  if(ch===null) return `<span class="kpi-delta flat">no comparison</span>`;
+  const good = invert ? ch<0 : ch>0;
+  const cls = Math.abs(ch)<0.001 ? 'flat' : (good?'pos':'neg');
+  const arrow = ch>0?'▲':(ch<0?'▼':'▬');
+  const val = isPct ? (Math.abs(ch*100).toFixed(digits)+' pt') : (Math.abs(ch*100).toFixed(digits)+'%');
+  return `<span class="kpi-delta ${cls}">${arrow} ${val} vs prev.</span>`;
+}
+function kpi(label, _unused, curFmt, cur, prev, opts={}){
+  const note = opts.note ? `<div class="kpi-note">${opts.note}</div>` : '';
+  const info = opts.info ? `<span class="info" title="${opts.info}">i</span>` : '';
+  const deltaHtml = opts.noDelta ? '' : deltaPill(cur,prev,opts);
+  return `<div class="card kpi">
+    <div class="kpi-label">${label}${info}</div>
+    <div class="kpi-val num">${curFmt}</div>
+    ${deltaHtml}
+    ${note}
+  </div>`;
+}
+function unavailCard(label, why){
+  return `<div class="card kpi">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-val unavailable">Data unavailable</div>
+    <div class="kpi-note">${why}</div>
+  </div>`;
+}
+function sectionTitle(text, tag){ return `<div class="section-title">${text}${tag?`<span class="tag">${tag}</span>`:''}</div>`; }
+function table(headers, rows, {rowAttr=()=>''} = {}){
+  return `<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th class="${h.num?'num':''}">${h.label}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map((r,i)=>`<tr ${rowAttr(r,i)}>${r.map((c,ci)=>`<td class="${headers[ci]&&headers[ci].num?'num':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ============ Sortable / paginated data table component ============
+   Every column head is clickable to sort (values are parsed out of the
+   rendered cell — numbers/currency/% sort numerically, text sorts
+   alphabetically); a footer lets the user pick page size (5–100) and
+   page through the rest. State lives in DT_STATE keyed by a generated
+   id, and a click only re-renders that one table's own <div>. */
+const DT_STATE = {};
+let DT_SEQ = 0;
+function dtParseVal(cell){
+  const text = String(cell).replace(/<[^>]*>/g,'').trim();
+  if(text===''||text==='—') return -Infinity;
+  const num = parseFloat(text.replace(/[^0-9.\-]/g,''));
+  return isNaN(num) ? text.toLowerCase() : num;
+}
+function dataTable(headers, rows, opts={}){
+  const id = 'dt'+(DT_SEQ++);
+  const sizes = opts.pageSizes || [5,10,15,20,25,50,100];
+  const defSize = opts.defaultSize || (rows.length<=10 ? (sizes.find(s=>s>=rows.length)||sizes[sizes.length-1]) : 10);
+  DT_STATE[id] = {
+    headers, rows, rowAttr: opts.rowAttr || (()=>''),
+    sortCol: opts.defaultSortCol!=null ? opts.defaultSortCol : null,
+    sortDir: opts.defaultSortDir || -1,
+    pageSize: defSize, page:0, sizes
+  };
+  return `<div id="${id}">${dtRender(id)}</div>`;
+}
+function dtRender(id){
+  const st = DT_STATE[id];
+  let rows = st.rows.slice();
+  if(st.sortCol!=null){
+    rows.sort((a,b)=>{
+      const av=dtParseVal(a[st.sortCol]), bv=dtParseVal(b[st.sortCol]);
+      if(typeof av==='number' && typeof bv==='number') return (av-bv)*st.sortDir;
+      return String(av).localeCompare(String(bv))*st.sortDir;
+    });
+  }
+  const totalPages = Math.max(1, Math.ceil(rows.length/st.pageSize));
+  st.page = Math.min(Math.max(0,st.page), totalPages-1);
+  const start = st.page*st.pageSize;
+  const pageRows = rows.slice(start, start+st.pageSize);
+  const headHtml = st.headers.map((h,i)=>{
+    const arrow = st.sortCol===i ? (st.sortDir===1?' ▲':' ▼') : '';
+    return `<th class="${h.num?'num':''} sortable" onclick="dtSort('${id}',${i})">${h.label}${arrow}</th>`;
+  }).join('');
+  const bodyHtml = pageRows.length ? pageRows.map((r,ri)=>`<tr ${st.rowAttr(r,start+ri)}>${r.map((c,ci)=>`<td class="${st.headers[ci]&&st.headers[ci].num?'num':''}">${c}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="${st.headers.length}" style="text-align:center;color:var(--ink-faint);padding:16px;">No rows</td></tr>`;
+  const sizeOpts = st.sizes.map(s=>`<option value="${s}" ${s===st.pageSize?'selected':''}>${s}</option>`).join('');
+  return `<div class="tablewrap"><table><thead><tr>${headHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>
+  <div class="dt-footer">
+    <span>Showing ${rows.length? (start+1):0}–${Math.min(start+st.pageSize,rows.length)} of ${rows.length}</span>
+    <span style="display:flex;align-items:center;gap:8px;">
+      <label>Rows: <select class="ctrl" style="padding:4px 6px;font-size:12px;" onchange="dtPageSize('${id}',this.value)">${sizeOpts}</select></label>
+      <button class="reset-link dt-nav" onclick="dtPage('${id}',-1)" ${st.page<=0?'disabled':''}>‹ Prev</button>
+      <span>Page ${st.page+1} / ${totalPages}</span>
+      <button class="reset-link dt-nav" onclick="dtPage('${id}',1)" ${st.page>=totalPages-1?'disabled':''}>Next ›</button>
+    </span>
+  </div>`;
+}
+function dtRefresh(id){ const el=document.getElementById(id); if(el) el.innerHTML = dtRender(id); }
+function dtSort(id,col){ const st=DT_STATE[id]; if(st.sortCol===col) st.sortDir=-st.sortDir; else { st.sortCol=col; st.sortDir=-1; } dtRefresh(id); }
+function dtPageSize(id,val){ const st=DT_STATE[id]; st.pageSize=parseInt(val,10); st.page=0; dtRefresh(id); }
+function dtPage(id,delta){ const st=DT_STATE[id]; st.page+=delta; dtRefresh(id); }
+function pill(text, kind){ return `<span class="tag-pill pill-${kind}">${text}</span>`; }
+function miniBarCell(label, val, max){
+  const pct = max>0 ? Math.max(2,Math.round(val/max*100)) : 0;
+  return `<div class="barcell"><span>${label}</span></div><div class="minibar"><i style="width:${pct}%"></i></div>`;
+}
+const CC_NAMES = {TH:'Thailand',GB:'United Kingdom',AU:'Australia',US:'United States',ZA:'South Africa',DE:'Germany',SG:'Singapore',IN:'India',KR:'South Korea',FR:'France',MY:'Malaysia',IT:'Italy',NL:'Netherlands',JP:'Japan',LK:'Sri Lanka',IR:'Iran',MA:'Morocco',RU:'Russia',OM:'Oman',IL:'Israel',KZ:'Kazakhstan',PL:'Poland',ES:'Spain',RO:'Romania',CA:'Canada',NO:'Norway',BE:'Belgium',BG:'Bulgaria',DK:'Denmark',UA:'Ukraine',NZ:'New Zealand',SA:'Saudi Arabia',BR:'Brazil',SE:'Sweden',BY:'Belarus',ID:'Indonesia',IE:'Ireland',EG:'Egypt',AE:'United Arab Emirates',CH:'Switzerland',CN:'China',GR:'Greece',AT:'Austria',PK:'Pakistan',TR:'Turkey',HK:'Hong Kong',BD:'Bangladesh',TW:'Taiwan',FI:'Finland',JO:'Jordan',KH:'Cambodia',MM:'Myanmar',PH:'Philippines',VN:'Vietnam',CY:'Cyprus'};
+function ccName(code){ return CC_NAMES[code]||code; }
+function locationBars(pairs, opts={}){
+  const top = pairs.slice().sort((a,b)=>b[1]-a[1]).slice(0, opts.limit||10);
+  const max = top.length ? top[0][1] : 1;
+  return `<div class="locbars">${top.map(([code,val])=>{
+    const label = opts.city ? code : ccName(code);
+    const pct = Math.max(2, Math.round(val/max*100));
+    return `<div class="locbar-row"><span>${label}</span><div class="locbar-track"><div class="locbar-fill" style="width:${pct}%"></div></div><span class="num">${fmtInt(val)}</span></div>`;
+  }).join('')}</div>`;
+}
+function insightCard(cat, title, body, why){
+  const catMap = {attention:'Attention Required', opportunity:'Opportunity', positive:'Positive Performance', information:'Information'};
+  return `<div class="insight ${cat}"><div class="stripe"></div><div class="insight-body">
+    <div class="insight-cat">${catMap[cat]}</div>
+    <h4>${title}</h4>
+    <p>${body}</p>
+    ${why?`<div class="why">${why}</div>`:''}
+  </div></div>`;
+}
+function sourceBar(items){
+  return `<div class="sourcebar">${items.map(([label,ok])=>`<span class="badge-src"><span class="${ok?'dot-live':'dot-off'}"></span>${label}</span>`).join('')}</div>`;
+}
+function placeholderCard(title, body){
+  return `<div class="placeholder-card"><h3>${title}</h3><p>${body}</p></div>`;
+}
+function sortRows(rows, key, desc=true){ return [...rows].sort((a,b)=> desc ? b[key]-a[key] : a[key]-b[key]); }
+
+/* Filter state (simple cross-page country filter for drill-down) */
+const FILTER = {country:null};
+function applyCountryFilter(name){
+  FILTER.country = FILTER.country===name ? null : name;
+  renderChips(); renderPage(STATE.page);
+}
+function renderChips(){
+  const holder = document.getElementById('chipHolder');
+  const bar = document.getElementById('filterbar');
+  const chips = [];
+  if(FILTER.country) chips.push(`<span class="chip">Country: ${FILTER.country} <button onclick="applyCountryFilter('${FILTER.country}')">×</button></span>`);
+  holder.innerHTML = chips.join('');
+  bar.classList.toggle('show', chips.length>0);
+}
+document.getElementById('resetFilters').onclick = ()=>{ FILTER.country=null; renderChips(); renderPage(STATE.page); };
+
+/* Custom PRIMARY and COMPARISON ranges — both REAL, computed live from DATA.ga4.trend
+   (daily sessions/users/revenue, available 2026-06-05 through 2026-09-03). The two named-preset
+   dropdowns (Last 7/14/30 Days, MTD, Previous Month, QTD, YTD / Previous Period, Previous Month,
+   Same Period Last Year) stay tied to the two structurally-pulled 30-day windows, since re-pulling
+   every breakdown table (channels, countries, rooms, promos, device, etc.) live per-preset is out
+   of scope for a static snapshot — picking "Custom Range" / "Custom Comparison" instead reveals a
+   real date picker and recomputes GA4 sessions/users/revenue for that exact window on Apply. */
+function trendAgg(fromISO, toISO){
+  const rows = DATA.ga4.trend.filter(r=>r.d>=fromISO && r.d<=toISO);
+  const sessions = rows.reduce((a,r)=>a+(r.sessions||0),0);
+  const users = rows.reduce((a,r)=>a+(r.users||0),0);
+  const revenue = rows.reduce((a,r)=>a+(r.rev||0),0);
+  return {sessions, users, revenue, days:rows.length, from:fromISO, to:toISO};
+}
+const PRIMARY = {mode:'Last 30 Days', customFrom:'2026-08-05', customTo:'2026-09-03'};
+const COMPARE = {mode:'Previous Period', customFrom:'2026-07-06', customTo:'2026-08-04'};
+
+document.getElementById('dateSelect').addEventListener('change', e=>{
+  const wrap = document.getElementById('customPrimaryWrap');
+  if(e.target.value==='Custom Range'){
+    wrap.style.display='flex';
+    PRIMARY.mode='Custom Range';
+  } else {
+    wrap.style.display='none';
+    if(e.target.value!=='Last 30 Days'){
+      document.getElementById('asOfLabel').textContent = `Breakdown tables (channels, countries, rooms, promotions, device, etc.) are fixed to the Last 30 Days pull — ${e.target.value} would need a fresh pull to break those down too. Showing Last 30 Days; use Custom Range for a real alternate primary window (GA4 sessions/users/revenue).`;
+      e.target.value='Last 30 Days';
+    }
+    PRIMARY.mode='Last 30 Days';
+  }
+  updateAsOfLabel();
+  renderPage(STATE.page);
+});
+document.getElementById('customPrimaryApply').addEventListener('click', ()=>{
+  PRIMARY.customFrom = document.getElementById('primaryFrom').value;
+  PRIMARY.customTo = document.getElementById('primaryTo').value;
+  updateAsOfLabel();
+  renderPage(STATE.page);
+});
+
+document.getElementById('compareSelect').addEventListener('change', e=>{
+  const wrap = document.getElementById('customCompareWrap');
+  if(e.target.value==='Custom Comparison'){
+    wrap.style.display='flex';
+    COMPARE.mode='Custom Comparison';
+  } else {
+    wrap.style.display='none';
+    if(e.target.value!=='Previous Period'){
+      document.getElementById('asOfLabel').textContent = `Structural breakdown pulls only distinguish "Previous Period" vs "Custom Comparison" — ${e.target.value} would need a fresh pull. Showing Previous Period; use Custom Comparison for a real alternate window.`;
+      e.target.value='Previous Period';
+    }
+    COMPARE.mode='Previous Period';
+  }
+  updateAsOfLabel();
+  renderPage(STATE.page);
+});
+document.getElementById('customCompareApply').addEventListener('click', ()=>{
+  COMPARE.customFrom = document.getElementById('customFrom').value;
+  COMPARE.customTo = document.getElementById('customTo').value;
+  updateAsOfLabel();
+  renderPage(STATE.page);
+});
+
+function updateAsOfLabel(){
+  const cur = PRIMARY.mode==='Custom Range' ? `custom ${PRIMARY.customFrom} → ${PRIMARY.customTo}` : DATA.periods.current.label;
+  const cmp = COMPARE.mode==='Custom Comparison' ? `custom ${COMPARE.customFrom} → ${COMPARE.customTo}` : DATA.periods.previous.label;
+  const anyCustom = PRIMARY.mode==='Custom Range' || COMPARE.mode==='Custom Comparison';
+  document.getElementById('asOfLabel').textContent = `${cur} vs ${cmp}${anyCustom ? ' (GA4 sessions/users/revenue only for custom windows)' : ''}`;
+}
+updateAsOfLabel();
+
+/* ============================ nav config ============================ */
+const NAV = [
+  {group:'Overview', items:[
+    {id:'exec', label:'Executive Summary'},
+  ]},
+  {group:'Channels', items:[
+    {id:'ga4', label:'Website / GA4'},
+    {id:'gbp', label:'Google Business Profile', off:true},
+    {id:'gads', label:'Google Ads'},
+    {id:'fb', label:'Facebook'},
+    {id:'ig', label:'Instagram'},
+    {id:'meta', label:'Meta Ads'},
+  ]},
+  {group:'Cross-channel intelligence', items:[
+    {id:'markets', label:'Markets & Geography'},
+    {id:'search', label:'Search Intelligence'},
+    {id:'promos', label:'Promotions & Campaigns'},
+    {id:'funnel', label:'Conversion Funnel'},
+    {id:'insights', label:'Insights & Recommendations'},
+  ]}
+];
+const TITLES = {exec:'Executive Summary', ga4:'Website / GA4', gbp:'Google Business Profile', gads:'Google Ads',
+  fb:'Facebook', ig:'Instagram', meta:'Meta Ads', markets:'Markets & Geography', search:'Search Intelligence',
+  promos:'Promotions & Campaign Performance', funnel:'Conversion Funnel', insights:'Insights & Recommendations'};
+
+const STATE = {page:'exec'};
+
+function buildNav(){
+  const el = document.getElementById('navpages');
+  el.innerHTML = NAV.map(g=>`<div class="navgroup-label">${g.group}</div>` + g.items.map(it=>
+    `<button class="navbtn" data-id="${it.id}"><span class="dot"></span>${it.label}</button>`
+  ).join('')).join('');
+  el.querySelectorAll('.navbtn').forEach(btn=>{
+    btn.onclick = ()=>{ STATE.page = btn.dataset.id; renderPage(STATE.page); };
+  });
+}
+function setActiveNav(id){
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  document.getElementById('pageTitle').textContent = TITLES[id];
+}
+</script>
+<script>
+/* ============================ PAGE: Executive Summary ============================ */
+function render_exec(){
+  const g = DATA.ga4.overview, gc=g.current, gp=g.previous;
+  const ig=DATA.ig, igc=ig.current, igp=ig.previous;
+  const m=DATA.meta.overview, mc=m.current, mp=m.previous;
+  const convRateC = gc.bookings/gc.sessions, convRateP = gp.bookings/gp.sessions;
+  const igEngRateC = igc.interactions/igc.reach, igEngRateP = igp.interactions/igp.reach;
+
+  let html = '';
+  html += sourceBar([['GA4 — live',true],['Google Business Profile — live via Metricool',true],['Google Ads — live',true],['Google Search Console — live',true],['Facebook Page — followers only',true],['Instagram — live',true],['Meta Ads — live',true]]);
+
+  html += `<div class="page-desc" style="margin-bottom:16px;">A 30-second read for the GM, DOSM or Marketing Manager: what happened, which markets and channels are carrying the business, and what needs a decision this week. Full detail lives on the pages to the left.</div>`;
+
+  if(PRIMARY.mode==='Custom Range' || COMPARE.mode==='Custom Comparison'){
+    const curW = PRIMARY.mode==='Custom Range' ? trendAgg(PRIMARY.customFrom, PRIMARY.customTo) : {sessions:gc.sessions, users:gc.users, revenue:gc.revenue, from:DATA.periods.current.label, to:'', days:DATA.periods.current.days};
+    const cmpW = COMPARE.mode==='Custom Comparison' ? trendAgg(COMPARE.customFrom, COMPARE.customTo) : {sessions:gp.sessions, users:gp.users, revenue:gp.revenue, from:DATA.periods.previous.label, to:'', days:DATA.periods.previous.days};
+    const curLabel = PRIMARY.mode==='Custom Range' ? `${curW.from} → ${curW.to} (${curW.days}d)` : DATA.periods.current.label;
+    const cmpLabel = COMPARE.mode==='Custom Comparison' ? `${cmpW.from} → ${cmpW.to} (${cmpW.days}d)` : DATA.periods.previous.label;
+    html += sectionTitle('Website — Custom Range', `${curLabel} vs ${cmpLabel}`);
+    html += `<div class="grid kpi-row">
+      ${kpi('Sessions','',fmtInt(curW.sessions),curW.sessions,cmpW.sessions)}
+      ${kpi('Users','',fmtInt(curW.users),curW.users,cmpW.users)}
+      ${kpi('Revenue (THB)','',fmtTHB(curW.revenue),curW.revenue,cmpW.revenue)}
+    </div>
+    <div class="kpi-note" style="margin-bottom:8px;">Recomputed live from GA4's daily trend data — only sessions, users and revenue support an arbitrary custom range; breakdown tables below (channels, countries, rooms, etc.) still reflect the fixed Aug 5–Sep 3 vs Jul 6–Aug 4 structural pull.</div>`;
+  }
+  html += sectionTitle('Website (GA4)');
+  html += `<div class="grid kpi-row">
+    ${kpi('Users','info', fmtInt(gc.users), gc.users, gp.users, {})}
+    ${kpi('Sessions','', fmtInt(gc.sessions), gc.sessions, gp.sessions)}
+    ${kpi('Engaged Sessions','', fmtInt(gc.engagedSessions), gc.engagedSessions, gp.engagedSessions)}
+    ${kpi('Bookings (purchase)','', fmtInt(gc.bookings), gc.bookings, gp.bookings, {info:'GA4 "purchase" key event — a confirmed booking-engine reservation.'})}
+    ${kpi('Booking Conversion Rate','', fmtPct(convRateC), convRateC, convRateP, {isPct:true,digits:2})}
+    ${kpi('Booking Engine Clicks','', fmtInt(gc.bookingEngineClicks), null, null, {noDelta:true, note:'begin_checkout, this 30-day period — no prior-period figure captured in this pull.'})}
+    ${kpi('Booking Revenue (THB)','', fmtTHB(gc.revenue), gc.revenue, gp.revenue, {info:'GA4 purchase revenue, booking-engine currency as reported (THB).'})}
+  </div>`;
+
+  { const bc = DATA.gbp.overview.current, bp = DATA.gbp.overview.previous;
+    html += sectionTitle('Google Business Profile', 'via Metricool');
+    html += `<div class="grid kpi-row">
+      ${kpi('Search Reach','',fmtInt(bc.reachSearch),bc.reachSearch,bp.reachSearch)}
+      ${kpi('Maps Reach','',fmtInt(bc.reachMaps),bc.reachMaps,bp.reachMaps)}
+      ${kpi('Website Clicks','',fmtInt(bc.websiteClicks),bc.websiteClicks,bp.websiteClicks)}
+      ${kpi('Calls','',fmtInt(bc.callClicks),bc.callClicks,bp.callClicks)}
+      ${kpi('Direction Requests','',fmtInt(bc.directionsClicks),bc.directionsClicks,bp.directionsClicks)}
+      ${kpi('Avg. Rating','',fmtDec(bc.avgRating,2),bc.avgRating,bp.avgRating)}
+    </div>`;
+  }
+
+  { const ac = DATA.gads.overview.current, ap = DATA.gads.overview.previous;
+    const actr = ac.impressions>0?ac.clicks/ac.impressions:null, aroas = ac.cost>0?ac.revenue/ac.cost:null, aroasP = ap.cost>0?ap.revenue/ap.cost:null;
+    html += sectionTitle('Google Ads', 'all 8 campaigns paused — see page for detail');
+    html += `<div class="grid kpi-row">
+      ${kpi('Spend (THB)','',fmtTHB(ac.cost),ac.cost,ap.cost,{invert:true})}
+      ${kpi('Clicks / CTR','',fmtInt(ac.clicks)+' / '+(actr==null?'—':fmtPct(actr,2)),ac.clicks,ap.clicks)}
+      ${kpi('Conversions','',fmtDec(ac.conversions,0),ac.conversions,ap.conversions)}
+      ${kpi('ROAS','',aroas==null?'—':fmtDec(aroas,1)+'x',aroas,aroasP)}
+    </div>`;
+  }
+
+  html += sectionTitle('Social Media');
+  html += `<div class="two-col">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:10px;font-family:Fraunces,serif;font-size:14.5px;">Facebook Page</div>
+      <div class="grid kpi-row" style="grid-template-columns:repeat(2,1fr);">
+        ${kpi('Followers','', fmtInt(DATA.fbPage.followers), null,null,{noDelta:true,note:'Point-in-time count.'})}
+        ${unavailCard('Reach / Engagement / Page Visits','Page Insights API is not returning data for this Page — read_insights permission likely needs re-granting.')}
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:10px;font-family:Fraunces,serif;font-size:14.5px;">Instagram</div>
+      <div class="grid kpi-row" style="grid-template-columns:repeat(2,1fr);">
+        ${kpi('Reach','', fmtInt(igc.reach), igc.reach, igp.reach)}
+        ${kpi('Engagement Rate','', fmtPct(igEngRateC,2), igEngRateC, igEngRateP, {isPct:true,digits:2,info:'Interactions ÷ reach.'})}
+        ${kpi('Profile Visits (link taps)','', fmtInt(igc.profileTaps), igc.profileTaps, igp.profileTaps)}
+        ${kpi('Followers','', fmtInt(ig.profile.followers), null,null,{noDelta:true,note:'Point-in-time count — daily follower deltas not returned by this source.'})}
+      </div>
+    </div>
+  </div>`;
+
+  html += sectionTitle('Meta Ads');
+  html += `<div class="grid kpi-row">
+    ${kpi('Active Campaigns','', mc.activeCampaigns, null,null,{noDelta:true})}
+    ${kpi('Spend (THB)','', fmtTHB(mc.spend), mc.spend, mp.spend, {invert:true})}
+    ${kpi('Reach','', fmtInt(mc.reach), mc.reach, mp.reach)}
+    ${kpi('Link Clicks','', fmtInt(mc.linkClicks), mc.linkClicks, mp.linkClicks)}
+    ${kpi('Landing Page Views','', fmtInt(mc.lpv), mc.lpv, mp.lpv)}
+    ${kpi('Cost per LPV (THB)','', fmtTHB(mc.spend/mc.lpv), mc.spend/mc.lpv, mp.spend/mp.lpv, {invert:true})}
+  </div>`;
+
+  // Executive trend
+  html += sectionTitle('Executive Trend');
+  html += `<div class="chart-card">
+    <div class="chart-head">
+      <h3>Daily performance, last 90 days</h3>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select class="ctrl" id="trendMetric" style="font-size:12px;padding:5px 24px 5px 9px;">
+          <option value="sessions">Website Sessions</option>
+          <option value="rev">Booking Revenue (THB)</option>
+          <option value="users">Users</option>
+        </select>
+        <div class="viewtoggle" id="trendGrain">
+          <button data-g="day" class="active">Daily</button>
+          <button data-g="week">Weekly</button>
+          <button data-g="month">Monthly</button>
+        </div>
+      </div>
+    </div>
+    <canvas id="execTrendChart" height="90"></canvas>
+    <div class="kpi-note" style="margin-top:8px;">Google Ads spend/conversions and Meta spend/LPV trend lines will join this chart once daily-level pulls are wired in for those sources — this build ships GA4 daily granularity live.</div>
+  </div>`;
+
+  // Market overview
+  html += sectionTitle('Executive Market Overview');
+  html += `<div class="section-sub">Top countries by website sessions, GA4 conversions and Meta Ads investment this period. Click a row anywhere in the dashboard to filter by that country.</div>`;
+  html += renderMarketTable(DATA.ga4.countries.current, DATA.ga4.countries.previous, true);
+
+  // Channel contribution
+  html += sectionTitle('Executive Channel Contribution');
+  html += `<div class="section-sub">Which channels bring people to the site versus which channels turn them into bookings.</div>`;
+  html += renderChannelTable(DATA.ga4.channels.current, DATA.ga4.channels.previous);
+
+  // Best sellers
+  html += sectionTitle('Best Sellers', 'GA4 ecommerce, item scope');
+  html += `<div class="section-sub">Which rooms and add-ons are actually converting cart adds into paid bookings.</div>`;
+  html += renderBestSellersCard();
+
+  // Insights
+  html += sectionTitle('Executive Insights');
+  const top = EXEC_INSIGHTS;
+  html += `<div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">${top.map(i=>insightCard(i.cat,i.title,i.body,i.why)).join('')}</div>`;
+  html += `<div class="kpi-note" style="margin-top:10px;">Full list with recommended actions on the <a href="#" onclick="STATE.page='insights';renderPage('insights');return false;" style="color:var(--moss);text-decoration:underline;">Insights & Recommendations</a> page.</div>`;
+
+  return html;
+}
+
+function renderMarketTable(curArr, prevArr, isExec){
+  const prevMap = Object.fromEntries(prevArr.map(r=>[r.c,r]));
+  let rows = sortRows(curArr,'sessions');
+  const maxSessions = Math.max(...rows.map(r=>r.sessions));
+  const body = rows.map(r=>{
+    const p = prevMap[r.c];
+    const sessChange = p ? pctChange(r.sessions,p.sessions) : null;
+    const bookChange = p ? pctChange(r.bookings,p.bookings) : null;
+    const rate = r.bookings/r.sessions, prevRate = p? p.bookings/p.sessions : null;
+    let flag = '';
+    if(p){
+      if(sessChange>0.15 && bookChange!==null && bookChange>0.15) flag = pill('Growing','good');
+      else if(sessChange!==null && sessChange<-0.15 && bookChange!==null && bookChange<-0.15) flag = pill('Declining','bad');
+      else if(r.sessions>300 && rate<0.006) flag = pill('Weak convert','warn');
+      else if(rate>0.015 && r.sessions>50) flag = pill('Strong convert','good');
+    }
+    return [
+      `<span style="cursor:pointer;font-weight:${FILTER.country===r.c?'700':'500'};" onclick="applyCountryFilter('${r.c}')">${r.c}</span>`,
+      miniBarCell(fmtInt(r.sessions), r.sessions, maxSessions),
+      p? (sessChange>=0?'+':'')+fmtPct(sessChange) : '—',
+      fmtInt(r.bookings),
+      fmtPct(rate,2),
+      fmtTHB(r.revenue),
+      flag
+    ];
+  });
+  const filtered = FILTER.country ? body.filter(r=>r[0].includes(FILTER.country)) : body;
+  return dataTable([{label:'Country'},{label:'Sessions',num:1},{label:'Δ Sessions',num:1},{label:'Bookings',num:1},{label:'Conv. Rate',num:1},{label:'Revenue',num:1},{label:'Flag'}], filtered);
+}
+
+function renderChannelTable(curArr, prevArr){
+  const totalSessions = curArr.reduce((a,r)=>a+r.sessions,0);
+  const totalBookings = curArr.reduce((a,r)=>a+r.bookings,0);
+  const prevMap = Object.fromEntries(prevArr.map(r=>[r.ch,r]));
+  const rows = sortRows(curArr,'sessions').map(r=>{
+    const p = prevMap[r.ch];
+    const rate = r.bookings/r.sessions;
+    return [
+      r.ch, fmtInt(r.sessions), fmtPct(r.sessions/totalSessions), fmtInt(r.bookings),
+      fmtPct(rate,2), r.revenue?fmtTHB(r.revenue):'—',
+      p? (pctChange(r.sessions,p.sessions)>=0?'+':'')+fmtPct(pctChange(r.sessions,p.sessions)) : '—'
+    ];
+  });
+  return dataTable([{label:'Channel'},{label:'Sessions',num:1},{label:'% of Traffic',num:1},{label:'Bookings',num:1},{label:'Conv. Rate',num:1},{label:'Revenue',num:1},{label:'Δ Sessions',num:1}], rows);
+}
+function renderSourceMediumTable(){
+  const curArr = DATA.ga4.sourceMedium.current, prevArr = DATA.ga4.sourceMedium.previous;
+  const totalSessions = curArr.reduce((a,r)=>a+r.sessions,0);
+  const prevMap = Object.fromEntries(prevArr.map(r=>[r.sm,r]));
+  const smRows = sortRows(curArr,'sessions').map(r=>{
+    const p = prevMap[r.sm];
+    const rate = r.bookings/r.sessions;
+    return [
+      r.sm, fmtInt(r.sessions), fmtPct(r.sessions/totalSessions), fmtInt(r.bookings),
+      fmtPct(rate,2), r.revenue?fmtTHB(r.revenue):'—',
+      p? (pctChange(r.sessions,p.sessions)>=0?'+':'')+fmtPct(pctChange(r.sessions,p.sessions)) : '—'
+    ];
+  });
+  return dataTable([{label:'Source / Medium'},{label:'Sessions',num:1},{label:'% of Traffic',num:1},{label:'Bookings',num:1},{label:'Conv. Rate',num:1},{label:'Revenue',num:1},{label:'Δ Sessions',num:1}], smRows);
+}
+function renderAcqTable(dim){
+  if(dim==='sm'){
+    return renderSourceMediumTable() + `<div class="kpi-note" style="margin-top:8px;">"ghotelads" = Google Hotel Ads free listing traffic. "triptease_attract / meta" = the Triptease rate-intelligence widget, unusually high engagement rate (87%). "(not set)" is largely in-app booking-engine postbacks with no referrer, not a real traffic source.</div>`;
+  }
+  return renderChannelTable(DATA.ga4.channels.current, DATA.ga4.channels.previous)
+    + `<div class="kpi-note" style="margin-top:8px;">Channel Group rolls sources up into GA4's default groupings — switch to Source / Medium above to see exactly where traffic within a channel is coming from (e.g. which paid social source, which search engine).</div>`;
+}
+function initGa4AcqToggle(){
+  const wrap = document.getElementById('acqDim');
+  if(!wrap) return;
+  wrap.querySelectorAll('button').forEach(b=>{
+    b.onclick = ()=>{
+      wrap.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const target = document.getElementById('acqTableWrap');
+      if(target) target.innerHTML = renderAcqTable(b.dataset.dim);
+    };
+  });
+}
+
+const EXEC_INSIGHTS = [
+  {cat:'attention', title:'Meta Ads is spending less and getting proportionally less for it', body:'Spend fell 9.6% (฿25,969 → ฿23,471) but Landing Page Views fell faster, down 19.7% (4,477 → 3,594) — cost per LPV rose 12.6% to ฿6.53.', why:'<b>Investigate:</b> which of the two Traffic-objective campaigns lost efficiency, and whether audience fatigue (frequency) or creative is the driver.'},
+  {cat:'opportunity', title:'New Zealand is the top Meta Ads market by spend but barely shows up in bookings', body:'NZ received ฿4,274 in Meta spend this period — more than any other country — yet GA4 recorded only 1 completed booking from New Zealand.', why:'<b>Investigate:</b> NZ audience targeting, landing page relevance, and whether NZ demand is genuinely lower-intent or a tracking gap.'},
+  {cat:'positive', title:'United States is the standout growth market', body:'US sessions +35.7% (768 → 1,042), bookings +25% (8 → 10), and booking revenue +96.8% (฿237,804 → ฿468,010) — the strongest combined growth of any market this period.', why:'<b>Recommend:</b> test a dedicated US-facing Meta or Google Ads push while momentum is building.'},
+  {cat:'attention', title:'Instagram reach fell 82% month over month', body:'Reach dropped from 1.30M to 230K and views from 1.53M to 396K. Engagement rate on reach actually improved (0.37% vs 0.08%), so content quality held — but raw distribution collapsed.', why:'<b>Investigate:</b> posting cadence, Reels share of output, and whether a single viral post inflated the prior period.'},
+  {cat:'attention', title:'Mobile carries the traffic, desktop carries the bookings', body:'Mobile is 56% of sessions (5,445) but only 36% of bookings (31 of 85) — converting at 0.57%. Desktop is 42% of sessions but 61% of bookings, converting at 1.29%, more than double the mobile rate.', why:'<b>Investigate:</b> mobile booking-engine friction — rate-step load time, form length, payment step on small screens.'},
+  {cat:'opportunity', title:'"Stay 5 Pay 4" is a small promotion converting attention into intent', body:'Landing sessions fell 62% (26 → 10) but booking-engine intent events held near flat (42 → 45) — intent per visit nearly tripled. The page is fed directly by a small, still-active Meta campaign of the same name.', why:'<b>Recommend:</b> test a modest budget increase on the Stay Pay Meta campaign and confirm the offer is still commercially live.'},
+];
+</script>
+<script>
+/* ============================ PAGE: GA4 ============================ */
+function render_ga4(){
+  const g=DATA.ga4.overview, gc=g.current, gp=g.previous;
+  const convC=gc.bookings/gc.sessions, convP=gp.bookings/gp.sessions;
+  let html = sourceBar([['GA4 property: www.mandaravaresort.com — live',true]]);
+  html += `<div class="page-desc" style="margin-bottom:16px;">Full-detail website behaviour: acquisition, geography, room and promotion performance, content, and device.</div>`;
+
+  html += sectionTitle('Main KPIs');
+  html += `<div class="grid kpi-row">
+    ${kpi('Users','',fmtInt(gc.users),gc.users,gp.users)}
+    ${kpi('New Users','',fmtInt(gc.newUsers),gc.newUsers,gp.newUsers)}
+    ${kpi('Sessions','',fmtInt(gc.sessions),gc.sessions,gp.sessions)}
+    ${kpi('Engaged Sessions','',fmtInt(gc.engagedSessions),gc.engagedSessions,gp.engagedSessions)}
+    ${kpi('Engagement Rate','',fmtPct(gc.engagedSessions/gc.sessions,1),gc.engagedSessions/gc.sessions,gp.engagedSessions/gp.sessions,{isPct:true})}
+    ${kpi('Booking Engine Clicks','',fmtInt(gc.bookingEngineClicks),null,null,{noDelta:true,note:'begin_checkout, current 30 days.'})}
+    ${kpi('Room Selected (add_to_cart)','',fmtInt(gc.roomSelected),null,null,{noDelta:true})}
+    ${kpi('Bookings (purchase)','',fmtInt(gc.bookings),gc.bookings,gp.bookings)}
+    ${kpi('Booking Conversion Rate','',fmtPct(convC,2),convC,convP,{isPct:true,digits:2})}
+    ${kpi('Booking Revenue (THB)','',fmtTHB(gc.revenue),gc.revenue,gp.revenue)}
+    ${kpi('Avg. Booking Value (THB)','',fmtTHB(gc.revenue/gc.bookings),gc.revenue/gc.bookings,gp.revenue/gp.bookings,{info:'Booking revenue ÷ bookings.'})}
+  </div>`;
+
+  html += sectionTitle('Traffic Acquisition');
+  html += `<div class="section-sub" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span>Sessions, engagement and bookings by acquisition dimension.</span>
+    <div class="viewtoggle" id="acqDim">
+      <button data-dim="channel" class="active">Channel Group</button>
+      <button data-dim="sm">Source / Medium</button>
+    </div>
+  </div>`;
+  html += `<div id="acqTableWrap">${renderAcqTable('channel')}</div>`;
+
+  html += sectionTitle('Country Performance');
+  html += `<div class="section-sub">Click a country to filter this and other pages.</div>`;
+  html += `<div class="chart-card"><canvas id="ga4CountryChart" height="70"></canvas></div>`;
+  html += renderMarketTable(DATA.ga4.countries.current, DATA.ga4.countries.previous, false);
+
+  html += sectionTitle('Room Type Performance');
+  html += `<div class="mgmt-note">Most-viewed and highest-intent are shown separately on purpose — the room with the most views is not automatically the best performer.</div>`;
+  html += `<div class="two-col">
+    <div>
+      <div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Most Viewed</div>
+      ${renderRoomTable(sortRows(DATA.ga4.rooms.current,'views'))}
+    </div>
+    <div>
+      <div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Highest Booking-Intent Rate</div>
+      ${renderRoomTable([...DATA.ga4.rooms.current].sort((a,b)=>(b.intentEvents/b.views)-(a.intentEvents/a.views)))}
+    </div>
+  </div>`;
+
+  html += sectionTitle('Best Sellers', 'GA4 ecommerce, item scope — cart adds, purchases, revenue');
+  html += `<div class="section-sub">Same room list as above, viewed as a funnel: added to cart → purchased → revenue. Includes on-site add-ons (transfers, spa, breakfast) that Room Type Performance doesn't cover.</div>`;
+  html += renderBestSellersCard();
+
+  html += sectionTitle('Promotion Performance');
+  html += renderPromoTable(DATA.ga4.promotions.current, DATA.ga4.promotions.previous);
+  html += `<div class="kpi-note" style="margin-top:8px;">Highest intent-per-visit: <b>Stay 5 Pay 4</b> (4.5 intent events per session). Highest traffic: the promotions hub page itself. "Renovation Notice" carries high bounce because it's informational, not a sellable offer.</div>`;
+
+  html += sectionTitle('Website Content Performance', 'top landing pages');
+  html += renderContentTable(DATA.ga4.landingPages.current);
+
+  html += sectionTitle('Device Performance');
+  html += `<div class="chart-card"><canvas id="ga4DeviceChart" height="55"></canvas></div>`;
+  html += renderDeviceTable(DATA.ga4.device.current, DATA.ga4.device.previous);
+  html += `<div class="mgmt-note">Mobile converts at 0.57% versus desktop's 1.29% — a possible booking-engine friction point on small screens (see Insights &amp; Recommendations).</div>`;
+
+  return html;
+}
+let ga4CountryChart=null, ga4DeviceChart=null;
+function initGa4Charts(){
+  const styles = getComputedStyle(document.documentElement);
+  const moss = styles.getPropertyValue('--moss').trim();
+  const sand = styles.getPropertyValue('--sand').trim();
+  const ink = styles.getPropertyValue('--ink-soft').trim();
+  const border = styles.getPropertyValue('--border-soft').trim();
+
+  const cCtx = document.getElementById('ga4CountryChart');
+  if(cCtx){
+    const top = sortRows(DATA.ga4.countries.current,'sessions').slice(0,10);
+    if(ga4CountryChart) ga4CountryChart.destroy();
+    ga4CountryChart = new Chart(cCtx, {
+      type:'bar',
+      data:{labels:top.map(r=>r.c), datasets:[{label:'Sessions', data:top.map(r=>r.sessions), backgroundColor:moss, borderRadius:5, maxBarThickness:22}]},
+      options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{
+        x:{ticks:{color:ink,font:{size:10}},grid:{color:border}},
+        y:{ticks:{color:styles.getPropertyValue('--ink').trim(),font:{size:11}},grid:{display:false}}
+      }}
+    });
+  }
+  const dCtx = document.getElementById('ga4DeviceChart');
+  if(dCtx){
+    const rows = DATA.ga4.device.current;
+    if(ga4DeviceChart) ga4DeviceChart.destroy();
+    ga4DeviceChart = new Chart(dCtx, {
+      type:'bar',
+      data:{labels:rows.map(r=>r.d), datasets:[
+        {label:'Sessions', data:rows.map(r=>r.sessions), backgroundColor:moss, borderRadius:5, maxBarThickness:44, yAxisID:'y'},
+        {label:'Bookings', data:rows.map(r=>r.bookings||0), backgroundColor:sand, borderRadius:5, maxBarThickness:44, yAxisID:'y1'}
+      ]},
+      options:{responsive:true, plugins:{legend:{display:true,labels:{color:ink,font:{size:11}}}}, scales:{
+        x:{ticks:{color:ink,font:{size:11}},grid:{display:false}},
+        y:{position:'left',ticks:{color:ink,font:{size:10}},grid:{color:border},title:{display:true,text:'Sessions',color:ink,font:{size:10}}},
+        y1:{position:'right',ticks:{color:ink,font:{size:10}},grid:{display:false},title:{display:true,text:'Bookings',color:ink,font:{size:10}}}
+      }}
+    });
+  }
+}
+function renderBestSellersCard(opts={}){
+  const rows = sortRows(DATA.ga4.items.current,'revenue');
+  const maxCart = Math.max(...rows.map(r=>r.addToCart));
+  const maxPurchased = Math.max(...rows.map(r=>r.purchased));
+  const maxRevenue = Math.max(...rows.map(r=>r.revenue));
+  const body = rows.map(r=>[
+    r.item,
+    miniBarCell(fmtInt(r.addToCart), r.addToCart, maxCart),
+    miniBarCell(fmtInt(r.purchased), r.purchased, maxPurchased),
+    miniBarCell(fmtTHB(r.revenue), r.revenue, maxRevenue)
+  ]);
+  const table = dataTable([{label:'Item Name'},{label:'Added to Cart',num:1},{label:'Purchased',num:1},{label:'Item Revenue',num:1}], body, {defaultSize:opts.defaultSize||10});
+  return `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-weight:600;font-size:15px;">Best Sellers</div>
+      <span class="tag">GA4 ecommerce · item scope</span>
+    </div>
+    ${table}
+    <div class="kpi-note" style="margin-top:8px;">Room-type inventory dominates both cart adds and revenue; add-ons (transfers, spa, breakfast) show low volume but near-100% purchase-through on Airport Transfer and Thai Cooking Class.</div>
+  </div>`;
+}
+function renderRoomTable(rows){
+  const body = rows.map(r=>[r.room, fmtInt(r.views), fmtPct(r.engRate,0), fmtPct(r.bounce,0), fmtInt(r.intentEvents), fmtPct(r.intentEvents/r.views,0), r.bookings?fmtInt(r.bookings):'—']);
+  return dataTable([{label:'Room'},{label:'Views',num:1},{label:'Eng. Rate',num:1},{label:'Bounce',num:1},{label:'Intent Events',num:1},{label:'Intent/View',num:1},{label:'Bookings',num:1}], body);
+}
+function renderPromoTable(cur,prev){
+  const prevMap = Object.fromEntries(prev.map(r=>[r.promo,r]));
+  const rows = sortRows(cur,'views').map(r=>{
+    const p = prevMap[r.promo];
+    return [r.promo, fmtInt(r.views), fmtPct(r.engRate,0), fmtPct(r.bounce,0), fmtInt(r.intentEvents), fmtDec(r.intentEvents/Math.max(r.views,1),1), p?((pctChange(r.views,p.views)>=0?'+':'')+fmtPct(pctChange(r.views,p.views))):'—'];
+  });
+  return dataTable([{label:'Promotion'},{label:'Views',num:1},{label:'Eng. Rate',num:1},{label:'Bounce',num:1},{label:'Intent Events',num:1},{label:'Intent/View',num:1},{label:'Δ Views',num:1}], rows);
+}
+function renderContentTable(rows){
+  const body = sortRows(rows,'sessions').map(r=>[r.p, fmtInt(r.sessions), fmtPct(r.engRate,0), fmtPct(r.bounce,0), r.bookings?fmtInt(r.bookings):'—']);
+  return dataTable([{label:'Page'},{label:'Sessions',num:1},{label:'Eng. Rate',num:1},{label:'Bounce Rate',num:1},{label:'Bookings',num:1}], body);
+}
+function renderDeviceTable(cur,prev){
+  const prevMap = Object.fromEntries(prev.map(r=>[r.d,r]));
+  const totalSessions = cur.reduce((a,r)=>a+r.sessions,0);
+  const totalBookings = cur.reduce((a,r)=>a+(r.bookings||0),0);
+  const rows = cur.map(r=>{
+    const p = prevMap[r.d];
+    const rate = (r.bookings||0)/r.sessions;
+    return [r.d, fmtInt(r.sessions), fmtPct(r.sessions/totalSessions), fmtPct(r.engRate,0), r.bookings!=null?fmtInt(r.bookings):'—', r.bookings!=null?fmtPct(rate,2):'—', p?((pctChange(r.sessions,p.sessions)>=0?'+':'')+fmtPct(pctChange(r.sessions,p.sessions))):'—'];
+  });
+  return dataTable([{label:'Device'},{label:'Sessions',num:1},{label:'% Traffic',num:1},{label:'Eng. Rate',num:1},{label:'Bookings',num:1},{label:'Conv. Rate',num:1},{label:'Δ Sessions',num:1}], rows);
+}
+
+/* ============================ PAGE: GBP (unavailable) ============================ */
+function render_gbp(){
+  const g = DATA.gbp.overview, gc = g.current, gp = g.previous;
+  let html = sourceBar([['Google Business Profile — live via Metricool',true],['Insightful Pipe GBP source',false]]);
+  html += `<div class="mgmt-note">${DATA.gbp.note}</div>`;
+  html += sectionTitle('Main KPIs');
+  html += `<div class="grid kpi-row">
+    ${kpi('Search Reach','',fmtInt(gc.reachSearch),gc.reachSearch,gp.reachSearch,{info:'Times the profile was shown on Google Search.'})}
+    ${kpi('Maps Reach','',fmtInt(gc.reachMaps),gc.reachMaps,gp.reachMaps,{info:'Times the profile was shown on Google Maps.'})}
+    ${kpi('Website Clicks','',fmtInt(gc.websiteClicks),gc.websiteClicks,gp.websiteClicks)}
+    ${kpi('Call Clicks','',fmtInt(gc.callClicks),gc.callClicks,gp.callClicks)}
+    ${kpi('Direction Requests','',fmtInt(gc.directionsClicks),gc.directionsClicks,gp.directionsClicks)}
+    ${kpi('Avg. Review Rating','',fmtDec(gc.avgRating,2),gc.avgRating,gp.avgRating,{info:`${gc.reviewsCount} reviews counted in this period.`})}
+  </div>`;
+  html += sectionTitle('Reach vs Action', 'how visibility converts into a website click, call or direction request');
+  const totalReach = gc.reachSearch+gc.reachMaps, totalReachP = gp.reachSearch+gp.reachMaps;
+  const totalActions = gc.websiteClicks+gc.callClicks+gc.directionsClicks, totalActionsP = gp.websiteClicks+gp.callClicks+gp.directionsClicks;
+  const actionRate = totalActions/totalReach, actionRateP = totalActionsP/totalReachP;
+  html += `<div class="three-col">
+    <div class="card"><div style="font-weight:600;">Total Reach</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(totalReach)}</div><div class="kpi-note">Search + Maps, this period vs ${fmtInt(totalReachP)} prior — Maps reach specifically fell 35% (${fmtInt(gp.reachMaps)} → ${fmtInt(gc.reachMaps)}).</div></div>
+    <div class="card"><div style="font-weight:600;">Total Actions</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(totalActions)}</div><div class="kpi-note">Website clicks + calls + directions, vs ${fmtInt(totalActionsP)} prior.</div></div>
+    <div class="card"><div style="font-weight:600;">Action Rate</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtPct(actionRate,2)}</div><div class="kpi-note">Actions ÷ reach, vs ${fmtPct(actionRateP,2)} prior — roughly flat despite the reach decline, meaning quality-of-visibility held even as raw reach shrank.</div></div>
+  </div>`;
+  html += sectionTitle('Not yet available from this source');
+  html += placeholderCard('Search queries & profile-level breakdowns',
+    'Metricool\'s GBP connector returns daily aggregate reach/action/review metrics but not the underlying "how customers search for you" query list, category-level breakdowns, or Q&A/post-level engagement — those require the native Insightful Pipe GBP connector once it\'s linked, or the GBP dashboard directly.');
+  return html;
+}
+/* ============================ PAGE: Google Ads ============================ */
+function render_gads(){
+  const g = DATA.gads;
+  const gc = g.overview.current, gp = g.overview.previous;
+  const ctrC = gc.impressions>0 ? gc.clicks/gc.impressions : null;
+  const ctrP = gp.impressions>0 ? gp.clicks/gp.impressions : null;
+  const cpcC = gc.clicks>0 ? gc.cost/gc.clicks : null;
+  const cpcP = gp.clicks>0 ? gp.cost/gp.clicks : null;
+  const cpaC = gc.conversions>0 ? gc.cost/gc.conversions : null;
+  const cpaP = gp.conversions>0 ? gp.cost/gp.conversions : null;
+  const roasC = gc.cost>0 ? gc.revenue/gc.cost : null;
+  const roasP = gp.cost>0 ? gp.revenue/gp.cost : null;
+
+  let html = sourceBar([['Google Ads — live',true],['Search Impression Share',false]]);
+  html += `<div class="mgmt-note">All 8 campaigns in this account are currently <strong>PAUSED</strong> (read directly from Google Ads campaign status — not inferred). Only one, a Performance Max campaign targeting Australia exclusively, carried any spend in either period, and its delivery collapsed sharply between periods — the headline finding below. Search Impression Share metrics and keyword/search-term detail are not populated because Performance Max campaigns don't report at that level; the 7 Search/Demand Gen campaigns had zero delivery in both periods so there is nothing genuine to show for them beyond status.</div>`;
+
+  html += sectionTitle('Main KPIs', `account: ${g.account.name} · ${g.account.currency}`);
+  html += `<div class="grid kpi-row">
+    ${kpi('Spend (THB)','',fmtTHB(gc.cost),gc.cost,gp.cost,{invert:true})}
+    ${kpi('Clicks','',fmtInt(gc.clicks),gc.clicks,gp.clicks)}
+    ${kpi('CTR','',ctrC==null?'—':fmtPct(ctrC,2),ctrC,ctrP,{isPct:true,digits:2})}
+    ${kpi('Conversions','',fmtDec(gc.conversions,0),gc.conversions,gp.conversions)}
+    ${kpi('Cost / Conversion (THB)','',cpaC==null?'—':fmtTHB(cpaC),cpaC,cpaP,{invert:true})}
+    ${kpi('ROAS','',roasC==null?'—':fmtDec(roasC,1)+'x',roasC,roasP)}
+  </div>`;
+
+  html += sectionTitle('Campaign Performance', 'all 8 campaigns, both periods');
+  const camRows = g.campaigns.current.map(c=>{
+    const prev = g.campaigns.previous.find(p=>p.name===c.name);
+    return [c.name, c.type, pill(c.status,'flat'), fmtInt(c.clicks), fmtInt(c.impressions), fmtTHB(c.cost), fmtDec(c.conversions,0), prev? fmtTHB(prev.cost):'—'];
+  });
+  html += dataTable([{label:'Campaign'},{label:'Type'},{label:'Status'},{label:'Clicks',num:1},{label:'Impressions',num:1},{label:'Cost (THB)',num:1},{label:'Conversions',num:1},{label:'Prev. Cost (THB)',num:1}], camRows);
+
+  html += sectionTitle('The Performance Max Collapse', 'Performance max_Lux_Aus — the only campaign with delivery');
+  html += `<div class="three-col">
+    <div class="card"><div style="font-weight:600;">Clicks</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${gc.clicks} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${gp.clicks} prev.</span></div><div class="kpi-note">−96% period over period.</div></div>
+    <div class="card"><div style="font-weight:600;">Cost</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtTHB(gc.cost)} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${fmtTHB(gp.cost)} prev.</span></div><div class="kpi-note">Spend fell in step with delivery — not overspending into a dead campaign.</div></div>
+    <div class="card"><div style="font-weight:600;">Revenue</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtTHB(gc.revenue)} <span style="font-size:13px;color:var(--muted);font-weight:400;">vs ${fmtTHB(gp.revenue)} prev.</span></div><div class="kpi-note">Tracked conversion value collapsed from ฿166,533 to ฿20 — from ROAS ${fmtDec(roasP,1)}x to effectively 0x.</div></div>
+  </div>`;
+
+  html += sectionTitle('Geography', 'geographic_view, current period');
+  html += dataTable([{label:'Country'},{label:'Clicks',num:1},{label:'Impressions',num:1},{label:'Cost (THB)',num:1},{label:'Conversions',num:1}],
+    g.geo.current.map(r=>[r.country, fmtInt(r.clicks), fmtInt(r.impressions), fmtTHB(r.cost), fmtDec(r.conversions,0)]));
+  html += `<div class="mgmt-note" style="margin-top:8px;">100% of Google Ads delivery is targeted at Australia — there is currently no Google Ads coverage of any other source market.</div>`;
+
+  html += sectionTitle('Keyword & Search Term Detail');
+  html += placeholderCard('Not available for this account structure',
+    'The active campaign is Performance Max, which Google does not report at the keyword or search-term level (no manual targeting, no query report). The account\'s Search campaigns — which would populate this section — are all paused with zero delivery in both periods.');
+  return html;
+}
+</script>
+<script>
+/* ============================ PAGE: Facebook ============================ */
+function render_fb(){
+  const fb = DATA.fbPage, fc = fb.overview.current, fp = fb.overview.previous;
+  let html = sourceBar([['Facebook Page — live (views, engagement, follows, locations)',true],['Reach / impressions — Meta-deprecated',false]]);
+  html += `<div class="mgmt-note">${DATA.sources.fbPage.note}</div>`;
+  html += sectionTitle('Main KPIs');
+  html += `<div class="grid kpi-row">
+    ${kpi('Followers','',fmtInt(fb.followers),null,null,{noDelta:true,note:'Point-in-time count.'})}
+    ${kpi('Page Views','',fmtInt(fc.views),fc.views,fp.views)}
+    ${kpi('Post Engagements','',fmtInt(fc.engagements),fc.engagements,fp.engagements)}
+    ${kpi('Video Views (3s+)','',fmtInt(fc.videoViews),fc.videoViews,fp.videoViews)}
+    ${kpi('New Follows','',fmtInt(fc.newFollows),fc.newFollows,fp.newFollows)}
+    ${kpi('Net Follower Change','',fmtInt(fc.newFollows-fc.unfollows),fc.newFollows-fc.unfollows,fp.newFollows-fp.unfollows,{info:'New follows minus unfollows.'})}
+    ${unavailCard('Reach / Impressions','Meta deprecated Page- and Post-level reach/impressions ("unique") metrics platform-wide — this is not fixable from our side; see Insights & Recommendations.')}
+  </div>`;
+
+  html += sectionTitle('Follower Locations', 'lifetime snapshot — see note');
+  html += `<div class="mgmt-note">${fb.note}</div>`;
+  html += `<div class="two-col-charts" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Countries</div>${locationBars(fb.locations.country,{limit:10})}</div>
+    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Cities</div>${locationBars(fb.locations.city,{limit:10,city:true})}</div>
+  </div>`;
+  html += `<div style="margin-top:12px;">` + dataTable([{label:'Country',},{label:'Followers',num:1}], fb.locations.country.map(([c,v])=>[ccName(c), fmtInt(v)]), {defaultSortCol:1, defaultSize:10}) + `</div>`;
+
+  html += sectionTitle('Facebook Content — Recent Posts', 'likes, link clicks & video views live; reach still Meta-deprecated');
+  const rows = fb.posts.map(p=>[`<a href="${p.url}" target="_blank" rel="noopener" style="color:var(--moss);">${p.caption}</a>`, p.date, p.type, fmtInt(p.likes), fmtInt(p.clicks), p.videoViews?fmtInt(p.videoViews):'—']);
+  html += dataTable([{label:'Post'},{label:'Date'},{label:'Type'},{label:'Likes',num:1},{label:'Link Clicks',num:1},{label:'Video Views',num:1}], rows, {defaultSortCol:4, defaultSize:10});
+  return html;
+}
+
+/* ============================ PAGE: Instagram ============================ */
+function render_ig(){
+  const ig = DATA.ig, c=ig.current, p=ig.previous;
+  const engRateC = c.interactions/c.reach, engRateP = p.interactions/p.reach;
+  let html = sourceBar([['Instagram (@mandaravaresort) — live',true]]);
+  html += sectionTitle('Main KPIs');
+  html += `<div class="grid kpi-row">
+    ${kpi('Reach','',fmtInt(c.reach),c.reach,p.reach)}
+    ${kpi('Impressions (views)','',fmtInt(c.views),c.views,p.views)}
+    ${kpi('Engagement (interactions)','',fmtInt(c.interactions),c.interactions,p.interactions)}
+    ${kpi('Engagement Rate','',fmtPct(engRateC,2),engRateC,engRateP,{isPct:true,digits:2,info:'Interactions ÷ reach.'})}
+    ${kpi('Profile Visits (link taps)','',fmtInt(c.profileTaps),c.profileTaps,p.profileTaps)}
+    ${kpi('Followers','',fmtInt(ig.profile.followers),null,null,{noDelta:true,note:'Point-in-time — 797 lifetime posts.'})}
+  </div>`;
+  html += `<div class="mgmt-note">Reach and views fell sharply (reach −82%, views −74%) while the engagement rate on the reach that remained roughly quadrupled (0.37% vs 0.08%). Distribution dropped; content quality did not. See Insights &amp; Recommendations.</div>`;
+
+  html += sectionTitle('Follower Locations', 'lifetime snapshot — see note');
+  html += `<div class="mgmt-note">${ig.locNote}</div>`;
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Countries</div>${locationBars(ig.locations.country,{limit:10})}</div>
+    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Cities</div>${locationBars(ig.locations.city,{limit:10,city:true})}</div>
+  </div>`;
+  html += `<div style="margin-top:12px;">` + dataTable([{label:'Country'},{label:'Followers',num:1}], ig.locations.country.map(([c,v])=>[ccName(c), fmtInt(v)]), {defaultSortCol:1, defaultSize:10}) + `</div>`;
+
+  html += sectionTitle('Content Type Mix', 'last 18 posts, ~60 days');
+  const mix = ig.contentTypeMix;
+  html += `<div class="chart-card"><canvas id="igMixChart" height="60"></canvas></div>`;
+
+  html += sectionTitle('Instagram Content Performance');
+  html += `<div class="two-col">
+    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Reach</div>${renderIgTable(sortRows(ig.posts,'reach'))}</div>
+    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Engagement</div>${renderIgTable(sortRows(ig.posts,'interactions'))}</div>
+  </div>
+  <div class="two-col" style="margin-top:14px;">
+    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Shares</div>${renderIgTable(sortRows(ig.posts,'shares'))}</div>
+    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Saves</div>${renderIgTable(sortRows(ig.posts,'saved'))}</div>
+  </div>`;
+  return html;
+}
+function renderIgTable(rows){
+  const body = rows.map(r=>[`<a href="${r.url}" target="_blank" rel="noopener" style="color:var(--moss);">${r.caption.slice(0,42)}${r.caption.length>42?'…':''}</a>`, r.type, r.date, fmtInt(r.reach), fmtInt(r.likes), fmtInt(r.shares), fmtInt(r.saved)]);
+  return dataTable([{label:'Post'},{label:'Type'},{label:'Date'},{label:'Reach',num:1},{label:'Likes',num:1},{label:'Shares',num:1},{label:'Saves',num:1}], body);
+}
+
+/* ============================ PAGE: Meta Ads ============================ */
+function render_meta(){
+  const m = DATA.meta, mc=m.overview.current, mp=m.overview.previous;
+  let html = sourceBar([['Meta Ads (act_693617688254219) — live',true]]);
+  html += sectionTitle('Main KPIs');
+  html += `<div class="grid kpi-row">
+    ${kpi('Active Campaigns','',mc.activeCampaigns,null,null,{noDelta:true})}
+    ${kpi('Spend (THB)','',fmtTHB(mc.spend),mc.spend,mp.spend,{invert:true})}
+    ${kpi('Reach','',fmtInt(mc.reach),mc.reach,mp.reach)}
+    ${kpi('Impressions','',fmtInt(mc.impressions),mc.impressions,mp.impressions)}
+    ${kpi('Link Clicks','',fmtInt(mc.linkClicks),mc.linkClicks,mp.linkClicks)}
+    ${kpi('CTR','',fmtPct(mc.clicks/mc.impressions,2),mc.clicks/mc.impressions,mp.clicks/mp.impressions,{isPct:true,digits:2})}
+    ${kpi('CPM (THB)','',fmtTHB(mc.spend/mc.impressions*1000),mc.spend/mc.impressions*1000,mp.spend/mp.impressions*1000,{invert:true})}
+    ${kpi('Landing Page Views','',fmtInt(mc.lpv),mc.lpv,mp.lpv)}
+    ${kpi('Cost per LPV (THB)','',fmtTHB(mc.spend/mc.lpv),mc.spend/mc.lpv,mp.spend/mp.lpv,{invert:true})}
+  </div>`;
+  html += `<div class="mgmt-note">A "Conversions" KPI is deliberately omitted here. All three campaigns fire one custom pixel event (2,552 fires this period) that Meta's API does not label as Purchase or Lead — see the tracking-hygiene flag on Insights &amp; Recommendations before this is reported as bookings.</div>`;
+
+  html += sectionTitle('Active Meta Campaigns');
+  html += `<div class="section-sub">Different objectives are judged on different metrics — see below.</div>`;
+  html += renderMetaCampaignTable(m.campaigns.current, m.campaigns.previous);
+
+  html += sectionTitle('Campaign Objective Logic');
+  html += `<div class="three-col">
+    <div class="card"><div style="font-weight:600;margin-bottom:8px;">Awareness / Engagement</div><div class="section-sub" style="margin:0 0 8px;">Judge on Reach, CPM, Frequency</div>
+      <div class="kpi-note">Outreach Lookalike: 797K reach at ฿7.54 CPM, frequency 1.87 — efficient distribution, low incremental fatigue.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:8px;">Traffic</div><div class="section-sub" style="margin:0 0 8px;">Judge on LPV, Cost per LPV, CTR</div>
+      <div class="kpi-note">Engaged Audience 30D: 3,273 LPV at ฿3.19 each, 3.38% CTR — this campaign is doing almost all the site-traffic work.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:8px;">Conversion</div><div class="section-sub" style="margin:0 0 8px;">Judge on Conversions, CPA, ROAS</div>
+      <div class="unavailable" style="font-size:12.5px;">No campaign is running a true Conversion objective this period — none can be scored against CPA/ROAS.</div></div>
+  </div>`;
+
+  html += sectionTitle('Meta Market Performance', 'top 10 by spend');
+  const rows = sortRows(m.countries,'spend').map(r=>[r.c, fmtTHB(r.spend), fmtInt(r.reach), fmtInt(r.impressions), fmtInt(r.clicks), fmtInt(r.lpv), fmtTHB(r.lpv?r.spend/r.lpv:0)]);
+  html += dataTable([{label:'Country'},{label:'Spend',num:1},{label:'Reach',num:1},{label:'Impressions',num:1},{label:'Clicks',num:1},{label:'LPV',num:1},{label:'Cost / LPV',num:1}], rows);
+
+  html += sectionTitle('Device Placement');
+  const drows = sortRows(m.device,'spend').map(r=>[r.d, fmtTHB(r.spend), fmtPct(r.spend/mc.spend), fmtInt(r.reach), fmtInt(r.clicks), fmtInt(r.lpv)]);
+  html += dataTable([{label:'Device / Placement'},{label:'Spend',num:1},{label:'% of Spend',num:1},{label:'Reach',num:1},{label:'Clicks',num:1},{label:'LPV',num:1}], drows);
+  html += `<div class="kpi-note" style="margin-top:8px;">95% of Meta spend runs on Facebook/Instagram mobile-app placements — consistent with GA4's mobile-heavy paid social sessions.</div>`;
+
+  return html;
+}
+function renderMetaCampaignTable(cur, prev){
+  const prevMap = Object.fromEntries(prev.map(r=>[r.name,r]));
+  const rows = sortRows(cur,'spend').map(r=>{
+    const p = prevMap[r.name];
+    return [r.name, r.objective, pill(r.status,'good'), fmtTHB(r.spend), fmtInt(r.reach), fmtInt(r.impressions), fmtPct(r.ctr/100,2), fmtInt(r.lpv), fmtTHB(r.costPerLpv), p?((pctChange(r.costPerLpv,p.costPerLpv)>=0?'+':'')+fmtPct(pctChange(r.costPerLpv,p.costPerLpv))):'—'];
+  });
+  return dataTable([{label:'Campaign'},{label:'Objective'},{label:'Status'},{label:'Spend',num:1},{label:'Reach',num:1},{label:'Impr.',num:1},{label:'CTR',num:1},{label:'LPV',num:1},{label:'Cost/LPV',num:1},{label:'Δ Cost/LPV',num:1}], rows);
+}
+</script>
+<script>
+/* ============================ PAGE: Markets & Geography ============================ */
+function render_markets(){
+  const gCur = DATA.ga4.countries.current, gPrev = DATA.ga4.countries.previous;
+  const prevMap = Object.fromEntries(gPrev.map(r=>[r.c,r]));
+  const metaMap = Object.fromEntries(DATA.meta.countries.map(r=>[r.c,r]));
+  let html = sourceBar([['GA4 — live',true],['Meta Ads — live',true],['Google Business Profile — live via Metricool',true],['Google Ads — live (Australia only)',true]]);
+  html += `<div class="page-desc" style="margin-bottom:16px;">Every market read through one lens: website demand, booking conversion, and paid investment side by side.</div>`;
+  html += `<div class="mgmt-note">Google Ads currently has zero market diversification — its one active campaign (Performance Max) targets Australia exclusively, and even that delivery has collapsed this period (see Google Ads page). No other market has any Google Ads coverage to cross-reference below.</div>`;
+
+  html += sectionTitle('Website Sessions by Market');
+  html += `<div class="chart-card"><canvas id="marketsSessionsChart" height="70"></canvas></div>`;
+
+  const rows = sortRows(gCur,'sessions').map(r=>{
+    const p = prevMap[r.c];
+    const meta = metaMap[r.c];
+    const rate = r.bookings/r.sessions;
+    const sessCh = p ? pctChange(r.sessions,p.sessions) : null;
+    const bookCh = p ? pctChange(r.bookings,p.bookings) : null;
+    let classification = pill('Watch','flat');
+    if(rate>0.012 && r.sessions>150) classification = pill('Priority market','good');
+    else if(r.sessions>300 && rate<0.006) classification = pill('Weak website response','bad');
+    else if(meta && meta.spend>1500 && r.bookings<=1) classification = pill('Ad spend, weak response','bad');
+    else if(sessCh!==null && sessCh>0.2 && (!meta || meta.spend<200)) classification = pill('Organic growth opportunity','warn');
+    return [
+      `<span style="cursor:pointer;font-weight:${FILTER.country===r.c?'700':'500'};" onclick="applyCountryFilter('${r.c}')">${r.c}</span>`,
+      fmtInt(r.sessions), sessCh!==null?((sessCh>=0?'+':'')+fmtPct(sessCh)):'—',
+      fmtInt(r.bookings), fmtPct(rate,2),
+      meta? fmtTHB(meta.spend) : '<span class="unavailable">n/a</span>',
+      meta? fmtInt(meta.reach) : '<span class="unavailable">n/a</span>',
+      meta? fmtInt(meta.lpv) : '<span class="unavailable">n/a</span>',
+      classification
+    ];
+  });
+  const filtered = FILTER.country ? rows.filter(r=>r[0].includes(FILTER.country)) : rows;
+  html += sectionTitle('All Markets');
+  html += dataTable([{label:'Country'},{label:'Sessions',num:1},{label:'Δ Sessions',num:1},{label:'Bookings',num:1},{label:'Conv. Rate',num:1},{label:'Meta Spend',num:1},{label:'Meta Reach',num:1},{label:'Meta LPV',num:1},{label:'Read'}], filtered);
+
+  html += sectionTitle('How to read the flags');
+  html += `<div class="three-col">
+    <div class="insight positive"><div class="stripe"></div><div class="insight-body"><div class="insight-cat">Priority market</div><p>Meaningful traffic and a conversion rate above 1.2% — protect and grow investment here.</p></div></div>
+    <div class="insight attention"><div class="stripe"></div><div class="insight-body"><div class="insight-cat">Weak website response</div><p>High traffic (300+ sessions) converting under 0.6% — a pricing, offer or UX issue for this market, not a demand issue.</p></div></div>
+    <div class="insight attention"><div class="stripe"></div><div class="insight-body"><div class="insight-cat">Ad spend, weak response</div><p>Meta spend above ฿1,500 with 1 or fewer bookings — targeting or landing-page relevance likely needs review.</p></div></div>
+  </div>`;
+  html += `<div class="kpi-note" style="margin-top:10px;">Small-volume markets (under ~50 sessions) are shown but never flagged — a swing from 1 to 3 bookings is not a trend.</div>`;
+  return html;
+}
+let marketsSessionsChart=null;
+function initMarketsChart(){
+  const ctx = document.getElementById('marketsSessionsChart');
+  if(!ctx) return;
+  const styles = getComputedStyle(document.documentElement);
+  const moss = styles.getPropertyValue('--moss').trim();
+  const ink = styles.getPropertyValue('--ink-soft').trim();
+  const border = styles.getPropertyValue('--border-soft').trim();
+  const top = sortRows(DATA.ga4.countries.current,'sessions').slice(0,12);
+  if(marketsSessionsChart) marketsSessionsChart.destroy();
+  marketsSessionsChart = new Chart(ctx, {
+    type:'bar',
+    data:{labels:top.map(r=>r.c), datasets:[{label:'Sessions', data:top.map(r=>r.sessions), backgroundColor:moss, borderRadius:5, maxBarThickness:22}]},
+    options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{
+      x:{ticks:{color:ink,font:{size:10}},grid:{color:border}},
+      y:{ticks:{color:styles.getPropertyValue('--ink').trim(),font:{size:11}},grid:{display:false}}
+    }}
+  });
+}
+
+/* ============================ PAGE: Search Intelligence ============================ */
+function render_search(){
+  const gsc = DATA.gsc;
+  const brandedRe = /mandarava|mandrava|madarava/i;
+  const curTotal = gsc.queries.current.reduce((a,r)=>({clicks:a.clicks+r.clicks,impressions:a.impressions+r.impressions}),{clicks:0,impressions:0});
+  const curBranded = gsc.queries.current.filter(r=>brandedRe.test(r.q)).reduce((a,r)=>a+r.clicks,0);
+  const curNonBranded = gsc.queries.current.filter(r=>!brandedRe.test(r.q));
+
+  let html = sourceBar([['GA4 organic/referral — live',true],['Google Search Console — live',true],['Google Business Profile queries',false]]);
+  html += `<div class="mgmt-note">Google Search Console is now connected — this page shows what people actually typed into Google before clicking through (a different measurement from GA4's session source/medium and from Google Ads keywords; the three should never be summed together). Google Business Profile discovery-query data is still not connected for Mandarava.</div>`;
+
+  html += sectionTitle('Search Console — Top Queries', `${gsc.site}, current period, top ${gsc.queries.current.length} by clicks`);
+  html += dataTable([{label:'Query'},{label:'Clicks',num:1},{label:'Impressions',num:1},{label:'CTR',num:1},{label:'Avg. Position',num:1}],
+    gsc.queries.current.map(r=>[r.q, fmtInt(r.clicks), fmtInt(r.impressions), fmtDec(r.ctr,2)+'%', fmtDec(r.pos,1)]));
+
+  html += sectionTitle('Branded vs Non-Branded Demand', 'top 25 queries, current period');
+  html += `<div class="three-col">
+    <div class="card"><div style="font-weight:600;">Branded ("mandarava…")</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(curBranded)} <span style="font-size:13px;color:var(--muted);font-weight:400;">clicks</span></div><div class="kpi-note">${fmtDec(curBranded/curTotal.clicks*100,0)}% of clicks in this top-25 sample — expected for a hotel with strong name recognition.</div></div>
+    <div class="card"><div style="font-weight:600;">"andaman private pool villa"</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">9 <span style="font-size:13px;color:var(--muted);font-weight:400;">clicks, pos. 1.8</span></div><div class="kpi-note">Room-type query, already ranking #1–2 and growing (4→9 clicks vs prior period) — genuine non-branded discovery for a specific accommodation product.</div></div>
+    <div class="card"><div style="font-weight:600;">"cheeva spa"</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">5 <span style="font-size:13px;color:var(--muted);font-weight:400;">clicks, 185 impr.</span></div><div class="kpi-note">Spa brand query ranking mid-page (pos. ~6.5) — high impressions, low CTR: a content/on-page opportunity rather than a ranking problem.</div></div>
+  </div>`;
+
+  html += sectionTitle('GA4 Organic + Referral Sessions', 'cross-check against Search Console clicks, current period');
+  const rows = DATA.ga4.sourceMedium.current.filter(r=>/organic|referral/.test(r.sm)||r.sm.includes('ghotelads')).map(r=>[r.sm, fmtInt(r.sessions), fmtInt(r.keyEvents), fmtPct(r.engRate,0)]);
+  html += dataTable([{label:'Source / Medium'},{label:'Sessions',num:1},{label:'Booking-Intent Events',num:1},{label:'Engagement Rate',num:1}], rows);
+  html += `<div class="three-col" style="margin-top:12px;">
+    <div class="card"><div style="font-weight:600;">Google Hotel Ads (free)</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(DATA.ga4.sourceMedium.current.find(r=>r.sm==='ghotelads / organic').sessions)}</div><div class="kpi-note">sessions at an 89% engagement rate — the highest-quality free listing traffic on the site, with no Google Ads Hotel Ads campaign connected to compare against.</div></div>
+    <div class="card"><div style="font-weight:600;">Bing organic</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">${fmtInt(DATA.ga4.sourceMedium.current.find(r=>r.sm==='bing / organic').sessions)}</div><div class="kpi-note">sessions — small but consistent secondary search engine demand.</div></div>
+    <div class="card"><div style="font-weight:600;">Google Ads keyword coverage</div><div class="kpi-val num" style="font-size:20px;margin:6px 0;">None</div><div class="kpi-note">The only active Google Ads campaign is Performance Max (no keyword targeting) — there is currently no paid search overlay on any of the queries above. See Google Ads page.</div></div>
+  </div>`;
+
+  html += sectionTitle('Once Google Business Profile is connected, this page will add');
+  html += placeholderCard('Local discovery queries', 'GBP "how customers search" query data (a third, separate measurement of search demand) alongside profile views, maps views, and direction requests — see the Google Business Profile page.');
+  return html;
+}
+
+/* ============================ PAGE: Promotions & Campaigns ============================ */
+function render_promos(){
+  let html = sourceBar([['GA4 — live',true],['Meta Ads — live',true],['Google Ads — live (no promotion-level campaigns active)',true]]);
+  html += `<div class="page-desc" style="margin-bottom:16px;">Every promotion, read across website behaviour and the paid channel that supports it.</div>`;
+  html += sectionTitle('Website Promotion Performance');
+  html += renderPromoTable(DATA.ga4.promotions.current, DATA.ga4.promotions.previous);
+
+  html += sectionTitle('Cross-Channel: Stay 5 Pay 4', 'the one promotion with a dedicated ad campaign this period');
+  const pc = DATA.promoChannel['Stay 5 Pay 4'];
+  html += `<div class="grid kpi-row">
+    ${kpi('GA4 Landing Sessions','',fmtInt(pc.gaSessions),pc.gaSessions,pc.gaSessionsPrev)}
+    ${kpi('Booking-Intent Events','',fmtInt(pc.intentEvents),pc.intentEvents,pc.intentEventsPrev)}
+    ${kpi('Meta Spend (THB)','',fmtTHB(pc.metaSpend),pc.metaSpend,pc.metaSpendPrev,{invert:true})}
+    ${kpi('Meta Landing Page Views','',fmtInt(pc.metaLpv),pc.metaLpv,pc.metaLpvPrev)}
+    ${kpi('Meta Ad Clicks','',fmtInt(pc.metaClicks),null,null,{noDelta:true})}
+  </div>`;
+  html += `<div class="mgmt-note">Meta reports 123 landing page views to this offer, but GA4 recorded only 10 sessions landing on the promotion page — most Meta-driven traffic to this offer is not showing up 1:1 in GA4 landings. Worth a UTM/redirect check on this specific ad.</div>`;
+
+  html += sectionTitle('Reading the set');
+  html += `<div class="three-col">
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Gets the most attention</div><div>${DATA.ga4.promotions.current[0].promo}</div><div class="kpi-note">154 sessions — the promotions hub itself, before any single offer.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">Generates the most booking intent</div><div>Stay 5 Pay 4</div><div class="kpi-note">4.5 intent events per session — by far the highest of any single offer page.</div></div>
+    <div class="card"><div style="font-weight:600;margin-bottom:6px;">High traffic, weak intent</div><div>Book Direct, More Benefits</div><div class="kpi-note">9 sessions, 0 intent events, 89% bounce — the messaging or placement isn't landing.</div></div>
+  </div>`;
+  return html;
+}
+
+/* ============================ PAGE: Conversion Funnel ============================ */
+function render_funnel(){
+  const stages = DATA.funnel.stages;
+  let html = sourceBar([['GA4 events — live',true]]);
+  html += `<div class="mgmt-note">This funnel uses only the events actually implemented in GA4 (begin_checkout → add_to_cart → purchase). There is no distinct "room/promotion view" or "booking-engine session" event in the current tracking setup, so those stages are not shown — nothing here is estimated.</div>`;
+  html += sectionTitle('Site-wide Funnel', DATA.periods.current.label);
+  html += `<div class="chart-card"><div id="funnelBars"></div></div>`;
+
+  html += sectionTitle('Stage detail');
+  const rows = stages.map((s,i)=>{
+    const prevStage = stages[i-1];
+    const dropoff = prevStage ? 1-(s.value/prevStage.value) : null;
+    return [s.name, fmtInt(s.value), i===0?'100%':fmtPct(s.value/stages[0].value,1), dropoff!==null?fmtPct(dropoff,1):'—', s.note];
+  });
+  html += dataTable([{label:'Stage'},{label:'Users',num:1},{label:'% of Stage 1',num:1},{label:'Drop-off from prior stage',num:1},{label:'What it measures'}], rows);
+
+  html += sectionTitle('Filter (illustrative)', 'filters below are wired for Country — Channel, Campaign, Promotion and Device need session-level exports beyond this snapshot');
+  html += `<div class="kpi-note">Selecting a country on Markets & Geography or the GA4 Country table filters the tables across the dashboard; a country-level funnel breakdown needs a session-scoped GA4 pull and is a natural next addition.</div>`;
+  return html;
+}
+
+/* ============================ PAGE: Insights & Recommendations ============================ */
+const ALL_INSIGHTS = [
+  ...EXEC_INSIGHTS,
+  {cat:'attention', title:'Meta is firing an unlabeled custom conversion event', body:'All three active Meta campaigns fire the same custom pixel event 2,552 times this period — the API returns it only as "offsite_conversion.custom.…", not as Purchase, Lead or any named standard event.', why:'<b>Investigate:</b> open Events Manager and confirm what this custom conversion actually represents before it is ever reported as bookings or leads to management.'},
+  {cat:'attention', title:'Meta-reported traffic and GA4 sessions from Meta don\'t reconcile', body:'Meta reports 4,653 link clicks this period; GA4 records 1,499 sessions from facebook / paid_social — roughly a third show up.', why:'<b>Investigate:</b> UTM passthrough on the Traffic-objective campaigns, and whether click quality (bot/accidental clicks) is inflating Meta\'s reported clicks.'},
+  {cat:'attention', title:'Facebook Page Insights is not returning data', body:'Reach, impressions, engagement, page visits and video views are all unavailable for the Mandarava Facebook Page via the API — only the follower count and raw post list came through.', why:'<b>Action:</b> re-grant the read_insights permission scope for the Page token in Insightful Pipe.'},
+  {cat:'opportunity', title:'Panoramic Deluxe Room out-converts the most-viewed room', body:'Tropicana Superior Room gets the most views (133) but an 91% bounce rate and low intent. Panoramic Deluxe Room gets fewer views (73) but an 82% intent-event rate and the only completed room-page booking this period.', why:'<b>Recommend:</b> feature Panoramic Deluxe more prominently in navigation and paid creative; audit why Tropicana\'s page underperforms on engagement despite the traffic.'},
+  {cat:'opportunity', title:'Triptease-referred visitors convert exceptionally well', body:'"triptease_attract / meta" sessions run an 87% engagement rate and 1,149 booking-intent events from just 558 sessions — the highest-quality traffic segment on the site.', why:'<b>Recommend:</b> confirm the Triptease integration and its Meta-sourced audience targeting stay prioritized; this is a disproportionately high-intent segment.'},
+  {cat:'information', title:'New-user decline is concentrated in Paid Social', body:'Total new users fell 20.4% (3,413 → 2,718), but Paid Social alone accounts for most of it — new users from that channel fell from 2,157 to 1,438, tracking the pullback in Meta spend.', why:null},
+  {cat:'positive', title:'Netherlands is the best-improving small market', body:'Booking conversion rate rose from 1.67% to 2.33% on essentially flat sessions (239 → 215) — a genuine quality improvement, not a volume swing.', why:null},
+  {cat:'information', title:'Average booking value is up even as booking count dipped', body:'Bookings fell from 94 to 85 (−9.6%) but revenue rose 3.7% — average booking value climbed from ฿37,415 to ฿42,926 (+14.7%), a mix shift toward higher-value stays.', why:null},
+  {cat:'attention', title:'UK traffic grew, but conversion did not follow', body:'UK sessions rose 15.9% (1,066 → 1,235) while bookings fell from 10 to 5 and conversion rate roughly halved, 0.94% → 0.40%.', why:'<b>Investigate:</b> UK-facing offer relevance and price positioning — this is the opposite pattern from Germany and Netherlands, both improving on the same traffic trend.'},
+];
+function render_insights(){
+  const cats = ['attention','opportunity','positive','information'];
+  const labels = {attention:'Attention Required', opportunity:'Opportunity', positive:'Positive Performance', information:'Information'};
+  const descs = {attention:'Tracking issues, performance deterioration, or inefficient spend.', opportunity:'Growing markets, search gaps, strong promotions, or underused channels.', positive:'Meaningful, confirmed improvement.', information:'Useful context — not urgent.'};
+  let html = `<div class="page-desc" style="margin-bottom:16px;">Ranked by business importance, not by data source. Each item follows what happened → why it matters → what to check next.</div>`;
+  cats.forEach(cat=>{
+    const items = ALL_INSIGHTS.filter(i=>i.cat===cat);
+    html += sectionTitle(labels[cat], items.length+' item'+(items.length===1?'':'s'));
+    html += `<div class="section-sub">${descs[cat]}</div>`;
+    html += `<div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">${items.map(i=>insightCard(i.cat,i.title,i.body,i.why)).join('')}</div>`;
+  });
+  return html;
+}
+</script>
+<script>
+/* ============================ router + charts + boot ============================ */
+const RENDERERS = {exec:render_exec, ga4:render_ga4, gbp:render_gbp, gads:render_gads, fb:render_fb, ig:render_ig,
+  meta:render_meta, markets:render_markets, search:render_search, promos:render_promos, funnel:render_funnel, insights:render_insights};
+
+let execChart=null;
+function renderPage(id){
+  setActiveNav(id);
+  const el = document.getElementById('content');
+  el.innerHTML = RENDERERS[id]();
+  window.scrollTo({top:0});
+  if(id==='exec') initExecChart();
+  if(id==='ga4'){ initGa4Charts(); initGa4AcqToggle(); }
+  if(id==='markets') initMarketsChart();
+  if(id==='ig') initIgMixChart();
+  if(id==='funnel') initFunnelBars();
+}
+
+function aggregateTrend(grain, metric){
+  const raw = DATA.ga4.trend.filter(d=>d.sessions>5); // drop the stray 1-session partial day
+  const val = d => metric==='rev' ? d.rev : (metric==='users'?d.users:d.sessions);
+  if(grain==='day') return {labels: raw.map(d=>d.d.slice(5)), values: raw.map(val)};
+  const buckets = {};
+  raw.forEach(d=>{
+    let key;
+    if(grain==='week'){ const dt=new Date(d.d); const day=(dt.getUTCDay()+6)%7; dt.setUTCDate(dt.getUTCDate()-day); key='wk '+dt.toISOString().slice(5,10); }
+    else { key = d.d.slice(0,7); }
+    buckets[key] = (buckets[key]||0) + val(d);
+  });
+  return {labels:Object.keys(buckets), values:Object.values(buckets)};
+}
+function initExecChart(){
+  const ctx = document.getElementById('execTrendChart');
+  if(!ctx) return;
+  let grain = 'day', metric='sessions';
+  const styles = getComputedStyle(document.documentElement);
+  const moss = styles.getPropertyValue('--moss').trim();
+  const ink = styles.getPropertyValue('--ink-soft').trim();
+  const border = styles.getPropertyValue('--border-soft').trim();
+  function draw(){
+    const {labels, values} = aggregateTrend(grain, metric);
+    if(execChart) execChart.destroy();
+    execChart = new Chart(ctx, {
+      type:'line',
+      data:{labels, datasets:[{data:values, borderColor:moss, backgroundColor:moss+'22', fill:true, tension:.3, pointRadius:0, borderWidth:2}]},
+      options:{responsive:true, plugins:{legend:{display:false}}, scales:{
+        x:{ticks:{color:ink,maxTicksLimit:10,font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:ink,font:{size:10}},grid:{color:border}}
+      }}
+    });
+  }
+  draw();
+  document.getElementById('trendMetric').onchange = e=>{ metric=e.target.value; draw(); };
+  document.querySelectorAll('#trendGrain button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#trendGrain button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); grain=b.dataset.g; draw();
+  });
+}
+function initIgMixChart(){
+  const ctx = document.getElementById('igMixChart');
+  if(!ctx) return;
+  const mix = DATA.ig.contentTypeMix;
+  const styles = getComputedStyle(document.documentElement);
+  const colors = [styles.getPropertyValue('--moss').trim(), styles.getPropertyValue('--sand').trim(), styles.getPropertyValue('--teal').trim()];
+  new Chart(ctx, {type:'bar', data:{labels:Object.keys(mix), datasets:[{data:Object.values(mix), backgroundColor:colors, borderRadius:5, maxBarThickness:60}]},
+    options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{
+      x:{ticks:{color:styles.getPropertyValue('--ink-soft').trim()},grid:{color:styles.getPropertyValue('--border-soft').trim()}},
+      y:{ticks:{color:styles.getPropertyValue('--ink').trim(),font:{size:12}},grid:{display:false}}
+    }}});
+}
+function initFunnelBars(){
+  const holder = document.getElementById('funnelBars');
+  if(!holder) return;
+  const stages = DATA.funnel.stages;
+  const max = stages[0].value;
+  holder.innerHTML = stages.map((s,i)=>{
+    const pct = Math.max(3, Math.round(s.value/max*100));
+    const dropoff = i>0 ? Math.round((1-s.value/stages[i-1].value)*100) : null;
+    return `<div style="margin-bottom:${i<stages.length-1?'20px':'0'};">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;"><b>${s.name}</b><span class="num">${fmtInt(s.value)} users${i===0?'':' ('+fmtPct(s.value/max,1)+' of stage 1)'}</span></div>
+      <div style="height:26px;border-radius:6px;background:var(--surface-2);overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--moss),var(--teal));"></div></div>
+      ${dropoff!==null?`<div style="font-size:11px;color:var(--bad);margin-top:4px;">▼ ${dropoff}% drop-off from previous stage</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+buildNav();
+renderChips();
+renderPage('exec');
+</script>
+
+
