@@ -261,6 +261,10 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <input type="date" class="ctrl" id="customTo" min="2025-01-01" max="2026-09-02" value="2026-07-31" style="padding:6px 8px;">
           <button class="reset-link" id="customCompareApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
         </span>
+        <label id="ytdToggleWrap" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">
+          <input type="checkbox" id="ytdToggle" style="margin:0;">
+          Compare: Year-to-date vs previous year
+        </label>
         <span class="asof" id="asOfLabel"></span>
       </div>
     </div>
@@ -300,7 +304,7 @@ const GA4_EVENTS_BY_MONTH = {"202501":{"page_view":37648,"user_engagement":28164
 const META_BY_MONTH = {"202501":{"spend":26386.92,"reach":376249,"impressions":786581,"clicks":23864,"linkClicks":8308,"lpv":6722,"activeCampaigns":null},"202502":{"spend":11678.11,"reach":123842,"impressions":243057,"clicks":10560,"linkClicks":5945,"lpv":5480,"activeCampaigns":null},"202503":{"spend":21882.12,"reach":406924,"impressions":754035,"clicks":28287,"linkClicks":4126,"lpv":3329,"activeCampaigns":null},"202504":{"spend":19408.56,"reach":314581,"impressions":562604,"clicks":32067,"linkClicks":7962,"lpv":6602,"activeCampaigns":null},"202505":{"spend":19892.2,"reach":314087,"impressions":539366,"clicks":27275,"linkClicks":6906,"lpv":5417,"activeCampaigns":null},"202506":{"spend":19478.1,"reach":297449,"impressions":504736,"clicks":24569,"linkClicks":6769,"lpv":3014,"activeCampaigns":null},"202507":{"spend":19403.19,"reach":225533,"impressions":379509,"clicks":24180,"linkClicks":5981,"lpv":2049,"activeCampaigns":null},"202508":{"spend":19335.92,"reach":189820,"impressions":306872,"clicks":23600,"linkClicks":5577,"lpv":1920,"activeCampaigns":null},"202509":{"spend":18277.41,"reach":131298,"impressions":231834,"clicks":16308,"linkClicks":5004,"lpv":1763,"activeCampaigns":null},"202510":{"spend":17617.72,"reach":126388,"impressions":210741,"clicks":16123,"linkClicks":2540,"lpv":1077,"activeCampaigns":null},"202511":{"spend":17008.08,"reach":110899,"impressions":204918,"clicks":15424,"linkClicks":2835,"lpv":1310,"activeCampaigns":null},"202512":{"spend":16188.08,"reach":99798,"impressions":225496,"clicks":6919,"linkClicks":4881,"lpv":3046,"activeCampaigns":null},"202601":{"spend":16173.85,"reach":155303,"impressions":297564,"clicks":9635,"linkClicks":6419,"lpv":4167,"activeCampaigns":null},"202602":{"spend":14507.95,"reach":143302,"impressions":260185,"clicks":7321,"linkClicks":4559,"lpv":3610,"activeCampaigns":null},"202603":{"spend":19470.88,"reach":1390443,"impressions":2091744,"clicks":7301,"linkClicks":4641,"lpv":3365,"activeCampaigns":null},"202604":{"spend":24137.67,"reach":2331752,"impressions":3404384,"clicks":11673,"linkClicks":8035,"lpv":5611,"activeCampaigns":null},"202605":{"spend":26452.28,"reach":2120163,"impressions":3622156,"clicks":12650,"linkClicks":9112,"lpv":5735,"activeCampaigns":null},"202606":{"spend":25803.39,"reach":2262557,"impressions":3368700,"clicks":11487,"linkClicks":6969,"lpv":4546,"activeCampaigns":null},"202607":{"spend":26885.66,"reach":2338809,"impressions":3499754,"clicks":11882,"linkClicks":6800,"lpv":4562,"activeCampaigns":3},"202608":{"spend":25116.57,"reach":1159842,"impressions":2011814,"clicks":8061,"linkClicks":5184,"lpv":3905,"activeCampaigns":3},"202609":{"spend":2358.42,"reach":102331,"impressions":142155,"clicks":655,"linkClicks":417,"lpv":301,"activeCampaigns":null}};
 const GADS_BY_MONTH = {"202501":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202502":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202503":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202504":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202505":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202506":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202507":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202508":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202509":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202510":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202511":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202512":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202601":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202602":{"clicks":0,"impressions":0,"cost":0,"conversions":0,"revenue":0,"noActivity":true},"202605":{"clicks":41,"impressions":1350,"cost":3318.85,"conversions":1,"revenue":1},"202606":{"clicks":159,"impressions":4506,"cost":9808.26,"conversions":86.7316,"revenue":80.7316},"202607":{"clicks":248,"impressions":4027,"cost":10144.84,"conversions":264.2723,"revenue":166495.9123},"202608":{"clicks":46,"impressions":423,"cost":1913.93,"conversions":64.9961,"revenue":62.9961}};
 const GSC_BY_MONTH = {"202501":{"clicks":null,"impressions":null,"notTracked":true},"202502":{"clicks":null,"impressions":null,"notTracked":true},"202503":{"clicks":null,"impressions":null,"notTracked":true},"202504":{"clicks":null,"impressions":null,"notTracked":true},"202505":{"clicks":null,"impressions":null,"notTracked":true,"partialDays":3},"202506":{"clicks":3905,"impressions":82614},"202507":{"clicks":3757,"impressions":79315},"202508":{"clicks":3474,"impressions":86890},"202509":{"clicks":3327,"impressions":70523},"202510":{"clicks":3689,"impressions":64658},"202511":{"clicks":3112,"impressions":63574},"202512":{"clicks":2437,"impressions":55514},"202601":{"clicks":3454,"impressions":64206},"202602":{"clicks":2480,"impressions":50705},"202603":{"clicks":2068,"impressions":41955},"202604":{"clicks":1977,"impressions":40772},"202605":{"clicks":1949,"impressions":41519},"202606":{"clicks":1981,"impressions":37531},"202607":{"clicks":3022,"impressions":42193},"202608":{"clicks":3661,"impressions":45966},"202609":{"clicks":117,"impressions":1409}};
-const GBP_BY_MONTH = {"202501":{"reachSearch":null,"reachMaps":null,"websiteClicks":null,"callClicks":null,"directionsClicks":null,"reviewsCount":null,"avgRating":null,"notTracked":true,"partialDaysAvailable":13},"202502":{"reachSearch":11633,"reachMaps":34192,"websiteClicks":1876,"callClicks":176,"directionsClicks":3554,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202503":{"reachSearch":15381,"reachMaps":36080,"websiteClicks":2163,"callClicks":169,"directionsClicks":3885,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202504":{"reachSearch":9502,"reachMaps":34778,"websiteClicks":1938,"callClicks":181,"directionsClicks":4026,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202505":{"reachSearch":9456,"reachMaps":36221,"websiteClicks":1966,"callClicks":202,"directionsClicks":3877,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202506":{"reachSearch":8327,"reachMaps":37027,"websiteClicks":1927,"callClicks":199,"directionsClicks":3819,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202507":{"reachSearch":6868,"reachMaps":33738,"websiteClicks":1929,"callClicks":199,"directionsClicks":4416,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202508":{"reachSearch":9080,"reachMaps":33768,"websiteClicks":1796,"callClicks":264,"directionsClicks":4536,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202509":{"reachSearch":8656,"reachMaps":38735,"websiteClicks":1652,"callClicks":207,"directionsClicks":4194,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202510":{"reachSearch":7579,"reachMaps":44415,"websiteClicks":1804,"callClicks":207,"directionsClicks":4421,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202511":{"reachSearch":5872,"reachMaps":33964,"websiteClicks":1585,"callClicks":212,"directionsClicks":4340,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202512":{"reachSearch":7020,"reachMaps":40562,"websiteClicks":1293,"callClicks":195,"directionsClicks":4401,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202601":{"reachSearch":9481,"reachMaps":66366,"websiteClicks":1731,"callClicks":178,"directionsClicks":4667,"reviewsCount":null,"avgRating":null,"reviewsNotTracked":true},"202602":{"reachSearch":6949,"reachMaps":46158,"websiteClicks":1332,"callClicks":166,"directionsClicks":3938,"reviewsCount":3,"avgRating":5.0},"202605":{"reachSearch":5584,"reachMaps":34965,"websiteClicks":953,"callClicks":175,"directionsClicks":3298,"reviewsCount":88,"avgRating":4.95},"202608":{"reachSearch":7239,"reachMaps":34192,"websiteClicks":1612,"callClicks":175,"directionsClicks":3586,"reviewsCount":79,"avgRating":4.75},"202604":{"reachSearch":4272,"reachMaps":37466,"websiteClicks":1061,"callClicks":131,"directionsClicks":3182,"reviewsCount":90,"avgRating":4.92},"202607":{"reachSearch":7608,"reachMaps":49543,"websiteClicks":1486,"callClicks":185,"directionsClicks":3199,"reviewsCount":66,"avgRating":4.9},"202606":{"reachSearch":5635,"reachMaps":35533,"websiteClicks":971,"callClicks":100,"directionsClicks":2162,"reviewsCount":53,"avgRating":4.81},"202603":{"reachSearch":5035,"reachMaps":34327,"websiteClicks":1139,"callClicks":159,"directionsClicks":3248,"reviewsCount":99,"avgRating":4.92}};
+const GBP_BY_MONTH = {"202501":{"reachSearch":null,"reachMaps":null,"websiteClicks":null,"callClicks":null,"directionsClicks":null,"reviewsCount":2133,"avgRating":4.64,"notTracked":true},"202502":{"reachSearch":null,"reachMaps":null,"websiteClicks":null,"callClicks":null,"directionsClicks":null,"reviewsCount":2168,"avgRating":4.64,"notTracked":true},"202503":{"reachSearch":15381,"reachMaps":36080,"websiteClicks":2163,"callClicks":169,"directionsClicks":3885,"reviewsCount":2208,"avgRating":4.64},"202504":{"reachSearch":9502,"reachMaps":34778,"websiteClicks":1938,"callClicks":181,"directionsClicks":4026,"reviewsCount":2275,"avgRating":4.64},"202505":{"reachSearch":9456,"reachMaps":36221,"websiteClicks":1966,"callClicks":202,"directionsClicks":3877,"reviewsCount":2337,"avgRating":4.64},"202506":{"reachSearch":8327,"reachMaps":37027,"websiteClicks":1927,"callClicks":199,"directionsClicks":3819,"reviewsCount":2406,"avgRating":4.64},"202507":{"reachSearch":6868,"reachMaps":33738,"websiteClicks":1929,"callClicks":199,"directionsClicks":4416,"reviewsCount":2458,"avgRating":4.65},"202508":{"reachSearch":9080,"reachMaps":33768,"websiteClicks":1796,"callClicks":264,"directionsClicks":4536,"reviewsCount":2574,"avgRating":4.65},"202509":{"reachSearch":8656,"reachMaps":38735,"websiteClicks":1652,"callClicks":207,"directionsClicks":4194,"reviewsCount":2661,"avgRating":4.66},"202510":{"reachSearch":7579,"reachMaps":44415,"websiteClicks":1804,"callClicks":207,"directionsClicks":4421,"reviewsCount":2793,"avgRating":4.67},"202511":{"reachSearch":5872,"reachMaps":33964,"websiteClicks":1585,"callClicks":212,"directionsClicks":4340,"reviewsCount":2898,"avgRating":4.68},"202512":{"reachSearch":7020,"reachMaps":40562,"websiteClicks":1293,"callClicks":195,"directionsClicks":4401,"reviewsCount":2981,"avgRating":4.68},"202601":{"reachSearch":9481,"reachMaps":66366,"websiteClicks":1731,"callClicks":178,"directionsClicks":4667,"reviewsCount":3068,"avgRating":4.69},"202602":{"reachSearch":6949,"reachMaps":46158,"websiteClicks":1332,"callClicks":166,"directionsClicks":3938,"reviewsCount":3139,"avgRating":4.69},"202603":{"reachSearch":5035,"reachMaps":34327,"websiteClicks":1139,"callClicks":159,"directionsClicks":3248,"reviewsCount":3238,"avgRating":4.7},"202604":{"reachSearch":4272,"reachMaps":37466,"websiteClicks":1061,"callClicks":131,"directionsClicks":3182,"reviewsCount":3326,"avgRating":4.7},"202605":{"reachSearch":5584,"reachMaps":34965,"websiteClicks":953,"callClicks":175,"directionsClicks":3298,"reviewsCount":3412,"avgRating":4.71},"202606":{"reachSearch":5635,"reachMaps":35533,"websiteClicks":971,"callClicks":100,"directionsClicks":2162,"reviewsCount":3462,"avgRating":4.71},"202607":{"reachSearch":7608,"reachMaps":49543,"websiteClicks":1486,"callClicks":185,"directionsClicks":3199,"reviewsCount":3525,"avgRating":4.71},"202608":{"reachSearch":7795,"reachMaps":34192,"websiteClicks":1757,"callClicks":175,"directionsClicks":3586,"reviewsCount":3602,"avgRating":4.72},"202609":{"reachSearch":null,"reachMaps":null,"websiteClicks":null,"callClicks":null,"directionsClicks":null,"reviewsCount":3611,"avgRating":4.72,"notTracked":true}};
 const DATA = {
   periods:{
     get current(){ return {label: MONTH_LABELS[PRIMARY.month]||PRIMARY.month, days: MONTH_DAYS[PRIMARY.month]}; },
@@ -311,7 +315,7 @@ const DATA = {
     meta:{connected:true, updated:"Sep 3, 2026, 11:40"},
     ig:{connected:true, updated:"Sep 3, 2026, 11:40"},
     fbPage:{connected:true, limited:true, updated:"Sep 3, 2026, 11:40", note:"Views, engagement, video views, follows/unfollows, reactions and location data are live. Reach/impressions (\"unique\") metrics specifically are unavailable — Meta deprecated these Page- and Post-level metrics platform-wide, not a permission gap on this account."},
-    gbp:{connected:false, note:"Google Business Profile is not yet linked for Mandarava in Insightful Pipe. (A Metricool connection exists for this location — see note on the Google Business Profile page.)"},
+    gbp:{connected:true, updated:"Sep 3, 2026, 11:40", note:"Google Business Profile is pulled live for Mandarava via Insightful Pipe's native GBP connector (Metricool is no longer used for this source — see note on the Google Business Profile page)."},
     gads:{connected:true, updated:"Sep 3, 2026, 11:40"},
     gsc:{connected:true, updated:"Sep 3, 2026, 11:40"}
   },
@@ -513,7 +517,7 @@ const DATA = {
       get current(){ return byMonthObj(GBP_BY_MONTH, PRIMARY.month) || {reachSearch:0,reachMaps:0,websiteClicks:0,callClicks:0,directionsClicks:0,reviewsCount:0,avgRating:null}; },
       get previous(){ return byMonthObj(GBP_BY_MONTH, COMPARE.month) || {reachSearch:0,reachMaps:0,websiteClicks:0,callClicks:0,directionsClicks:0,reviewsCount:0,avgRating:null}; }
     },
-    note:"Google Business Profile is not yet linked in Insightful Pipe for Mandarava, but the location is connected in Metricool (a different tool this agency already uses), so real GBP data is shown here via that route instead. Figures are daily sums/averages for the selected month; \"Reviews\" is new reviews received in the period, not a lifetime count. September shows ฿0/blank because Metricool's reach/click metrics have not posted yet for the partial month (reviews and rating still come through)."
+    note:"Google Business Profile is pulled live via Insightful Pipe's native GBP connector for Mandarava (Metricool has been retired as a GBP source). Reach/click figures are daily sums for the selected month; \"reviews counted\" and \"Avg. Rating\" are cumulative, all-time totals as of the end of the selected month (reconstructed from each review's timestamp), not new reviews received in that month alone. Reach/click daily metrics are only available in Insightful Pipe from March 2025 onward and currently lag a few days behind the calendar (so the newest partial month shows \"—\" for reach/clicks while the review totals still come through)."
   }
 };
 window.__MDRV_DATA__ = DATA;
@@ -729,11 +733,187 @@ document.getElementById('customCompareApply').addEventListener('click', ()=>{
 });
 
 function updateAsOfLabel(){
-  const cur = PRIMARY.custom ? `custom ${PRIMARY.customFrom} → ${PRIMARY.customTo}` : (MONTH_LABELS[PRIMARY.month]||PRIMARY.month);
-  const cmp = COMPARE.custom ? `custom ${COMPARE.customFrom} → ${COMPARE.customTo}` : (MONTH_LABELS[COMPARE.month]||COMPARE.month);
-  const anyCustom = PRIMARY.custom || COMPARE.custom;
+  const cur = YTD_MODE ? (MONTH_LABELS[PRIMARY.month]||PRIMARY.month) : (PRIMARY.custom ? `custom ${PRIMARY.customFrom} → ${PRIMARY.customTo}` : (MONTH_LABELS[PRIMARY.month]||PRIMARY.month));
+  const cmp = YTD_MODE ? (MONTH_LABELS[COMPARE.month]||COMPARE.month) : (COMPARE.custom ? `custom ${COMPARE.customFrom} → ${COMPARE.customTo}` : (MONTH_LABELS[COMPARE.month]||COMPARE.month));
+  const anyCustom = !YTD_MODE && (PRIMARY.custom || COMPARE.custom);
   document.getElementById('asOfLabel').textContent = `${cur} vs ${cmp}${anyCustom ? ' (custom range: GA4 sessions/users/revenue only — tables below still reflect the month picker)' : ''}`;
 }
+
+/* ============================ YTD vs Prior-Year aggregation ============================
+   A pure aggregation layer on top of the existing *_BY_MONTH lookups — no render function
+   needs to know the difference. When YTD mode is switched on, we compute an aggregate for
+   Jan through the latest fully-available month of the current year (and the same Jan-through
+   range one year earlier), inject the result into each *_BY_MONTH const under a synthetic
+   key ("YTD2026" / "YTD2025"), and point PRIMARY.month / COMPARE.month at those synthetic
+   keys. byMonthObj/byMonthArr (and therefore every DATA getter) resolve them exactly like a
+   real month, so every existing render_* function keeps working unmodified. */
+let YTD_MODE = false;
+let SAVED_PRIMARY_MONTH = null, SAVED_COMPARE_MONTH = null;
+
+function ytdDaysInRealMonth(y,m){ return new Date(y, m, 0).getDate(); }
+// Latest month in `year` whose MONTH_DAYS entry covers the whole calendar month (i.e. not
+// today's still-in-progress partial month) — derived from MONTH_LIST/MONTH_DAYS, never hardcoded.
+function ytdLatestFullMonth(year){
+  let cutoff = null;
+  MONTH_LIST.forEach(m=>{
+    if(!m.startsWith(year+'-')) return;
+    const mo = parseInt(m.split('-')[1],10);
+    if((MONTH_DAYS[m]||0) >= ytdDaysInRealMonth(year,mo)) cutoff = m;
+  });
+  return cutoff;
+}
+function ytdMonthRange(year, cutoffMonthNum){
+  const out = [];
+  for(let mo=1; mo<=cutoffMonthNum; mo++) out.push(`${year}-${String(mo).padStart(2,'0')}`);
+  return out;
+}
+// Sum fields across an object-shaped *_BY_MONTH map (GA4 overview, Meta, Google Ads, GSC, GBP).
+// rateFields: {outputField:[numeratorField,denominatorField]} recomputed from the summed
+// components, never averaged. lastFields: carried from the last month in range that has a
+// non-null value (for running-total/point-in-time figures like GBP review count & rating).
+function ytdSumObj(map, months, sumFields, rateFields, lastFields){
+  const rows = months.map(m=>byMonthObj(map,m)).filter(Boolean);
+  const out = {};
+  (sumFields||[]).forEach(f=>{
+    let any=false, tot=0;
+    rows.forEach(r=>{ if(typeof r[f]==='number'){ tot+=r[f]; any=true; } });
+    out[f] = any ? tot : null;
+  });
+  (lastFields||[]).forEach(f=>{
+    let val=null;
+    rows.forEach(r=>{ if(r[f]!=null) val=r[f]; });
+    out[f]=val;
+  });
+  Object.entries(rateFields||{}).forEach(([f,pair])=>{
+    const [num,den]=pair;
+    out[f] = (out[den]>0 && out[num]!=null) ? out[num]/out[den] : null;
+  });
+  return out;
+}
+// Group-and-sum an array-shaped *_BY_MONTH map (channels, countries, rooms, promos, landing
+// pages, device, items, source/medium) by its row key field, summing raw counts across months
+// and recomputing any rate field from a reconstructed numerator (rate*denominator, summed then
+// divided) rather than averaging the per-month rate.
+function ytdSumArr(map, months, keyField, sumFields, rateFieldsWithDenom){
+  const groups = {}, order = [];
+  months.forEach(m=>{
+    (byMonthArr(map,m)||[]).forEach(row=>{
+      const k = row[keyField];
+      if(!(k in groups)){
+        groups[k] = {[keyField]:k};
+        order.push(k);
+        (sumFields||[]).forEach(f=>{ groups[k]['__any_'+f]=false; groups[k][f]=0; });
+        Object.keys(rateFieldsWithDenom||{}).forEach(f=>{ groups[k]['__num_'+f]=0; });
+      }
+      (sumFields||[]).forEach(f=>{ if(typeof row[f]==='number'){ groups[k][f]+=row[f]; groups[k]['__any_'+f]=true; } });
+      Object.entries(rateFieldsWithDenom||{}).forEach(([f,den])=>{
+        if(typeof row[f]==='number' && typeof row[den]==='number') groups[k]['__num_'+f] += row[f]*row[den];
+      });
+    });
+  });
+  return order.map(k=>{
+    const g = groups[k];
+    (sumFields||[]).forEach(f=>{ if(!g['__any_'+f]) g[f]=null; delete g['__any_'+f]; });
+    Object.entries(rateFieldsWithDenom||{}).forEach(([f,den])=>{
+      g[f] = (g[den]>0) ? g['__num_'+f]/g[den] : null;
+      delete g['__num_'+f];
+    });
+    return g;
+  });
+}
+
+function computeYtdAggregate(year, cutoffNum, cutoffLabelMonth){
+  const months = ytdMonthRange(year, cutoffNum);
+  const ymSynthetic = `YTD-${year}`;
+  const key = ymKey(ymSynthetic);
+
+  GA4_OVERVIEW_BY_MONTH[key] = ytdSumObj(GA4_OVERVIEW_BY_MONTH, months,
+    ['users','newUsers','sessions','engagedSessions','bookingEngineClicks','bookingEngineUsers','roomSelected','roomSelectedUsers','bookings','bookingUsers','revenue'],
+    {engagementRate:['engagedSessions','sessions']});
+  GA4_CHANNELS_BY_MONTH[key] = ytdSumArr(GA4_CHANNELS_BY_MONTH, months, 'ch',
+    ['sessions','users','newUsers','engaged','bookings','revenue'], {engRate:'sessions'});
+  GA4_COUNTRIES_BY_MONTH[key] = ytdSumArr(GA4_COUNTRIES_BY_MONTH, months, 'c',
+    ['sessions','users','bookings','revenue'], {engRate:'sessions'});
+  GA4_SM_BY_MONTH[key] = ytdSumArr(GA4_SM_BY_MONTH, months, 'sm',
+    ['sessions','users','bookings','revenue'], {});
+  GA4_ROOMS_BY_MONTH[key] = ytdSumArr(GA4_ROOMS_BY_MONTH, months, 'room',
+    ['views','users','intentEvents'], {engRate:'views', bounce:'views'});
+  GA4_PROMOS_BY_MONTH[key] = ytdSumArr(GA4_PROMOS_BY_MONTH, months, 'promo',
+    ['views','users'], {engRate:'views', bounce:'views'});
+  GA4_LP_BY_MONTH[key] = ytdSumArr(GA4_LP_BY_MONTH, months, 'p',
+    ['sessions','users'], {engRate:'sessions', bounce:'sessions'});
+  GA4_DEVICE_BY_MONTH[key] = ytdSumArr(GA4_DEVICE_BY_MONTH, months, 'd',
+    ['sessions','users'], {engRate:'sessions'});
+  GA4_ITEMS_BY_MONTH[key] = ytdSumArr(GA4_ITEMS_BY_MONTH, months, 'item',
+    ['addToCart','purchased','revenue'], {});
+  { // events: plain per-key sum across whatever event names appear in the range
+    const evOut = {};
+    months.forEach(m=>{
+      const ev = byMonthObj(GA4_EVENTS_BY_MONTH, m) || {};
+      Object.entries(ev).forEach(([k,v])=>{ if(typeof v==='number') evOut[k]=(evOut[k]||0)+v; });
+    });
+    GA4_EVENTS_BY_MONTH[key] = evOut;
+  }
+  META_BY_MONTH[key] = ytdSumObj(META_BY_MONTH, months,
+    ['spend','reach','impressions','clicks','linkClicks','lpv'], {}, ['activeCampaigns']);
+  GADS_BY_MONTH[key] = ytdSumObj(GADS_BY_MONTH, months,
+    ['clicks','impressions','cost','conversions','revenue'], {});
+  GSC_BY_MONTH[key] = ytdSumObj(GSC_BY_MONTH, months, ['clicks','impressions'], {});
+  GBP_BY_MONTH[key] = (()=>{
+    const out = ytdSumObj(GBP_BY_MONTH, months,
+      ['reachSearch','reachMaps','websiteClicks','callClicks','directionsClicks'], {}, ['reviewsCount','avgRating']);
+    const trackedMonths = months.filter(m=>{ const r=byMonthObj(GBP_BY_MONTH,m); return r && r.reachSearch!=null; });
+    if(trackedMonths.length===0) out.notTracked = true;
+    else if(trackedMonths.length<months.length){
+      out.partialCoverage = true;
+      out.monthsWithData = trackedMonths.length;
+      out.monthsTotal = months.length;
+      out.untrackedMonthLabels = months.filter(m=>!trackedMonths.includes(m)).map(m=>MONTH_LABELS[m]||m).join(', ');
+    }
+    return out;
+  })();
+
+  MONTH_LABELS[ymSynthetic] = `Jan–${cutoffLabelMonth} ${year} (YTD)`;
+  MONTH_DAYS[ymSynthetic] = months.reduce((a,m)=>a+(MONTH_DAYS[m]||0),0);
+  return ymSynthetic;
+}
+
+function setYtdControlsDisabled(disabled){
+  ['dateSelect','compareSelect','primaryCustomToggle','compareCustomToggle'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.disabled = disabled;
+  });
+}
+
+document.getElementById('ytdToggle').addEventListener('change', e=>{
+  YTD_MODE = e.target.checked;
+  if(YTD_MODE){
+    SAVED_PRIMARY_MONTH = {month:PRIMARY.month, custom:PRIMARY.custom};
+    SAVED_COMPARE_MONTH = {month:COMPARE.month, custom:COMPARE.custom};
+    const curYear = parseInt(MONTH_LIST[MONTH_LIST.length-1].split('-')[0],10);
+    const cutoff = ytdLatestFullMonth(curYear);
+    const curKey = cutoff ? computeYtdAggregate(curYear, parseInt(cutoff.split('-')[1],10), MONTH_LABELS[cutoff].split(' ')[0].slice(0,3)) : null;
+    const prevKey = cutoff ? computeYtdAggregate(curYear-1, parseInt(cutoff.split('-')[1],10), MONTH_LABELS[cutoff].split(' ')[0].slice(0,3)) : null;
+    if(!curKey || !prevKey){
+      // Not enough real data yet to build a YTD comparison — revert.
+      YTD_MODE = false;
+      e.target.checked = false;
+      alert('Year-to-date comparison needs at least one fully-completed month of data in both years — not available yet.');
+      return;
+    }
+    PRIMARY.month = curKey; PRIMARY.custom = false;
+    COMPARE.month = prevKey; COMPARE.custom = false;
+    document.getElementById('customPrimaryWrap').style.display='none';
+    document.getElementById('customCompareWrap').style.display='none';
+    setYtdControlsDisabled(true);
+  } else {
+    if(SAVED_PRIMARY_MONTH){ PRIMARY.month = SAVED_PRIMARY_MONTH.month; PRIMARY.custom = SAVED_PRIMARY_MONTH.custom; }
+    if(SAVED_COMPARE_MONTH){ COMPARE.month = SAVED_COMPARE_MONTH.month; COMPARE.custom = SAVED_COMPARE_MONTH.custom; }
+    setYtdControlsDisabled(false);
+  }
+  updateAsOfLabel();
+  renderPage(STATE.page);
+});
+
 updateAsOfLabel();
 
 /* ============================ nav config ============================ */
@@ -743,7 +923,7 @@ const NAV = [
   ]},
   {group:'Channels', items:[
     {id:'ga4', label:'Website / GA4'},
-    {id:'gbp', label:'Google Business Profile', off:true},
+    {id:'gbp', label:'Google Business Profile'},
     {id:'gads', label:'Google Ads'},
     {id:'fb', label:'Facebook'},
     {id:'ig', label:'Instagram'},
@@ -787,7 +967,7 @@ function render_exec(){
   const igEngRateC = igc.interactions/igc.reach, igEngRateP = igp.interactions/igp.reach;
 
   let html = '';
-  html += sourceBar([['GA4 — live',true],['Google Business Profile — live via Metricool',true],['Google Ads — live',true],['Google Search Console — live',true],['Facebook Page — followers only',true],['Instagram — live',true],['Meta Ads — live',true]]);
+  html += sourceBar([['GA4 — live',true],['Google Business Profile — live via Insightful Pipe',true],['Google Ads — live',true],['Google Search Console — live',true],['Facebook Page — followers only',true],['Instagram — live',true],['Meta Ads — live',true]]);
 
   html += `<div class="page-desc" style="margin-bottom:16px;">A 30-second read for the GM, DOSM or Marketing Manager: what happened, which markets and channels are carrying the business, and what needs a decision this month. Full detail lives on the pages to the left.</div>`;
 
@@ -816,7 +996,7 @@ function render_exec(){
   </div>`;
 
   { const bc = DATA.gbp.overview.current, bp = DATA.gbp.overview.previous;
-    html += sectionTitle('Google Business Profile', 'via Metricool');
+    html += sectionTitle('Google Business Profile', 'via Insightful Pipe');
     html += `<div class="grid kpi-row">
       ${kpi('Search Reach','',fmtInt(bc.reachSearch),bc.reachSearch,bp.reachSearch)}
       ${kpi('Maps Reach','',fmtInt(bc.reachMaps),bc.reachMaps,bp.reachMaps)}
@@ -1165,11 +1345,17 @@ function render_gbp(){
   const g = DATA.gbp.overview, gc = g.current, gp = g.previous;
   const curNotTracked = gc.notTracked || gc.reachSearch==null;
   const prevNotTracked = gp.notTracked || gp.reachSearch==null;
-  let html = sourceBar([['Google Business Profile — live via Metricool',true],['Insightful Pipe GBP source',false]]);
+  let html = sourceBar([['Google Business Profile — live via Insightful Pipe',true]]);
   html += `<div class="mgmt-note">${DATA.gbp.note}</div>`;
   if(curNotTracked || prevNotTracked){
     const which = curNotTracked && prevNotTracked ? 'Both the selected month and the compare month are' : (curNotTracked ? 'The selected month is' : 'The compare month is');
-    html += `<div class="mgmt-note">${which} outside Metricool's tracked range for this GBP location (traffic/action metrics for this property start 2025-01-19) — figures below show "—" rather than a fabricated zero for the untracked side.</div>`;
+    html += `<div class="mgmt-note">${which} outside Insightful Pipe's tracked range for this GBP location (reach/click daily metrics for this property start 2025-03-01 and currently lag a few days behind today's date) — figures below show "—" rather than a fabricated zero for the untracked side. Review count and average rating are still shown where available, since those are reconstructed from review timestamps rather than the daily-metrics window.</div>`;
+  }
+  if(gc.partialCoverage || gp.partialCoverage){
+    const parts = [];
+    if(gc.partialCoverage) parts.push(`the selected period (reach/click totals only cover ${gc.monthsWithData} of ${gc.monthsTotal} months — ${gc.untrackedMonthLabels} fall before Insightful Pipe's 2025-03-01 tracking start and are excluded, not zero-filled)`);
+    if(gp.partialCoverage) parts.push(`the compare period (reach/click totals only cover ${gp.monthsWithData} of ${gp.monthsTotal} months — ${gp.untrackedMonthLabels} fall before Insightful Pipe's 2025-03-01 tracking start and are excluded, not zero-filled)`);
+    html += `<div class="mgmt-note">Reach/click totals below are a partial-coverage aggregate for ${parts.join(' and ')}. Review count and average rating are unaffected (available for every month).</div>`;
   }
   html += sectionTitle('Main KPIs');
   html += `<div class="grid kpi-row">
@@ -1178,7 +1364,7 @@ function render_gbp(){
     ${kpi('Website Clicks','',fmtInt(gc.websiteClicks),gc.websiteClicks,gp.websiteClicks)}
     ${kpi('Call Clicks','',fmtInt(gc.callClicks),gc.callClicks,gp.callClicks)}
     ${kpi('Direction Requests','',fmtInt(gc.directionsClicks),gc.directionsClicks,gp.directionsClicks)}
-    ${kpi('Avg. Review Rating','',fmtDec(gc.avgRating,2),gc.avgRating,gp.avgRating,{info: gc.reviewsCount!=null ? `${gc.reviewsCount} reviews counted as of this period.` : 'Review-count tracking was not yet active for Mandarava in Metricool during this period.'})}
+    ${kpi('Avg. Review Rating','',fmtDec(gc.avgRating,2),gc.avgRating,gp.avgRating,{info: gc.reviewsCount!=null ? `${gc.reviewsCount} reviews counted, all-time as of this period (cumulative, not new reviews this month).` : 'Review data was not available for this period.'})}
   </div>`;
   html += sectionTitle('Reach vs Action', 'how visibility converts into a website click, call or direction request');
   const totalReach = (gc.reachSearch!=null && gc.reachMaps!=null) ? gc.reachSearch+gc.reachMaps : null;
@@ -1194,7 +1380,7 @@ function render_gbp(){
   </div>`;
   html += sectionTitle('Not yet available from this source');
   html += placeholderCard('Search queries & profile-level breakdowns',
-    'Metricool\'s GBP connector returns daily aggregate reach/action/review metrics but not the underlying "how customers search for you" query list, category-level breakdowns, or Q&A/post-level engagement — those require the native Insightful Pipe GBP connector once it\'s linked, or the GBP dashboard directly.');
+    'Insightful Pipe\'s GBP connector returns daily aggregate reach/action metrics and full review history, but not the underlying "how customers search for you" query list, category-level breakdowns, or Q&A/post-level engagement — those require the GBP dashboard directly.');
   return html;
 }
 /* ============================ PAGE: Google Ads ============================ */
@@ -1379,7 +1565,7 @@ function render_markets(){
   const gCur = DATA.ga4.countries.current, gPrev = DATA.ga4.countries.previous;
   const prevMap = Object.fromEntries(gPrev.map(r=>[r.c,r]));
   const metaMap = Object.fromEntries(DATA.meta.countries.map(r=>[r.c,r]));
-  let html = sourceBar([['GA4 — live',true],['Meta Ads — live',true],['Google Business Profile — live via Metricool',true],['Google Ads — live (Australia only, largely dark since Aug 14)',true]]);
+  let html = sourceBar([['GA4 — live',true],['Meta Ads — live',true],['Google Business Profile — live via Insightful Pipe',true],['Google Ads — live (Australia only, largely dark since Aug 14)',true]]);
   html += `<div class="page-desc" style="margin-bottom:16px;">Every market read through one lens: website demand, booking conversion, and paid investment side by side.</div>`;
   html += `<div class="mgmt-note">Google Ads currently has zero market diversification — its one active campaign (Performance Max) targets Australia exclusively, and delivery collapsed 90% month over month before going fully dark from Aug 14 onward (see Google Ads page). No other market has any Google Ads coverage to cross-reference below. Website sessions/bookings below update with the month picker; the Meta Spend/Reach/LPV columns are a fixed August 2026 snapshot.</div>`;
 
@@ -1540,7 +1726,7 @@ const ALL_INSIGHTS = [
   {cat:'opportunity', title:'Triptease-referred visitors convert above the site average', body:'"triptease_attract / meta" produced 7 bookings from 624 sessions this month (1.12% conversion) against a site-wide average of 0.87% — a meaningful, consistently above-average segment.', why:'<b>Recommend:</b> confirm the Triptease integration and its Meta-sourced audience targeting stay prioritized; this is a disproportionately high-intent segment.'},
   {cat:'information', title:'"Unassigned" is the single largest traffic bucket', body:'Unassigned channel sessions (3,984 of 10,572, 38%) still produced 46 bookings and ฿2.01M in revenue this month, but at the lowest engagement rate of any channel with meaningful volume (16%) — this GA4 default-channel-group bucket is not a real acquisition source and is worth breaking down by Source/Medium (see the toggle on the GA4 page).', why:null},
   {cat:'attention', title:'Australia conversion evaporated month over month', body:'Australia fell from 19 bookings (1.95% conversion, ฿931,859 revenue) on 974 sessions in July to just 6 bookings (0.79% conversion, ฿247,308 revenue) on 757 sessions in August — a 73% revenue decline that far outpaces the 22% session drop.', why:'<b>Investigate:</b> this is also the only market Google Ads\' Performance Max campaign targets — worth checking whether the Google Ads collapse (see above) is connected.'},
-  {cat:'information', title:'Google Business Profile: Maps reach fell sharply, but conversion actions held up', body:'Maps Reach fell 31% month over month (49,543 → 34,192) and Search Reach was roughly flat (−4.8%), yet Website Clicks rose 8.5% (1,486 → 1,612) and Direction Requests rose 12.1% (3,199 → 3,586) — fewer people seeing the listing, but a similar or higher share taking action once they do.', why:null},
+  {cat:'information', title:'Google Business Profile: Maps reach fell sharply, but conversion actions held up', body:'Maps Reach fell 31% month over month (49,543 → 34,192) while Search Reach and Website Clicks both rose (7,608 → 7,795; 1,486 → 1,757) and Direction Requests rose 12.1% (3,199 → 3,586) — Maps visibility dropped, but search visibility and on-profile actions held up or grew.', why:null},
   {cat:'attention', title:'UK sessions grew but bookings and revenue fell hard', body:'UK sessions rose 28.8% month over month (1,069 → 1,377) but bookings fell from 10 to 7 (−30%) and revenue collapsed 72.5% (฿731,589 → ฿201,178) — more traffic converting far worse, not a volume problem.', why:'<b>Investigate:</b> UK-facing offer relevance and price positioning; check whether a specific high-value July booking is skewing the comparison before treating this as a pure trend.'},
 ];
 function render_insights(){
