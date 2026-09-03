@@ -222,6 +222,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <option value="2026-07">July 2026</option>
           <option value="2026-08" selected>August 2026</option>
           <option value="2026-09">September 2026 (partial)</option>
+          <!-- Year-to-date option injected here at load time by initYtdOptions() — its
+               end-month is derived programmatically (ytdLatestFullMonth), never hardcoded. -->
         </select>
         <button class="reset-link" id="primaryCustomToggle" style="border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;">Custom range</button>
         <span id="customPrimaryWrap" style="display:none;gap:6px;align-items:center;">
@@ -253,6 +255,9 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <option value="2026-07" selected>July 2026</option>
           <option value="2026-08">August 2026</option>
           <option value="2026-09">September 2026 (partial)</option>
+          <!-- Year-to-date (previous year) option injected here at load time by
+               initYtdOptions() — auto-selected and this control locked when the PRIMARY
+               dropdown picks Year to Date; unlocked when PRIMARY goes back to a normal month. -->
         </select>
         <button class="reset-link" id="compareCustomToggle" style="border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;">Custom range</button>
         <span id="customCompareWrap" style="display:none;gap:6px;align-items:center;">
@@ -261,10 +266,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
           <input type="date" class="ctrl" id="customTo" min="2025-01-01" max="2026-09-02" value="2026-07-31" style="padding:6px 8px;">
           <button class="reset-link" id="customCompareApply" style="border:1px solid var(--border);border-radius:6px;padding:5px 10px;">Apply</button>
         </span>
-        <label id="ytdToggleWrap" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">
-          <input type="checkbox" id="ytdToggle" style="margin:0;">
-          Compare: Year-to-date vs previous year
-        </label>
         <span class="asof" id="asOfLabel"></span>
       </div>
     </div>
@@ -694,6 +695,11 @@ document.getElementById('dateSelect').addEventListener('change', e=>{
   PRIMARY.month = e.target.value;
   PRIMARY.custom = false;
   document.getElementById('customPrimaryWrap').style.display='none';
+  if(typeof YTD_CUR_KEY!=='undefined' && YTD_CUR_KEY && PRIMARY.month===YTD_CUR_KEY){
+    lockCompareToYtd();
+  } else {
+    unlockCompareFromYtd();
+  }
   updateAsOfLabel();
   renderPage(STATE.page);
 });
@@ -733,22 +739,23 @@ document.getElementById('customCompareApply').addEventListener('click', ()=>{
 });
 
 function updateAsOfLabel(){
-  const cur = YTD_MODE ? (MONTH_LABELS[PRIMARY.month]||PRIMARY.month) : (PRIMARY.custom ? `custom ${PRIMARY.customFrom} → ${PRIMARY.customTo}` : (MONTH_LABELS[PRIMARY.month]||PRIMARY.month));
-  const cmp = YTD_MODE ? (MONTH_LABELS[COMPARE.month]||COMPARE.month) : (COMPARE.custom ? `custom ${COMPARE.customFrom} → ${COMPARE.customTo}` : (MONTH_LABELS[COMPARE.month]||COMPARE.month));
-  const anyCustom = !YTD_MODE && (PRIMARY.custom || COMPARE.custom);
+  const cur = PRIMARY.custom ? `custom ${PRIMARY.customFrom} → ${PRIMARY.customTo}` : (MONTH_LABELS[PRIMARY.month]||PRIMARY.month);
+  const cmp = COMPARE.custom ? `custom ${COMPARE.customFrom} → ${COMPARE.customTo}` : (MONTH_LABELS[COMPARE.month]||COMPARE.month);
+  const anyCustom = PRIMARY.custom || COMPARE.custom;
   document.getElementById('asOfLabel').textContent = `${cur} vs ${cmp}${anyCustom ? ' (custom range: GA4 sessions/users/revenue only — tables below still reflect the month picker)' : ''}`;
 }
 
-/* ============================ YTD vs Prior-Year aggregation ============================
+/* ============================ Year to Date aggregation ============================
    A pure aggregation layer on top of the existing *_BY_MONTH lookups — no render function
-   needs to know the difference. When YTD mode is switched on, we compute an aggregate for
-   Jan through the latest fully-available month of the current year (and the same Jan-through
-   range one year earlier), inject the result into each *_BY_MONTH const under a synthetic
-   key ("YTD2026" / "YTD2025"), and point PRIMARY.month / COMPARE.month at those synthetic
-   keys. byMonthObj/byMonthArr (and therefore every DATA getter) resolve them exactly like a
-   real month, so every existing render_* function keeps working unmodified. */
-let YTD_MODE = false;
-let SAVED_PRIMARY_MONTH = null, SAVED_COMPARE_MONTH = null;
+   needs to know the difference. We compute an aggregate for Jan through the latest
+   fully-available month of the current year (and the same Jan-through range one year
+   earlier), inject the result into each *_BY_MONTH const under a synthetic key
+   ("YTD-2026" / "YTD-2025"), and expose those synthetic keys as ordinary options inside the
+   existing PRIMARY (#dateSelect) and COMPARE (#compareSelect) dropdowns. byMonthObj/byMonthArr
+   (and therefore every DATA getter) resolve them exactly like a real month, so every existing
+   render_* function keeps working unmodified. Picking "Year to Date" in PRIMARY auto-selects
+   the matching prior-year YTD entry in COMPARE and locks manual compare selection, the same
+   way the custom-range toggles disable/enable their counterpart control. */
 
 function ytdDaysInRealMonth(y,m){ return new Date(y, m, 0).getDate(); }
 // Latest month in `year` whose MONTH_DAYS entry covers the whole calendar month (i.e. not
@@ -878,41 +885,69 @@ function computeYtdAggregate(year, cutoffNum, cutoffLabelMonth){
   return ymSynthetic;
 }
 
-function setYtdControlsDisabled(disabled){
-  ['dateSelect','compareSelect','primaryCustomToggle','compareCustomToggle'].forEach(id=>{
-    const el = document.getElementById(id); if(el) el.disabled = disabled;
-  });
-}
+/* Year-to-date entry point: two synthetic month keys, computed once at load and injected as
+   plain <option> elements into the existing PRIMARY/COMPARE dropdowns. YTD_CUR_KEY is the
+   PRIMARY-side option ("Year to Date (Jan–Aug 2026)"); YTD_PREV_KEY is the same Jan-through
+   range one year earlier, offered as the COMPARE-side option and auto-selected whenever
+   PRIMARY is on YTD_CUR_KEY. */
+let YTD_CUR_KEY = null, YTD_PREV_KEY = null;
+let COMPARE_LOCKED_BY_YTD = false, SAVED_COMPARE_STATE = null;
 
-document.getElementById('ytdToggle').addEventListener('change', e=>{
-  YTD_MODE = e.target.checked;
-  if(YTD_MODE){
-    SAVED_PRIMARY_MONTH = {month:PRIMARY.month, custom:PRIMARY.custom};
-    SAVED_COMPARE_MONTH = {month:COMPARE.month, custom:COMPARE.custom};
-    const curYear = parseInt(MONTH_LIST[MONTH_LIST.length-1].split('-')[0],10);
-    const cutoff = ytdLatestFullMonth(curYear);
-    const curKey = cutoff ? computeYtdAggregate(curYear, parseInt(cutoff.split('-')[1],10), MONTH_LABELS[cutoff].split(' ')[0].slice(0,3)) : null;
-    const prevKey = cutoff ? computeYtdAggregate(curYear-1, parseInt(cutoff.split('-')[1],10), MONTH_LABELS[cutoff].split(' ')[0].slice(0,3)) : null;
-    if(!curKey || !prevKey){
-      // Not enough real data yet to build a YTD comparison — revert.
-      YTD_MODE = false;
-      e.target.checked = false;
-      alert('Year-to-date comparison needs at least one fully-completed month of data in both years — not available yet.');
-      return;
-    }
-    PRIMARY.month = curKey; PRIMARY.custom = false;
-    COMPARE.month = prevKey; COMPARE.custom = false;
-    document.getElementById('customPrimaryWrap').style.display='none';
-    document.getElementById('customCompareWrap').style.display='none';
-    setYtdControlsDisabled(true);
-  } else {
-    if(SAVED_PRIMARY_MONTH){ PRIMARY.month = SAVED_PRIMARY_MONTH.month; PRIMARY.custom = SAVED_PRIMARY_MONTH.custom; }
-    if(SAVED_COMPARE_MONTH){ COMPARE.month = SAVED_COMPARE_MONTH.month; COMPARE.custom = SAVED_COMPARE_MONTH.custom; }
-    setYtdControlsDisabled(false);
+function initYtdOptions(){
+  const curYear = parseInt(MONTH_LIST[MONTH_LIST.length-1].split('-')[0],10);
+  const cutoff = ytdLatestFullMonth(curYear);
+  if(!cutoff) return; // not enough completed months yet to offer a YTD comparison
+  const cutoffMonthNum = parseInt(cutoff.split('-')[1],10);
+  const cutoffLabelMonth = MONTH_LABELS[cutoff].split(' ')[0].slice(0,3);
+  const curKey = computeYtdAggregate(curYear, cutoffMonthNum, cutoffLabelMonth);
+  const prevKey = computeYtdAggregate(curYear-1, cutoffMonthNum, cutoffLabelMonth);
+  if(!curKey || !prevKey) return; // prior year doesn't have a matching completed range either
+
+  MONTH_LABELS[curKey] = `Year to Date (Jan–${cutoffLabelMonth} ${curYear})`;
+  MONTH_LABELS[prevKey] = `Year to Date (Jan–${cutoffLabelMonth} ${curYear-1})`;
+
+  const dateOpt = document.createElement('option');
+  dateOpt.value = curKey; dateOpt.textContent = MONTH_LABELS[curKey];
+  document.getElementById('dateSelect').appendChild(dateOpt);
+
+  const cmpOpt = document.createElement('option');
+  cmpOpt.value = prevKey; cmpOpt.textContent = MONTH_LABELS[prevKey];
+  document.getElementById('compareSelect').appendChild(cmpOpt);
+
+  YTD_CUR_KEY = curKey; YTD_PREV_KEY = prevKey;
+}
+initYtdOptions();
+
+function lockCompareToYtd(){
+  if(!YTD_PREV_KEY) return;
+  if(!COMPARE_LOCKED_BY_YTD){
+    SAVED_COMPARE_STATE = {month:COMPARE.month, custom:COMPARE.custom, customFrom:COMPARE.customFrom, customTo:COMPARE.customTo};
   }
-  updateAsOfLabel();
-  renderPage(STATE.page);
-});
+  COMPARE.month = YTD_PREV_KEY; COMPARE.custom = false;
+  document.getElementById('compareSelect').value = YTD_PREV_KEY;
+  document.getElementById('customCompareWrap').style.display = 'none';
+  ['compareSelect','compareCustomToggle','primaryCustomToggle'].forEach(id=>{
+    document.getElementById(id).disabled = true;
+  });
+  COMPARE_LOCKED_BY_YTD = true;
+}
+function unlockCompareFromYtd(){
+  if(!COMPARE_LOCKED_BY_YTD) return;
+  ['compareSelect','compareCustomToggle','primaryCustomToggle'].forEach(id=>{
+    document.getElementById(id).disabled = false;
+  });
+  if(SAVED_COMPARE_STATE){
+    COMPARE.month = SAVED_COMPARE_STATE.month;
+    COMPARE.custom = SAVED_COMPARE_STATE.custom;
+    COMPARE.customFrom = SAVED_COMPARE_STATE.customFrom;
+    COMPARE.customTo = SAVED_COMPARE_STATE.customTo;
+    document.getElementById('compareSelect').value = COMPARE.month;
+    document.getElementById('customFrom').value = COMPARE.customFrom;
+    document.getElementById('customTo').value = COMPARE.customTo;
+    document.getElementById('customCompareWrap').style.display = COMPARE.custom ? 'flex' : 'none';
+  }
+  COMPARE_LOCKED_BY_YTD = false;
+}
 
 updateAsOfLabel();
 
