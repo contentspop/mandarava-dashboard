@@ -410,9 +410,6 @@ const DATA = {
     locNote:"Follower-location data is a lifetime snapshot (all-time followers), not a month-scoped figure — Instagram does not expose a dated version of this metric.",
     current:{reach:424266,accountsEngaged:506,views:597108,likes:665,comments:10,shares:105,interactions:927,profileTaps:18},
     previous:{reach:1248101,accountsEngaged:702,views:1524101,likes:761,comments:11,shares:109,interactions:1053,profileTaps:9},
-    posts:[
-      {caption:"This is looking very much like a Mandarava kind of day.",type:"Image",date:"Aug 30",reach:0,likes:38,comments:1,shares:0,saved:0,interactions:39,url:"https://www.instagram.com/p/DcqdjsIjWd2/"}
-    ],
     contentTypeMix:{Image:1}
   },
   fbPage:{
@@ -1549,10 +1546,6 @@ function socialGrowthSeries(map, followerField, gainField, lossField){
   const net = MONTH_LIST.map(m=>{ const o=byMonthObj(map,m); if(!o) return null; return (o[gainField]!=null && o[lossField]!=null) ? o[gainField]-o[lossField] : null; });
   return {labels, followers, net};
 }
-function renderIgTable(rows){
-  const body = rows.map(r=>[`<a href="${r.url}" target="_blank" rel="noopener" style="color:var(--moss);">${r.caption.slice(0,42)}${r.caption.length>42?'…':''}</a>`, r.type, r.date, fmtInt(r.reach), fmtInt(r.likes), fmtInt(r.shares), fmtInt(r.saved)]);
-  return dataTable([{label:'Post'},{label:'Type'},{label:'Date'},{label:'Reach',num:1},{label:'Likes',num:1},{label:'Shares',num:1},{label:'Saves',num:1}], body);
-}
 function fmtYmd(s){
   if(!s || s.length!==8) return s||'—';
   const y=s.slice(0,4), mo=parseInt(s.slice(4,6),10)-1, d=parseInt(s.slice(6,8),10);
@@ -1690,15 +1683,6 @@ function render_social(){
     <div class="section-title" style="margin-top:22px;">Content Type Mix <span class="tag">recent snapshot — last ~18 posts</span></div>
     <div class="chart-card"><canvas id="igMixChart" height="60"></canvas></div>
 
-    <div class="section-title" style="margin-top:22px;">Recent Post Performance</div>
-    <div class="two-col">
-      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Reach</div>${renderIgTable(sortRows(ig.posts,'reach'))}</div>
-      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Engagement</div>${renderIgTable(sortRows(ig.posts,'interactions'))}</div>
-    </div>
-    <div class="two-col" style="margin-top:14px;">
-      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Shares</div>${renderIgTable(sortRows(ig.posts,'shares'))}</div>
-      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Saves</div>${renderIgTable(sortRows(ig.posts,'saved'))}</div>
-    </div>
   </div>`;
 
   const fbPosts = byMonthObj(FB_POSTS_BY_MONTH, PRIMARY.month) || [];
