@@ -1502,6 +1502,7 @@ function render_gads(){
 /* ============================ PAGE: Social Insights (Metricool monthly totals + Insightful Pipe demographics/post detail) ============================ */
 function safeDiv(a,b){ return (a==null || b==null || !b) ? null : a/b; }
 function substat(label, val){ return `<div class="substat"><div class="lab">${label}</div><div class="val">${val}</div></div>`; }
+function fmtDecComma(n,d=0){ return n==null ? '—' : Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
 function socialCard(title, mainVal, lines){
   return `<div class="social-card">
     <div class="sc-title">${title}</div>
@@ -1606,7 +1607,7 @@ function render_social(){
     </div>
     <div class="substat-row">
       ${substat('Avg. daily new followers', fmtDec(igDailyNew,1))}
-      ${substat('Daily views', fmtDec(igDailyViews,0))}
+      ${substat('Daily views', fmtDecComma(igDailyViews,0))}
       ${substat('Daily posts', fmtDec(igDailyPosts,2))}
       ${substat('Posts per week', fmtDec(igDailyPosts!=null?igDailyPosts*7:null,1))}
     </div>
