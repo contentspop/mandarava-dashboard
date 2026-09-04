@@ -183,6 +183,32 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
 
 .mgmt-note{display:flex;align-items:flex-start;gap:8px;background:var(--sand-soft);border:1px solid var(--sand);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--ink);margin-bottom:16px;}
 
+.platform-block{border:1px solid var(--border);border-radius:14px;padding:20px 20px 6px;margin-bottom:26px;background:var(--surface);}
+.platform-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.platform-head .badge-platform{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex:none;}
+.platform-head .badge-platform.fb{background:#1877F2;}
+.platform-head .badge-platform.ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.platform-head h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0;}
+.substat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:10px 0 4px;}
+.substat{background:var(--surface-2);border-radius:9px;padding:10px 12px;}
+.substat .lab{font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.substat .val{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--ink);}
+.social-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:10px 0 4px;}
+.social-card{background:var(--surface-2);border-radius:11px;padding:14px 16px;}
+.social-card .sc-title{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+.social-card .sc-main{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.social-card .sc-line{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);padding:3px 0;border-top:1px solid var(--border-soft);}
+.social-card .sc-line:first-of-type{border-top:none;}
+.social-card .sc-line b{color:var(--ink);font-weight:600;}
+.demo-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;align-items:start;}
+.donut-wrap{position:relative;max-width:230px;margin:0 auto;}
+.legend-list{display:flex;flex-direction:column;gap:6px;font-size:12.5px;}
+.legend-list .lg-row{display:flex;align-items:center;gap:8px;}
+.legend-list .lg-dot{width:10px;height:10px;border-radius:3px;flex:none;}
+.legend-list .lg-name{flex:1;color:var(--ink-soft);}
+.legend-list .lg-val{font-weight:600;color:var(--ink);}
+@media(max-width:760px){.demo-grid{grid-template-columns:1fr;}}
+
 @media(max-width:900px){.app{grid-template-columns:1fr;}.sidebar{position:relative;height:auto;}}
 </style>
 
@@ -974,8 +1000,6 @@ const NAV = [
     {id:'ga4', label:'Website / GA4'},
     {id:'gbp', label:'Google Business Profile'},
     {id:'gads', label:'Google Ads'},
-    {id:'fb', label:'Facebook'},
-    {id:'ig', label:'Instagram'},
     {id:'social', label:'Social Insights'},
     {id:'meta', label:'Meta Ads'},
   ]},
@@ -988,7 +1012,7 @@ const NAV = [
   ]}
 ];
 const TITLES = {exec:'Executive Summary', ga4:'Website / GA4', gbp:'Google Business Profile', gads:'Google Ads',
-  fb:'Facebook', ig:'Instagram', social:'Social Insights', meta:'Meta Ads', markets:'Markets & Geography', search:'Search Intelligence',
+  social:'Social Insights', meta:'Meta Ads', markets:'Markets & Geography', search:'Search Intelligence',
   promos:'Promotions & Campaign Performance', funnel:'Conversion Funnel', insights:'Insights & Recommendations'};
 
 const STATE = {page:'exec'};
@@ -1475,110 +1499,149 @@ function render_gads(){
 }
 </script>
 <script>
-/* ============================ PAGE: Facebook ============================ */
-function render_fb(){
-  const fb = DATA.fbPage, fc = fb.overview.current, fp = fb.overview.previous;
-  let html = sourceBar([['Facebook Page — live (views, engagement, follows, locations)',true],['Reach / impressions — Meta-deprecated',false]]);
-  html += `<div class="mgmt-note">${DATA.sources.fbPage.note}</div>`;
-  html += sectionTitle('Main KPIs');
-  html += `<div class="grid kpi-row">
-    ${kpi('Followers','',fmtInt(fb.followers),null,null,{noDelta:true,note:'Point-in-time count.'})}
-    ${kpi('Page Views','',fmtInt(fc.views),fc.views,fp.views)}
-    ${kpi('Post Engagements','',fmtInt(fc.engagements),fc.engagements,fp.engagements)}
-    ${kpi('Video Views (3s+)','',fmtInt(fc.videoViews),fc.videoViews,fp.videoViews)}
-    ${kpi('New Follows','',fmtInt(fc.newFollows),fc.newFollows,fp.newFollows)}
-    ${kpi('Net Follower Change','',fmtInt(fc.newFollows-fc.unfollows),fc.newFollows-fc.unfollows,fp.newFollows-fp.unfollows,{info:'New follows minus unfollows.'})}
-    ${unavailCard('Reach / Impressions','Meta deprecated Page- and Post-level reach/impressions ("unique") metrics platform-wide — this is not fixable from our side; see Insights & Recommendations.')}
+/* ============================ PAGE: Social Insights (Metricool monthly totals + Insightful Pipe demographics/post detail) ============================ */
+function safeDiv(a,b){ return (a==null || b==null || !b) ? null : a/b; }
+function substat(label, val){ return `<div class="substat"><div class="lab">${label}</div><div class="val">${val}</div></div>`; }
+function socialCard(title, mainVal, lines){
+  return `<div class="social-card">
+    <div class="sc-title">${title}</div>
+    ${mainVal!=null?`<div class="sc-main">${mainVal}</div>`:''}
+    ${(lines||[]).map(([l,v])=>`<div class="sc-line"><span>${l}</span><b>${v}</b></div>`).join('')}
   </div>`;
-
-  html += sectionTitle('Follower Locations', 'lifetime snapshot — see note');
-  html += `<div class="mgmt-note">${fb.note}</div>`;
-  html += `<div class="two-col-charts" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Countries</div>${locationBars(fb.locations.country,{limit:10})}</div>
-    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Cities</div>${locationBars(fb.locations.city,{limit:10,city:true})}</div>
-  </div>`;
-  html += `<div style="margin-top:12px;">` + dataTable([{label:'Country',},{label:'Followers',num:1}], fb.locations.country.map(([c,v])=>[ccName(c), fmtInt(v)]), {defaultSortCol:1, defaultSize:10}) + `</div>`;
-
-  html += sectionTitle('Facebook Content — Recent Posts', 'likes, link clicks & video views live; reach still Meta-deprecated');
-  const rows = fb.posts.map(p=>[`<a href="${p.url}" target="_blank" rel="noopener" style="color:var(--moss);">${p.caption}</a>`, p.date, p.type, fmtInt(p.likes), fmtInt(p.clicks), p.videoViews?fmtInt(p.videoViews):'—']);
-  html += dataTable([{label:'Post'},{label:'Date'},{label:'Type'},{label:'Likes',num:1},{label:'Link Clicks',num:1},{label:'Video Views',num:1}], rows, {defaultSortCol:4, defaultSize:10});
-  return html;
 }
-
-/* ============================ PAGE: Instagram ============================ */
-function render_ig(){
-  const ig = DATA.ig, c=ig.current, p=ig.previous;
-  const engRateC = c.interactions/c.reach, engRateP = p.interactions/p.reach;
-  let html = sourceBar([['Instagram (@mandaravaresort) — live',true]]);
-  html += sectionTitle('Main KPIs');
-  html += `<div class="grid kpi-row">
-    ${kpi('Reach','',fmtInt(c.reach),c.reach,p.reach)}
-    ${kpi('Impressions (views)','',fmtInt(c.views),c.views,p.views)}
-    ${kpi('Engagement (interactions)','',fmtInt(c.interactions),c.interactions,p.interactions)}
-    ${kpi('Engagement Rate','',fmtPct(engRateC,2),engRateC,engRateP,{isPct:true,digits:2,info:'Interactions ÷ reach.'})}
-    ${kpi('Profile Visits (link taps)','',fmtInt(c.profileTaps),c.profileTaps,p.profileTaps)}
-    ${kpi('Followers','',fmtInt(ig.profile.followers),null,null,{noDelta:true,note:'Point-in-time — 797 lifetime posts.'})}
-  </div>`;
-  html += `<div class="mgmt-note">Reach and views fell sharply (reach −82%, views −74%) while the engagement rate on the reach that remained roughly quadrupled (0.37% vs 0.08%). Distribution dropped; content quality did not. See Insights &amp; Recommendations.</div>`;
-
-  html += sectionTitle('Follower Locations', 'lifetime snapshot — see note');
-  html += `<div class="mgmt-note">${ig.locNote}</div>`;
-  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Countries</div>${locationBars(ig.locations.country,{limit:10})}</div>
-    <div><div style="font-weight:600;font-size:12.5px;margin-bottom:8px;">Top Cities</div>${locationBars(ig.locations.city,{limit:10,city:true})}</div>
-  </div>`;
-  html += `<div style="margin-top:12px;">` + dataTable([{label:'Country'},{label:'Followers',num:1}], ig.locations.country.map(([c,v])=>[ccName(c), fmtInt(v)]), {defaultSortCol:1, defaultSize:10}) + `</div>`;
-
-  html += sectionTitle('Content Type Mix', 'last 18 posts, ~60 days');
-  const mix = ig.contentTypeMix;
-  html += `<div class="chart-card"><canvas id="igMixChart" height="60"></canvas></div>`;
-
-  html += sectionTitle('Instagram Content Performance');
-  html += `<div class="two-col">
-    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Reach</div>${renderIgTable(sortRows(ig.posts,'reach'))}</div>
-    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Engagement</div>${renderIgTable(sortRows(ig.posts,'interactions'))}</div>
-  </div>
-  <div class="two-col" style="margin-top:14px;">
-    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Shares</div>${renderIgTable(sortRows(ig.posts,'shares'))}</div>
-    <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Saves</div>${renderIgTable(sortRows(ig.posts,'saved'))}</div>
-  </div>`;
-  return html;
+const DONUT_COLORS = ['#C2542E','#4A6B57','#3E6F72','#9E3F20','#D9B274','#7BA48D','#AA4B3B','#655A51','#B9C0B2'];
+function donutLegend(pairs, limit=8){
+  const sorted = pairs.slice().sort((a,b)=>b[1]-a[1]);
+  const top = sorted.slice(0, limit);
+  const restSum = sorted.slice(limit).reduce((a,[,v])=>a+v,0);
+  const rows = top.map(([c,v],i)=>({label:ccName(c), val:v, color:DONUT_COLORS[i%DONUT_COLORS.length]}));
+  if(restSum>0) rows.push({label:'Other', val:restSum, color:DONUT_COLORS[DONUT_COLORS.length-1]});
+  return rows;
+}
+function renderLegendList(rows){
+  const total = rows.reduce((a,r)=>a+r.val,0);
+  return `<div class="legend-list">${rows.map(r=>`<div class="lg-row"><span class="lg-dot" style="background:${r.color};"></span><span class="lg-name">${r.label}</span><span class="lg-val">${fmtInt(r.val)} (${total>0?fmtPct(r.val/total,1):'—'})</span></div>`).join('')}</div>`;
+}
+function socialGrowthSeries(map, followerField, gainField, lossField){
+  const labels = MONTH_LIST.map(m=>MONTH_LABELS[m].slice(0,3)+" '"+m.slice(2,4));
+  const followers = MONTH_LIST.map(m=>{ const o=byMonthObj(map,m); return (o && o[followerField]!=null) ? o[followerField] : null; });
+  const net = MONTH_LIST.map(m=>{ const o=byMonthObj(map,m); if(!o) return null; return (o[gainField]!=null && o[lossField]!=null) ? o[gainField]-o[lossField] : null; });
+  return {labels, followers, net};
 }
 function renderIgTable(rows){
   const body = rows.map(r=>[`<a href="${r.url}" target="_blank" rel="noopener" style="color:var(--moss);">${r.caption.slice(0,42)}${r.caption.length>42?'…':''}</a>`, r.type, r.date, fmtInt(r.reach), fmtInt(r.likes), fmtInt(r.shares), fmtInt(r.saved)]);
   return dataTable([{label:'Post'},{label:'Type'},{label:'Date'},{label:'Reach',num:1},{label:'Likes',num:1},{label:'Shares',num:1},{label:'Saves',num:1}], body);
 }
 
-/* ============================ PAGE: Social Insights (Metricool) ============================ */
 function render_social(){
   const s = DATA.social;
   const fc = s.fb.current, fp = s.fb.previous;
   const ic = s.ig.current, ip = s.ig.previous;
-  let html = sourceBar([['Facebook Page + Instagram organic — live via Metricool',true],['Paid Meta Ads — see the Meta Ads page instead',false]]);
-  html += `<div class="mgmt-note">${s.note}</div>`;
+  const daysP = MONTH_DAYS[PRIMARY.month] || 30;
+  const fb = DATA.fbPage, fbSnapC = fb.overview.current, fbSnapP = fb.overview.previous;
+  const ig = DATA.ig, igSnapC = ig.current, igSnapP = ig.previous;
+
+  let html = sourceBar([['Facebook Page + Instagram organic — live via Metricool',true],['Follower demographics & recent post detail — live via Insightful Pipe',true],['Paid Meta Ads — see the Meta Ads page instead',false]]);
+  html += `<div class="mgmt-note">${s.note} Facebook and Instagram used to be two separate pages in this nav (Insightful Pipe-sourced, post-level detail) — that content is now folded into this one Social Insights page alongside Metricool's monthly totals, so there is one social page instead of three.</div>`;
   const notes = [];
   if(fc.fbFollowers==null) notes.push('Facebook follower count is outside Metricool\'s tracked range for the selected month (real data starts March 2026) — showing "—" rather than a fabricated figure.');
   if(ic.followers==null) notes.push('Instagram follower count is outside Metricool\'s tracked range for the selected month (real data starts June 2026) — showing "—" rather than a fabricated figure.');
   if(notes.length) html += `<div class="mgmt-note">${notes.join(' ')}</div>`;
 
-  html += sectionTitle('Facebook Page');
+  /* ---------------- FACEBOOK ---------------- */
   const fbNetC = (fc.followersAcquired!=null && fc.followersLost!=null) ? fc.followersAcquired-fc.followersLost : null;
   const fbNetP = (fp.followersAcquired!=null && fp.followersLost!=null) ? fp.followersAcquired-fp.followersLost : null;
-  html += `<div class="grid kpi-row">
-    ${kpi('Followers','',fmtInt(fc.fbFollowers),null,null,{noDelta:true,note:'Point-in-time count — tracked from March 2026.'})}
-    ${kpi('Net Follower Change','',fmtInt(fbNetC),fbNetC,fbNetP,{info:'New follows minus unfollows this period.'})}
-    ${kpi('Posts Published','',fmtInt(fc.postsCount),fc.postsCount,fp.postsCount,{info:'Posts + Reels published this period.'})}
-    ${kpi('Post Interactions','',fmtInt(fc.postsInteractions),fc.postsInteractions,fp.postsInteractions,{info:'Reactions + comments + shares on posts published or measured this period.'})}
-    ${kpi('Post Impressions','',fmtInt(fc.postsImpressions),fc.postsImpressions,fp.postsImpressions,{info:'The reach/impressions figure Insightful Pipe cannot return since Meta deprecated it there — tracked in Metricool from June 2025.'})}
+  const fbDailyNew = safeDiv(fbNetC,daysP), fbDailyViews = safeDiv(fc.pageViews,daysP), fbDailyPosts = safeDiv(fc.postsCount,daysP);
+
+  html += `<div class="platform-block">
+    <div class="platform-head"><span class="badge-platform fb">f</span><h3>Facebook Page — Growth</h3></div>
+    <div class="grid kpi-row">
+      ${kpi('Followers','',fmtInt(fc.fbFollowers),null,null,{noDelta:true,note:'Point-in-time — tracked from March 2026.'})}
+      ${kpi('Views (Page)','',fmtInt(fc.pageViews),fc.pageViews,fp.pageViews)}
+      ${kpi('Total Content','',fmtInt(fc.postsCount),fc.postsCount,fp.postsCount,{info:'Posts + Reels published this period.'})}
+    </div>
+    <div class="substat-row">
+      ${substat('Avg. daily new followers', fmtDec(fbDailyNew,1))}
+      ${substat('Daily page views', fmtDec(fbDailyViews,1))}
+      ${substat('Daily posts', fmtDec(fbDailyPosts,2))}
+      ${substat('Posts per week', fmtDec(fbDailyPosts!=null?fbDailyPosts*7:null,1))}
+    </div>
+    <div class="chart-card" style="margin-top:14px;"><canvas id="fbGrowthChart" height="70"></canvas></div>
+
+    <div class="section-title" style="margin-top:22px;">Demographics <span class="tag">lifetime snapshot — not month-scoped</span></div>
+    <div class="mgmt-note">${fb.note}</div>
+    <div class="demo-grid">
+      <div><div class="donut-wrap"><canvas id="fbCountryDonut"></canvas></div></div>
+      <div>${renderLegendList(donutLegend(fb.locations.country))}</div>
+    </div>
+    <div style="margin-top:14px;font-weight:600;font-size:12.5px;">Followers by City</div>
+    ${dataTable([{label:'City'},{label:'Followers',num:1}], fb.locations.city.slice().sort((a,b)=>b[1]-a[1]).map(([c,v])=>[c, fmtInt(v)]), {defaultSize:10})}
+
+    <div class="section-title" style="margin-top:22px;">Views, Follows, Interactions &amp; Video</div>
+    <div class="social-card-grid">
+      ${socialCard('Views', fmtInt(fc.pageViews), [['Page content views',fmtInt(fc.pageMediaView)],['Post impressions',fmtInt(fc.postsImpressions)]])}
+      ${socialCard('Follows', fmtInt(fbNetC), [['Acquired',fmtInt(fc.followersAcquired)],['Unfollowed',fmtInt(fc.followersLost)],['Net',fmtInt(fbNetC)]])}
+      ${socialCard('Interactions', fmtInt(fc.postsInteractions), [['Reactions',fmtInt(fc.postsReactions)],['Comments',fmtInt(fc.postsComments)],['Shares',fmtInt(fc.postsShares)]])}
+      ${socialCard('Video (recent snapshot)', fmtInt(fbSnapC.videoViews), [['Post engagements',fmtInt(fbSnapC.engagements)],['New follows',fmtInt(fbSnapC.newFollows)],['Unfollows',fmtInt(fbSnapC.unfollows)]])}
+    </div>
+    <div class="kpi-note" style="margin:8px 0 4px;">Views split by followers/non-followers, Page Visits, Conversations and Conversions appear in Metricool's own dashboard UI but are not exposed by the metrics API this dashboard reads — omitted here rather than shown as fabricated zeros.</div>
+
+    <div class="section-title" style="margin-top:22px;">Recent Posts</div>
+    ${dataTable([{label:'Post'},{label:'Date'},{label:'Type'},{label:'Likes',num:1},{label:'Link Clicks',num:1},{label:'Video Views',num:1}],
+      fb.posts.map(p=>[`<a href="${p.url}" target="_blank" rel="noopener" style="color:var(--moss);">${p.caption}</a>`, p.date, p.type, fmtInt(p.likes), fmtInt(p.clicks), p.videoViews?fmtInt(p.videoViews):'—']), {defaultSortCol:4, defaultSize:10})}
   </div>`;
 
-  html += sectionTitle('Instagram');
-  html += `<div class="grid kpi-row">
-    ${kpi('Followers','',fmtInt(ic.followers),null,null,{noDelta:true,note:'Point-in-time count — tracked from June 2026.'})}
-    ${kpi('Net Follower Change','',fmtInt(ic.followersGained!=null&&ic.followersLost!=null?ic.followersGained-ic.followersLost:null),(ic.followersGained!=null&&ic.followersLost!=null?ic.followersGained-ic.followersLost:null),(ip.followersGained!=null&&ip.followersLost!=null?ip.followersGained-ip.followersLost:null),{info:'New followers minus lost followers — tracked from January 2026.'})}
-    ${kpi('Posts Published','',fmtInt(ic.postsCount),ic.postsCount,ip.postsCount,{info:'Posts + Reels published this period.'})}
-    ${kpi('Post Interactions','',fmtInt(ic.postsInteractions),ic.postsInteractions,ip.postsInteractions,{info:'Likes + comments + shares + saves on posts published this period.'})}
-    ${kpi('Organic Posts Reach','',fmtInt(ic.postsReach),ic.postsReach,ip.postsReach,{info:'Organic-only reach on published posts (excludes paid boosting) — the metric with the deepest history.'})}
+  /* ---------------- INSTAGRAM ---------------- */
+  const igNetC = (ic.followersGained!=null && ic.followersLost!=null) ? ic.followersGained-ic.followersLost : null;
+  const igNetP = (ip.followersGained!=null && ip.followersLost!=null) ? ip.followersGained-ip.followersLost : null;
+  const igEngRateC = safeDiv(igSnapC.interactions, igSnapC.reach);
+  const igDailyNew = safeDiv(igNetC,daysP), igDailyViews = safeDiv(ic.views,daysP), igDailyPosts = safeDiv(ic.postsCount,daysP);
+
+  html += `<div class="platform-block">
+    <div class="platform-head"><span class="badge-platform ig">ig</span><h3>Instagram — Growth</h3></div>
+    <div class="grid kpi-row">
+      ${kpi('Followers','',fmtInt(ic.followers),null,null,{noDelta:true,note:'Point-in-time — tracked from June 2026.'})}
+      ${kpi('Views','',fmtInt(ic.views),ic.views,ip.views)}
+      ${kpi('Total Content','',fmtInt(ic.postsCount),ic.postsCount,ip.postsCount,{info:'Posts + Reels published this period.'})}
+    </div>
+    <div class="substat-row">
+      ${substat('Avg. daily new followers', fmtDec(igDailyNew,1))}
+      ${substat('Daily views', fmtDec(igDailyViews,0))}
+      ${substat('Daily posts', fmtDec(igDailyPosts,2))}
+      ${substat('Posts per week', fmtDec(igDailyPosts!=null?igDailyPosts*7:null,1))}
+    </div>
+    <div class="chart-card" style="margin-top:14px;"><canvas id="igGrowthChart" height="70"></canvas></div>
+
+    <div class="section-title" style="margin-top:22px;">Demographics <span class="tag">lifetime snapshot — not month-scoped</span></div>
+    <div class="mgmt-note">${ig.locNote}</div>
+    <div class="demo-grid">
+      <div><div class="donut-wrap"><canvas id="igCountryDonut"></canvas></div></div>
+      <div>${renderLegendList(donutLegend(ig.locations.country))}</div>
+    </div>
+    <div style="margin-top:14px;font-weight:600;font-size:12.5px;">Followers by City</div>
+    ${dataTable([{label:'City'},{label:'Followers',num:1}], ig.locations.city.slice().sort((a,b)=>b[1]-a[1]).map(([c,v])=>[c, fmtInt(v)]), {defaultSize:10})}
+
+    <div class="section-title" style="margin-top:22px;">Views, Follows, Interactions &amp; Reels</div>
+    <div class="social-card-grid">
+      ${socialCard('Views', fmtInt(ic.views), [['Reach',fmtInt(ic.reach)],['Organic posts reach',fmtInt(ic.postsReach)]])}
+      ${socialCard('Follows', fmtInt(igNetC), [['Gained',fmtInt(ic.followersGained)],['Lost',fmtInt(ic.followersLost)],['Net',fmtInt(igNetC)]])}
+      ${socialCard('Interactions', fmtInt(ic.postsInteractions), [['Accounts engaged',fmtInt(ic.accountsEngaged)],['Engagement rate (recent snapshot)',fmtPct(igEngRateC,2)]])}
+      ${socialCard('Videos &amp; Reels', fmtInt(ic.reels), [['Reels views',fmtInt(ic.reelsViews)],['Profile visits (recent snapshot)',fmtInt(igSnapC.profileTaps)]])}
+    </div>
+    <div class="kpi-note" style="margin:8px 0 4px;">Visits, Conversations and Conversions appear in Metricool's own dashboard UI but are not exposed by the metrics API this dashboard reads — omitted here rather than shown as fabricated zeros.</div>
+
+    <div class="section-title" style="margin-top:22px;">Content Type Mix <span class="tag">recent snapshot — last ~18 posts</span></div>
+    <div class="chart-card"><canvas id="igMixChart" height="60"></canvas></div>
+
+    <div class="section-title" style="margin-top:22px;">Recent Post Performance</div>
+    <div class="two-col">
+      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Reach</div>${renderIgTable(sortRows(ig.posts,'reach'))}</div>
+      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Engagement</div>${renderIgTable(sortRows(ig.posts,'interactions'))}</div>
+    </div>
+    <div class="two-col" style="margin-top:14px;">
+      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Shares</div>${renderIgTable(sortRows(ig.posts,'shares'))}</div>
+      <div><div class="section-sub" style="margin-top:0;font-weight:600;color:var(--ink);">Top by Saves</div>${renderIgTable(sortRows(ig.posts,'saved'))}</div>
+    </div>
   </div>`;
 
   html += sectionTitle('Monthly Trend — both platforms', 'every metric this page tracks, selected month vs compare month');
@@ -1608,9 +1671,6 @@ function render_social(){
   ];
   html += dataTable([{label:'Metric'},{label:MONTH_LABELS[PRIMARY.month]||PRIMARY.month,num:1},{label:MONTH_LABELS[COMPARE.month]||COMPARE.month,num:1}], rows, {defaultSize:25});
 
-  html += sectionTitle('Not yet available from this source');
-  html += placeholderCard('Post-level detail and audience demographics',
-    'Metricool\'s evolution connector returns daily aggregate totals, not individual post captions/links or follower demographics — those live on the Facebook and Instagram pages elsewhere in this nav (Insightful Pipe, recent snapshot with post-level detail) or directly in Meta\'s own tools.');
   return html;
 }
 
@@ -1853,7 +1913,7 @@ function render_insights(){
 </script>
 <script>
 /* ============================ router + charts + boot ============================ */
-const RENDERERS = {exec:render_exec, ga4:render_ga4, gbp:render_gbp, gads:render_gads, fb:render_fb, ig:render_ig, social:render_social,
+const RENDERERS = {exec:render_exec, ga4:render_ga4, gbp:render_gbp, gads:render_gads, social:render_social,
   meta:render_meta, markets:render_markets, search:render_search, promos:render_promos, funnel:render_funnel, insights:render_insights};
 
 let execChart=null;
@@ -1865,7 +1925,7 @@ function renderPage(id){
   if(id==='exec') initExecChart();
   if(id==='ga4'){ initGa4Charts(); initGa4AcqToggle(); }
   if(id==='markets') initMarketsChart();
-  if(id==='ig') initIgMixChart();
+  if(id==='social') initSocialCharts();
   if(id==='funnel') initFunnelBars();
 }
 
@@ -1908,6 +1968,63 @@ function initExecChart(){
     document.querySelectorAll('#trendGrain button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active'); grain=b.dataset.g; draw();
   });
+}
+let fbGrowthChart=null, igGrowthChart=null, fbCountryDonut=null, igCountryDonut=null;
+function initSocialCharts(){
+  const styles = getComputedStyle(document.documentElement);
+  const moss = styles.getPropertyValue('--moss').trim();
+  const teal = styles.getPropertyValue('--teal').trim();
+  const sand = styles.getPropertyValue('--sand').trim();
+  const ink = styles.getPropertyValue('--ink-soft').trim();
+  const inkStrong = styles.getPropertyValue('--ink').trim();
+  const border = styles.getPropertyValue('--border-soft').trim();
+  const growthOptions = (netLabel, followerLabel) => ({
+    responsive:true,
+    plugins:{legend:{display:true,labels:{color:ink,font:{size:11}}}},
+    scales:{
+      x:{ticks:{color:ink,font:{size:9},maxTicksLimit:12},grid:{display:false}},
+      y:{position:'left',ticks:{color:ink,font:{size:10}},grid:{color:border},title:{display:true,text:netLabel,color:ink,font:{size:10}}},
+      y1:{position:'right',ticks:{color:ink,font:{size:10}},grid:{display:false},title:{display:true,text:followerLabel,color:ink,font:{size:10}}}
+    }
+  });
+
+  const fbCtx = document.getElementById('fbGrowthChart');
+  if(fbCtx){
+    const d = socialGrowthSeries(FB_SOCIAL_BY_MONTH,'fbFollowers','followersAcquired','followersLost');
+    if(fbGrowthChart) fbGrowthChart.destroy();
+    fbGrowthChart = new Chart(fbCtx, {
+      data:{labels:d.labels, datasets:[
+        {type:'bar', label:'Net New Followers', data:d.net, backgroundColor:sand, borderRadius:3, yAxisID:'y', maxBarThickness:14},
+        {type:'line', label:'Followers', data:d.followers, borderColor:moss, backgroundColor:moss, pointRadius:2, tension:.25, yAxisID:'y1', spanGaps:false}
+      ]},
+      options: growthOptions('Net New Followers / month','Followers')
+    });
+  }
+  const igCtx = document.getElementById('igGrowthChart');
+  if(igCtx){
+    const d = socialGrowthSeries(IG_SOCIAL_BY_MONTH,'followers','followersGained','followersLost');
+    if(igGrowthChart) igGrowthChart.destroy();
+    igGrowthChart = new Chart(igCtx, {
+      data:{labels:d.labels, datasets:[
+        {type:'bar', label:'Net New Followers', data:d.net, backgroundColor:sand, borderRadius:3, yAxisID:'y', maxBarThickness:14},
+        {type:'line', label:'Followers', data:d.followers, borderColor:teal, backgroundColor:teal, pointRadius:2, tension:.25, yAxisID:'y1', spanGaps:false}
+      ]},
+      options: growthOptions('Net New Followers / month','Followers')
+    });
+  }
+  const fbDonutCtx = document.getElementById('fbCountryDonut');
+  if(fbDonutCtx){
+    const rows = donutLegend(DATA.fbPage.locations.country);
+    if(fbCountryDonut) fbCountryDonut.destroy();
+    fbCountryDonut = new Chart(fbDonutCtx, {type:'doughnut', data:{labels:rows.map(r=>r.label), datasets:[{data:rows.map(r=>r.val), backgroundColor:rows.map(r=>r.color), borderWidth:0}]}, options:{cutout:'62%', plugins:{legend:{display:false}}}});
+  }
+  const igDonutCtx = document.getElementById('igCountryDonut');
+  if(igDonutCtx){
+    const rows = donutLegend(DATA.ig.locations.country);
+    if(igCountryDonut) igCountryDonut.destroy();
+    igCountryDonut = new Chart(igDonutCtx, {type:'doughnut', data:{labels:rows.map(r=>r.label), datasets:[{data:rows.map(r=>r.val), backgroundColor:rows.map(r=>r.color), borderWidth:0}]}, options:{cutout:'62%', plugins:{legend:{display:false}}}});
+  }
+  initIgMixChart();
 }
 function initIgMixChart(){
   const ctx = document.getElementById('igMixChart');
